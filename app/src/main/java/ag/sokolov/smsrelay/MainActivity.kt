@@ -1,5 +1,6 @@
 package ag.sokolov.smsrelay
 
+import ag.sokolov.smsrelay.ui.experimental.ExperimentalScreen
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -21,10 +22,10 @@ class MainActivity : ComponentActivity() {
             SMSRelayTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+                    // Greeting("Android")
+                    ExperimentalScreen()
                 }
             }
         }
@@ -34,8 +35,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
     Text(
-        text = "Hello $name!",
-        modifier = modifier
+        text = "Hello $name!", modifier = modifier
     )
 }
 
