@@ -16,7 +16,11 @@ class TelegramBotApiRepositoryImpl @Inject constructor(
         return if (response.isSuccessful) {
             Result.success(response.body()!!.result.toBotDetails())
         } else {
-            Result.failure(IOException("Telegram bot API request failed"))
+            if (response.code() == 401) {
+                Result.failure(IllegalArgumentException("Telegram bot API token invalid"))
+            } else {
+                Result.failure(IOException("Telegram bot API request failed"))
+            }
         }
     }
 }
