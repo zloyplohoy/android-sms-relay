@@ -13,20 +13,20 @@ class TelegramConfigPreferencesDataStoreRepository @Inject constructor(
 ) : TelegramConfigRepository {
 
     companion object {
-        private val BOT_API_KEY = stringPreferencesKey("telegram_config_bot_api_key")
+        private val BOT_API_TOKEN = stringPreferencesKey("telegram_config_bot_api_token")
     }
 
-    override suspend fun getBotApiKey(): Result<String?> = runCatching {
+    override suspend fun getBotApiToken(): Result<String> = runCatching {
         // TODO: Custom error handling
         val telegramConfig = dataStore.data.first()
-        telegramConfig[BOT_API_KEY]
+        telegramConfig[BOT_API_TOKEN] ?: throw NoSuchElementException("Bot API token not found")
     }
 
 
-    override suspend fun setBotApiKey(apiKey: String): Result<Unit> = runCatching {
+    override suspend fun setBotApiToken(apiKey: String): Result<Unit> = runCatching {
         // TODO: Custom error handling
         dataStore.edit { telegramConfig ->
-            telegramConfig[BOT_API_KEY] = apiKey
+            telegramConfig[BOT_API_TOKEN] = apiKey
         }
     }
 }

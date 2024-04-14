@@ -4,6 +4,8 @@ plugins {
     // Dagger Hilt
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+    // Kotlin serialization
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -75,4 +77,11 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
     // DataStore
     implementation(libs.datastore.preferences)
+    // Kotlin serialization
+    implementation(libs.kotlinx.serialization.json)
+    // Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.kotlinx.serialization)
+    // OkHttp
+    implementation(libs.okhttp)
 }
