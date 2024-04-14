@@ -13,7 +13,7 @@ class TelegramBotApiRepositoryImpl @Inject constructor(
 ) : TelegramBotApiRepository {
     override suspend fun getBotDetails(botApiToken: String): Result<BotDetails> {
         val response = telegramBotApi.getMe(botApiToken)
-        return if (response.isSuccessful) {
+        return if (response.isSuccessful && response.body() != null) {
             Result.success(response.body()!!.result.toBotDetails())
         } else {
             if (response.code() == 401) {
