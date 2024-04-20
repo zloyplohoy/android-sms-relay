@@ -3,6 +3,7 @@ package ag.sokolov.smsrelay.domain.use_case.set_telegram_bot_api_token
 import ag.sokolov.smsrelay.domain.repository.TelegramBotApiRepository
 import ag.sokolov.smsrelay.domain.repository.TelegramBotApiRepository.Companion.isTelegramBotApiTokenStructureValid
 import ag.sokolov.smsrelay.domain.repository.TelegramConfigRepository
+import java.io.IOException
 import javax.inject.Inject
 
 class SetTelegramBotApiTokenUseCase @Inject constructor(
@@ -12,7 +13,9 @@ class SetTelegramBotApiTokenUseCase @Inject constructor(
     suspend operator fun invoke(botApiToken: String): Result<Unit> = runCatching {
         require(isTelegramBotApiTokenStructureValid(botApiToken)) { "Invalid token format" }
         require(isTelegramBotApiTokenValid(botApiToken)) { "Invalid token" }
-        telegramConfigRepository.setBotApiToken(botApiToken).map { }
+        telegramConfigRepository.setBotApiToken(botApiToken).onFailure {
+            throw IOException("Token could not be saved")
+        }
     }
 
     private suspend fun isTelegramBotApiTokenValid(botApiToken: String) =
