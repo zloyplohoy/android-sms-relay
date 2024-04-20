@@ -9,12 +9,12 @@ class SetTelegramBotApiKeyUseCase @Inject constructor(
     private val telegramConfigRepository: TelegramConfigRepository,
     private val telegramBotApiRepository: TelegramBotApiRepository
 ) {
-    suspend operator fun invoke(botApiToken: String): Result<Unit> {
-        if (!isTelegramBotApiTokenStructureValid(botApiToken)) {
-            return Result.failure(IllegalArgumentException("Invalid token format"))
-        }
-        return telegramBotApiRepository.getBotDetails(botApiToken).onSuccess {
-            telegramConfigRepository.setBotApiToken(botApiToken)
-        }.map {  }
+    suspend operator fun invoke(botApiToken: String): Result<Unit> = runCatching {
+        require(isTelegramBotApiTokenStructureValid(botApiToken)) { "Invalid token format" }
+        require(isTelegramBotApiTokenValid(botApiToken)) { "Invalid token" }
+        telegramConfigRepository.setBotApiToken(botApiToken).map { }
     }
+
+    private suspend fun isTelegramBotApiTokenValid(botApiToken: String) =
+        telegramBotApiRepository.getBotDetails(botApiToken).isSuccess
 }
