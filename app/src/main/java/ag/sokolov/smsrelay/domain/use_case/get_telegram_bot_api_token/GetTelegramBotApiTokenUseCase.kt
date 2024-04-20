@@ -6,5 +6,5 @@ import javax.inject.Inject
 class GetTelegramBotApiTokenUseCase @Inject constructor(
     private val telegramConfigRepository: TelegramConfigRepository
 ) {
-    suspend operator fun invoke(): Result<String?> = telegramConfigRepository.getBotApiToken()
+    suspend operator fun invoke(): Result<String> = telegramConfigRepository.getBotApiToken()
 }

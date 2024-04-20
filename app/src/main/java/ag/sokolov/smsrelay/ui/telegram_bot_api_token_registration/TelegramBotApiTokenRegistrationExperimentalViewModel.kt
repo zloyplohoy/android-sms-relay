@@ -40,7 +40,7 @@ class TelegramBotApiTokenRegistrationExperimentalViewModel @Inject constructor(
     fun onClick2() {
         viewModelScope.launch {
             getTelegramBotApiTokenUseCase().onSuccess {
-                responseText2.value = it ?: "Empty"
+                responseText2.value = it
             }.onFailure { exception ->
                 responseText2.value = exception.message ?: "Unknown error"
             }
