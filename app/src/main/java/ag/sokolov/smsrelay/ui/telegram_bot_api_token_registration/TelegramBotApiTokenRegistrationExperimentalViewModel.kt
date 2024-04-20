@@ -1,4 +1,4 @@
-package ag.sokolov.smsrelay.ui.experimental
+package ag.sokolov.smsrelay.ui.telegram_bot_api_token_registration
 
 import ag.sokolov.smsrelay.domain.use_case.get_telegram_bot_api_key.GetTelegramBotApiKeyUseCase
 import ag.sokolov.smsrelay.domain.use_case.set_telegram_bot_api_key.SetTelegramBotApiKeyUseCase
@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ExperimentalViewModel @Inject constructor(
+class TelegramBotApiTokenRegistrationExperimentalViewModel @Inject constructor(
     private val setTelegramApiKeyUseCase: SetTelegramBotApiKeyUseCase,
     private val getTelegramBotApiKeyUseCase: GetTelegramBotApiKeyUseCase
 ) : ViewModel() {

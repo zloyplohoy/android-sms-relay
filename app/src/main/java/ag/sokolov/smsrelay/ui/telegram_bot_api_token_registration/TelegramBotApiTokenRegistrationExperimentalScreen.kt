@@ -1,19 +1,15 @@
-package ag.sokolov.smsrelay.ui.experimental
+package ag.sokolov.smsrelay.ui.telegram_bot_api_token_registration
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
-fun ExperimentalScreen(
-    viewModel: ExperimentalViewModel = hiltViewModel()
+fun TelegramBotApiTokenRegistrationExperimentalScreen(
+    viewModel: TelegramBotApiTokenRegistrationExperimentalViewModel = hiltViewModel()
 ) {
     Column {
         Text(text = "API Token Input")
