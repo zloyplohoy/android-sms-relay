@@ -1,7 +1,7 @@
 package ag.sokolov.smsrelay.ui.telegram_bot_api_token_registration
 
-import ag.sokolov.smsrelay.domain.use_case.get_telegram_bot_api_key.GetTelegramBotApiKeyUseCase
-import ag.sokolov.smsrelay.domain.use_case.set_telegram_bot_api_key.SetTelegramBotApiKeyUseCase
+import ag.sokolov.smsrelay.domain.use_case.get_telegram_bot_api_token.GetTelegramBotApiTokenUseCase
+import ag.sokolov.smsrelay.domain.use_case.set_telegram_bot_api_token.SetTelegramBotApiTokenUseCase
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,8 +11,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TelegramBotApiTokenRegistrationExperimentalViewModel @Inject constructor(
-    private val setTelegramApiKeyUseCase: SetTelegramBotApiKeyUseCase,
-    private val getTelegramBotApiKeyUseCase: GetTelegramBotApiKeyUseCase
+    private val setTelegramApiTokenUseCase: SetTelegramBotApiTokenUseCase,
+    private val getTelegramBotApiTokenUseCase: GetTelegramBotApiTokenUseCase
 ) : ViewModel() {
     var apiKeyTextFieldValue = mutableStateOf("")
         private set
@@ -29,7 +29,7 @@ class TelegramBotApiTokenRegistrationExperimentalViewModel @Inject constructor(
 
     fun onClick() {
         viewModelScope.launch {
-            setTelegramApiKeyUseCase(apiKeyTextFieldValue.value).onSuccess {
+            setTelegramApiTokenUseCase(apiKeyTextFieldValue.value).onSuccess {
                 responseText.value = "Success"
             }.onFailure { exception ->
                 responseText.value = exception.message ?: "Unknown error"
@@ -39,7 +39,7 @@ class TelegramBotApiTokenRegistrationExperimentalViewModel @Inject constructor(
 
     fun onClick2() {
         viewModelScope.launch {
-            getTelegramBotApiKeyUseCase().onSuccess {
+            getTelegramBotApiTokenUseCase().onSuccess {
                 responseText2.value = it ?: "Empty"
             }.onFailure { exception ->
                 responseText2.value = exception.message ?: "Unknown error"

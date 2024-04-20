@@ -1,11 +1,11 @@
-package ag.sokolov.smsrelay.domain.use_case.set_telegram_bot_api_key
+package ag.sokolov.smsrelay.domain.use_case.set_telegram_bot_api_token
 
 import ag.sokolov.smsrelay.domain.repository.TelegramBotApiRepository
 import ag.sokolov.smsrelay.domain.repository.TelegramBotApiRepository.Companion.isTelegramBotApiTokenStructureValid
 import ag.sokolov.smsrelay.domain.repository.TelegramConfigRepository
 import javax.inject.Inject
 
-class SetTelegramBotApiKeyUseCase @Inject constructor(
+class SetTelegramBotApiTokenUseCase @Inject constructor(
     private val telegramConfigRepository: TelegramConfigRepository,
     private val telegramBotApiRepository: TelegramBotApiRepository
 ) {
