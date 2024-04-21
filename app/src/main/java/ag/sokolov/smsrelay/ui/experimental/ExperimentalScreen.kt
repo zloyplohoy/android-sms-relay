@@ -23,5 +23,10 @@ fun ExperimentalScreen(
             Text(text = "Submit")
         }
         Text(text = viewModel.result2.value)
+        OutlinedTextField(value = viewModel.message.value, onValueChange = { message: String -> viewModel.onValueChange2(message) })
+        Button(onClick = { viewModel.onClick3() }) {
+            Text(text = "Submit")
+        }
+        Text(text = viewModel.result3.value)
     }
 }

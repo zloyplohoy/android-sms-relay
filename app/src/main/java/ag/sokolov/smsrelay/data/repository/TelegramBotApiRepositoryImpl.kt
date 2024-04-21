@@ -3,7 +3,7 @@ package ag.sokolov.smsrelay.data.repository
 import ag.sokolov.smsrelay.data.repository.api.TelegramBotApi
 import ag.sokolov.smsrelay.data.repository.api.dto.TelegramBotApiUserDto
 import ag.sokolov.smsrelay.data.repository.api.dto.TelegramMessageDto
-import ag.sokolov.smsrelay.domain.model.BotDetails
+import ag.sokolov.smsrelay.domain.model.TelegramBot
 import ag.sokolov.smsrelay.domain.model.TelegramPrivateChatMessage
 import ag.sokolov.smsrelay.domain.model.TelegramUser
 import ag.sokolov.smsrelay.domain.repository.TelegramBotApiRepository
@@ -15,7 +15,7 @@ import kotlin.time.Duration
 class TelegramBotApiRepositoryImpl @Inject constructor(
     private val telegramBotApi: TelegramBotApi
 ) : TelegramBotApiRepository {
-    override suspend fun getBotDetails(botApiToken: String): Result<BotDetails> {
+    override suspend fun getBotDetails(botApiToken: String): Result<TelegramBot> {
         val response = telegramBotApi.getMe(botApiToken)
         return if (response.isSuccessful && response.body() != null) {
             // TODO: Why do we have body()!! here?
@@ -48,11 +48,23 @@ class TelegramBotApiRepositoryImpl @Inject constructor(
             Result.failure<List<TelegramPrivateChatMessage>>(IOException("API request failed"))
         }
     }
+
+    override suspend fun sendMessage(
+        botApiToken: String, text: String, chatId: Long
+    ): Result<Unit> {
+        val sendMessageResponse =
+            telegramBotApi.sendMessage(token = botApiToken, text = text, chatId = chatId)
+        return if (sendMessageResponse.isSuccessful) {
+            Result.success(Unit)
+        } else {
+            Result.failure(IOException("API request failed"))
+        }
+    }
 }
 
-private fun TelegramBotApiUserDto.toBotDetails(): BotDetails {
+private fun TelegramBotApiUserDto.toBotDetails(): TelegramBot {
     require(this.isBot) { "User is not a bot" }
-    return BotDetails(
+    return TelegramBot(
         id = this.id, name = this.firstName, username = this.username!!
     )
 }
