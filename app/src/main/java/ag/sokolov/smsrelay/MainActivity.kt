@@ -1,5 +1,6 @@
 package ag.sokolov.smsrelay
 
+import ag.sokolov.smsrelay.ui.experimental.ExperimentalScreen
 import ag.sokolov.smsrelay.ui.telegram_bot_api_token_registration.TelegramBotApiTokenRegistrationExperimentalScreen
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
 import android.os.Bundle
@@ -25,7 +26,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
                     // Greeting("Android")
-                    TelegramBotApiTokenRegistrationExperimentalScreen()
+                    ExperimentalScreen()
                 }
             }
         }
