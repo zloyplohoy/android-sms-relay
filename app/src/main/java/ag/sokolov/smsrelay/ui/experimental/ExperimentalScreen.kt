@@ -19,5 +19,9 @@ fun ExperimentalScreen(
             Text(text = "Submit")
         }
         Text(text = viewModel.result.value)
+        Button(onClick = { viewModel.onClick2() }) {
+            Text(text = "Submit")
+        }
+        Text(text = viewModel.result2.value)
     }
 }
