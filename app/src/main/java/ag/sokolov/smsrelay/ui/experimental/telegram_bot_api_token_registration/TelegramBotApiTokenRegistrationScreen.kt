@@ -5,12 +5,14 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun TelegramBotApiTokenRegistrationScreen(
     viewModel: TelegramBotApiTokenRegistrationViewModel = hiltViewModel()
 ) {
+    val tokenText = viewModel.tokenFlow.collectAsState(initial = "Empty")
     Column {
         OutlinedTextField(value = viewModel.tokenTextField.value, onValueChange = { value: String ->
             viewModel.onTokenTextFieldValueChange(value)
@@ -18,6 +20,6 @@ fun TelegramBotApiTokenRegistrationScreen(
         Button(onClick = { viewModel.setTelegramBotApiToken() }) {
             Text(text = "Set Telegram bot API token")
         }
-        Text(text = viewModel.tokenText.value)
+        Text(text = tokenText.value)
     }
 }
