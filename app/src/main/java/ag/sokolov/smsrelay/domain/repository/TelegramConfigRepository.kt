@@ -8,4 +8,5 @@ interface TelegramConfigRepository {
     suspend fun getRecipientId(): Result<Long>
     suspend fun setRecipientId(recipientId: Long): Result<Unit>
     fun getBotApiTokenFlow(): Flow<String?>
+    suspend fun deleteBotApiToken(): Result<Unit>
 }

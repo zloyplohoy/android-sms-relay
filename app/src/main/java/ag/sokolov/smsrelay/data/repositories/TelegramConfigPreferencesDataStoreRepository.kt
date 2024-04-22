@@ -46,4 +46,10 @@ class TelegramConfigPreferencesDataStoreRepository @Inject constructor(
 
     override fun getBotApiTokenFlow(): Flow<String?> =
         dataStore.data.map { telegramConfig -> telegramConfig[BOT_API_TOKEN] }
+
+    override suspend fun deleteBotApiToken(): Result<Unit> = runCatching{
+        dataStore.edit { telegramConfig ->
+            telegramConfig.remove(BOT_API_TOKEN)
+        }
+    }
 }
