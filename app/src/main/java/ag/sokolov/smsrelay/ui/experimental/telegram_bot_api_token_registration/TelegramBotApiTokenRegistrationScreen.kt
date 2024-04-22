@@ -19,7 +19,7 @@ fun TelegramBotApiTokenRegistrationScreen(
         Button(onClick = { viewModel.setTelegramBotApiToken() }) {
             Text(text = "Set Telegram bot API token")
         }
-        Text(text = state.tokenValue)
+        Text(text = state.botDetails)
         Button(onClick = { viewModel.deleteTelegramBotApiToken() }) {
             Text(text = "Delete Telegram bot API token")
         }
