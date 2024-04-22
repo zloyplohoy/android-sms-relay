@@ -1,9 +1,9 @@
 package ag.sokolov.smsrelay
 
-import ag.sokolov.smsrelay.data.repository.TelegramBotApiRepositoryImpl
-import ag.sokolov.smsrelay.data.repository.TelegramConfigPreferencesDataStoreRepository
-import ag.sokolov.smsrelay.data.repository.api.TelegramBotApi
-import ag.sokolov.smsrelay.data.sources.remote.telegram_bot_api.RetrofitTelegramBotApi
+import ag.sokolov.smsrelay.data.repositories.TelegramBotApiRepositoryImpl
+import ag.sokolov.smsrelay.data.repositories.TelegramConfigPreferencesDataStoreRepository
+import ag.sokolov.smsrelay.data.sources.remote.api.telegram_bot.TelegramBotApiService
+import ag.sokolov.smsrelay.data.sources.remote.api.telegram_bot.retrofit.RetrofitTelegramBotApiService
 import ag.sokolov.smsrelay.domain.repository.TelegramBotApiRepository
 import ag.sokolov.smsrelay.domain.repository.TelegramConfigRepository
 import android.content.Context
@@ -43,14 +43,14 @@ abstract class MainModule {
 
         @Singleton
         @Provides
-        fun provideTelegramBotApi(): TelegramBotApi {
+        fun provideTelegramBotApi(): TelegramBotApiService {
             val json = Json { ignoreUnknownKeys = true }
             val jsonMediaType = "application/json".toMediaType()
 
             return Retrofit.Builder()
                 .baseUrl("https://api.telegram.org/")
                 .addConverterFactory(json.asConverterFactory(jsonMediaType)).build()
-                .create(RetrofitTelegramBotApi::class.java)
+                .create(RetrofitTelegramBotApiService::class.java)
         }
     }
 }

@@ -1,8 +1,8 @@
-package ag.sokolov.smsrelay.data.repository
+package ag.sokolov.smsrelay.data.repositories
 
-import ag.sokolov.smsrelay.data.repository.api.TelegramBotApi
-import ag.sokolov.smsrelay.data.repository.api.dto.TelegramBotApiUserDto
-import ag.sokolov.smsrelay.data.repository.api.dto.TelegramMessageDto
+import ag.sokolov.smsrelay.data.sources.remote.api.telegram_bot.TelegramBotApiService
+import ag.sokolov.smsrelay.data.sources.remote.api.telegram_bot.dto.TelegramUserDto
+import ag.sokolov.smsrelay.data.sources.remote.api.telegram_bot.dto.TelegramMessageDto
 import ag.sokolov.smsrelay.domain.model.TelegramBot
 import ag.sokolov.smsrelay.domain.model.TelegramPrivateChatMessage
 import ag.sokolov.smsrelay.domain.model.TelegramUser
@@ -13,10 +13,10 @@ import kotlin.time.Duration
 
 
 class TelegramBotApiRepositoryImpl @Inject constructor(
-    private val telegramBotApi: TelegramBotApi
+    private val telegramBotApiService: TelegramBotApiService
 ) : TelegramBotApiRepository {
     override suspend fun getBotDetails(botApiToken: String): Result<TelegramBot> {
-        val response = telegramBotApi.getMe(botApiToken)
+        val response = telegramBotApiService.getMe(botApiToken)
         return if (response.isSuccessful && response.body() != null) {
             // TODO: Why do we have body()!! here?
             Result.success(response.body()!!.result.toBotDetails())
@@ -35,7 +35,7 @@ class TelegramBotApiRepositoryImpl @Inject constructor(
         // TODO:
         // 1. Request updates from API with polling timeout
         // 2. Limit updates to messages only
-        val getUpdatesResponse = telegramBotApi.getUpdates(
+        val getUpdatesResponse = telegramBotApiService.getUpdates(
             token = botApiToken,
             timeout = longPollingTimeout.inWholeMilliseconds,
             allowedUpdates = listOf("message")
@@ -53,7 +53,7 @@ class TelegramBotApiRepositoryImpl @Inject constructor(
         botApiToken: String, text: String, chatId: Long
     ): Result<Unit> {
         val sendMessageResponse =
-            telegramBotApi.sendMessage(token = botApiToken, text = text, chatId = chatId)
+            telegramBotApiService.sendMessage(token = botApiToken, text = text, chatId = chatId)
         return if (sendMessageResponse.isSuccessful) {
             Result.success(Unit)
         } else {
@@ -62,7 +62,7 @@ class TelegramBotApiRepositoryImpl @Inject constructor(
     }
 }
 
-private fun TelegramBotApiUserDto.toBotDetails(): TelegramBot {
+private fun TelegramUserDto.toBotDetails(): TelegramBot {
     require(this.isBot) { "User is not a bot" }
     return TelegramBot(
         id = this.id, name = this.firstName, username = this.username!!
@@ -76,7 +76,7 @@ private fun TelegramMessageDto.toTelegramMessage(): TelegramPrivateChatMessage {
     )
 }
 
-private fun TelegramBotApiUserDto.toTelegramUser(): TelegramUser {
+private fun TelegramUserDto.toTelegramUser(): TelegramUser {
     return TelegramUser(
         id = this.id,
         firstName = this.firstName,
