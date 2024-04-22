@@ -15,19 +15,30 @@ import javax.inject.Inject
 class TelegramBotApiTokenRegistrationViewModel @Inject constructor(
     getTelegramBotApiTokenFlowUseCase: GetTelegramBotApiTokenFlowUseCase,
     private val setTelegramBotApiTokenUseCase: SetTelegramBotApiTokenUseCase
-): ViewModel() {
-    val tokenFlow : Flow<String> = getTelegramBotApiTokenFlowUseCase().filterNotNull()
+) : ViewModel() {
 
-    var tokenTextField = mutableStateOf("")
-        private set
+    val state = mutableStateOf(TelegramBotApiTokenRegistrationScreenState())
+    private val telegramBotApiTokenFlow: Flow<String?> = getTelegramBotApiTokenFlowUseCase()
+
+    init {
+        observeTelegramBotApiToken()
+    }
 
     fun onTokenTextFieldValueChange(value: String) {
-        tokenTextField.value = value
+        state.value = state.value.copy(tokenTextFieldValue = value)
     }
 
     fun setTelegramBotApiToken() {
         viewModelScope.launch {
-            setTelegramBotApiTokenUseCase(tokenTextField.value)
+            setTelegramBotApiTokenUseCase(state.value.tokenTextFieldValue)
+        }
+    }
+
+    private fun observeTelegramBotApiToken() {
+        viewModelScope.launch {
+            telegramBotApiTokenFlow.filterNotNull().collect { telegramBotApiToken ->
+                state.value = state.value.copy(tokenValue = telegramBotApiToken)
+            }
         }
     }
 }
