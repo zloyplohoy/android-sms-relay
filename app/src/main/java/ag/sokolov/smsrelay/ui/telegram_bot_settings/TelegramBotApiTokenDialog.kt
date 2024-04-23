@@ -23,7 +23,7 @@ fun TelegramBotApiTokenDialog(
     state: TelegramBotApiTokenDialogState,
     toggleDialog: () -> Unit,
     onTokenTextFieldValueChange: (String) -> Unit,
-    saveToken: (String) -> Unit
+    addBot: (String) -> Unit
 ) {
     fun emptyTokenTextField() = onTokenTextFieldValueChange("")
 
@@ -84,7 +84,7 @@ fun TelegramBotApiTokenDialog(
                             .then(
                                 if (state.isTokenStructureValid) {
                                     Modifier.clickable {
-                                        saveToken(state.tokenTextFieldValue)
+                                        addBot(state.tokenTextFieldValue)
                                         toggleDialog()
                                         emptyTokenTextField()
                                     }
@@ -110,7 +110,7 @@ private fun PreviewTelegramBotApiTokenDialog() {
                 ),
                 toggleDialog = {},
                 onTokenTextFieldValueChange = {},
-                saveToken = {}
+                addBot = {}
             )
         }
     }
@@ -130,7 +130,7 @@ private fun PreviewTelegramBotApiTokenDialogTokenStructureValid() {
                 ),
                 toggleDialog = {},
                 onTokenTextFieldValueChange = {},
-                saveToken = {}
+                addBot = {}
             )
         }
     }
