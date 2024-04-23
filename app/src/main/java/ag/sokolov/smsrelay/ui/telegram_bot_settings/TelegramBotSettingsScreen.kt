@@ -1,9 +1,12 @@
 package ag.sokolov.smsrelay.ui.telegram_bot_settings
 
+import ag.sokolov.smsrelay.ui.common.ScreenTitle
+import ag.sokolov.smsrelay.ui.common.TopNavigationBar
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -15,6 +18,7 @@ fun TelegramBotSettingsScreen(
 ) {
     val state = viewModel.state.value
     Column {
+        ScreenTitle(title = "Telegram bot")
         Button(onClick = { navController.popBackStack() }) {
             Text(text = "Back")
         }
