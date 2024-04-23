@@ -48,7 +48,8 @@ class TelegramBotSettingsViewModel @Inject constructor(
 
     fun onTokenTextFieldValueChange(value: String) {
         dialogState.value = dialogState.value.copy(
-            tokenTextFieldValue = value, isTokenStructureValid = isTokenStructureValid(value)
+            tokenTextFieldValue = value,
+            isTokenStructureValid = isTokenStructureValid(value)
         )
     }
 
