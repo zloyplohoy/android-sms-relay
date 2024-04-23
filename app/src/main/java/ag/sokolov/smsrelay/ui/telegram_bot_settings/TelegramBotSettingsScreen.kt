@@ -77,7 +77,7 @@ private fun PreviewTelegramBotSettingsScreenContent() {
 
 @Preview
 @Composable
-private fun PreviewTelegramBotSettingsScreenContentWithBotRegistered() {
+private fun PreviewTelegramBotSettingsScreenContentBotAdded() {
     SMSRelayTheme {
         Surface {
             TelegramBotSettingsScreenContent(
