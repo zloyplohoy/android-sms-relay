@@ -45,7 +45,7 @@ class MainActivity : ComponentActivity() {
                         NavHost(
                             navController = navController, startDestination = "settings"
                         ) {
-                            composable("settings") { SettingsScreen(navController = navController) }
+                            composable("settings") { SettingsScreen(navigateToRoute = navController::navigate) }
                             composable("telegram_bot_settings") { TelegramBotSettingsScreen(navController = navController)
                             }
                         }
