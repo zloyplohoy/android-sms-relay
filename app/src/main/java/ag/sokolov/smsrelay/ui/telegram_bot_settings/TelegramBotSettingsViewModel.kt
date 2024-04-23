@@ -19,7 +19,7 @@ class TelegramBotSettingsViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val botApiTokenRegex: Regex = """^\d+:[A-Za-z0-9_-]{35}$""".toRegex()
-    private val telegramBotDetailsResultFlow = getTelegramBotInfoResultFlowUseCase()
+    private val telegramBotInfoResultFlow = getTelegramBotInfoResultFlowUseCase()
 
     val screenState = mutableStateOf(TelegramBotSettingsScreenState())
     val dialogState = mutableStateOf(TelegramBotApiTokenDialogState())
@@ -56,7 +56,7 @@ class TelegramBotSettingsViewModel @Inject constructor(
 
     private fun observeTelegramBotUsername() {
         viewModelScope.launch {
-            telegramBotDetailsResultFlow.collect { result ->
+            telegramBotInfoResultFlow.collect { result ->
                 result.onSuccess { telegramBot ->
                     screenState.value = screenState.value.copy(
                         isBotRegistered = true,
