@@ -1,7 +1,7 @@
 package ag.sokolov.smsrelay.ui.telegram_bot_settings
 
 import ag.sokolov.smsrelay.domain.use_case.delete_telegram_bot_api_token.DeleteTelegramBotApiTokenUseCase
-import ag.sokolov.smsrelay.domain.use_case.get_telegram_bot_details_flow.GetTelegramBotDetailsResultFlowUseCase
+import ag.sokolov.smsrelay.domain.use_case.get_telegram_bot_username_flow.GetTelegramBotUsernameResultFlowUseCase
 import ag.sokolov.smsrelay.domain.use_case.set_telegram_bot_api_token.SetTelegramBotApiTokenUseCase
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -12,16 +12,16 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TelegramBotSettingsViewModel @Inject constructor(
-    getTelegramBotDetailsResultFlowUseCase: GetTelegramBotDetailsResultFlowUseCase,
+    getTelegramBotUsernameResultFlowUseCase: GetTelegramBotUsernameResultFlowUseCase,
     private val setTelegramBotApiTokenUseCase: SetTelegramBotApiTokenUseCase,
     private val deleteTelegramBotApiTokenUseCase: DeleteTelegramBotApiTokenUseCase
 ) : ViewModel() {
 
     val state = mutableStateOf(TelegramBotSettingsScreenState())
-    private val telegramBotDetailsResultFlow = getTelegramBotDetailsResultFlowUseCase()
+    private val telegramBotUsernameResultFlow = getTelegramBotUsernameResultFlowUseCase()
 
     init {
-        observeTelegramBotApiToken()
+        observeTelegramBotUsername()
     }
 
     fun onTokenTextFieldValueChange(value: String) {
@@ -40,17 +40,14 @@ class TelegramBotSettingsViewModel @Inject constructor(
         }
     }
 
-    private fun observeTelegramBotApiToken() {
+    private fun observeTelegramBotUsername() {
         viewModelScope.launch {
-            telegramBotDetailsResultFlow.collect { telegramBotDetailsResult ->
-                telegramBotDetailsResult.onSuccess { telegramBot ->
-                    state.value = state.value.copy(botDetails = telegramBot.username)
-                }.onFailure { telegramBotError ->
-                    state.value = state.value.copy(
-                        botDetails = telegramBotError.localizedMessage ?: "Unknown error"
-                    )
-                }
-
+            telegramBotUsernameResultFlow.collect { result ->
+                state.value = state.value.copy(
+                    botUsername = result.fold(
+                        onSuccess = { "@$it" },
+                        onFailure = { it.localizedMessage ?: "Unknown error" })
+                )
             }
         }
     }
