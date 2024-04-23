@@ -40,11 +40,11 @@ class MainActivity : ComponentActivity() {
                             onBackButtonClick = { navController.navigateUp() }
                         )
                         NavHost(
-                            navController = navController, startDestination = "settings"
+                            navController = navController,
+                            startDestination = "settings"
                         ) {
                             composable("settings") { SettingsScreen(navigateToRoute = navController::navigate) }
-                            composable("telegram_bot_settings") { TelegramBotSettingsScreen()
-                            }
+                            composable("telegram_bot_settings") { TelegramBotSettingsScreen() }
                         }
                     }
                 }
