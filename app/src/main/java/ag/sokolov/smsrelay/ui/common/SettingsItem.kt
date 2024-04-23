@@ -36,17 +36,20 @@ fun SettingsItem(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() }
-            .padding(horizontal = 24.dp, vertical = 16.dp)
+            .padding(vertical = 16.dp)
     ) {
         Icon(
             imageVector = icon,
             contentDescription = "Setting icon",
-            modifier = Modifier.size(24.dp)
+            modifier = Modifier
+                .padding(horizontal = 24.dp)
         )
-        Spacer(modifier = Modifier.width(24.dp))
         Column {
-            Text(text = title, style = MaterialTheme.typography.titleLarge)
-            Spacer(modifier = Modifier.height(2.dp))
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleLarge
+            )
+            Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = subtitle,
                 style = MaterialTheme.typography.labelLarge,
@@ -65,7 +68,8 @@ fun SettingsItemEnabledPreview() {
                 icon = Icons.AutoMirrored.Filled.Send,
                 title = "Telegram bot",
                 subtitle = "Not configured",
-                onClick = {})
+                onClick = {}
+            )
         }
     }
 }

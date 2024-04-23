@@ -1,6 +1,7 @@
 package ag.sokolov.smsrelay.ui.common
 
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -15,7 +16,9 @@ fun ScreenTitle(title: String) {
     Text(
         text = title,
         style = MaterialTheme.typography.displayMedium,
-        modifier = Modifier.padding(horizontal = 24.dp, vertical = 32.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 24.dp, vertical = 32.dp)
     )
 }
 

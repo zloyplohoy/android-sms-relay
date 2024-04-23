@@ -22,9 +22,12 @@ fun TelegramBotSettingsScreen(
         Button(onClick = { navController.popBackStack() }) {
             Text(text = "Back")
         }
-        OutlinedTextField(value = state.tokenTextFieldValue, onValueChange = { value: String ->
-            viewModel.onTokenTextFieldValueChange(value)
-        })
+        OutlinedTextField(
+            value = state.tokenTextFieldValue,
+            onValueChange = { value: String ->
+                viewModel.onTokenTextFieldValueChange(value)
+            }
+        )
         Button(onClick = { viewModel.setTelegramBotApiToken() }) {
             Text(text = "Set Telegram bot API token")
         }

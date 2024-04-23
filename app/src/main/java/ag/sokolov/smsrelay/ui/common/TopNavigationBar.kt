@@ -22,13 +22,18 @@ fun TopNavigationBar(
 ) {
     Row(
         modifier = Modifier
-            .height(96.dp)
+            .height(48.dp)
             .fillMaxWidth()
             .padding(8.dp)
     ) {
         if (showBackButton) {
-            IconButton(onClick = { onBackButtonClick() }) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+            IconButton(
+                onClick = { onBackButtonClick() }
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Back"
+                )
             }
         }
     }
@@ -37,6 +42,16 @@ fun TopNavigationBar(
 @Preview
 @Composable
 private fun PreviewTopNavigationBar() {
+    SMSRelayTheme {
+        Surface {
+            TopNavigationBar(showBackButton = false)
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewTopNavigationBarWithBackButton() {
     SMSRelayTheme {
         Surface {
             TopNavigationBar(showBackButton = true)
