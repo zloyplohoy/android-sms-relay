@@ -24,13 +24,13 @@ fun TelegramBotSettingsScreen(
     TelegramBotSettingsScreenContent(
         state = viewModel.screenState.value,
         toggleTokenDialog = viewModel::toggleTokenDialog,
-        deleteBot = viewModel::deleteBot
+        removeBot = viewModel::removeBot
     )
     TelegramBotApiTokenDialog(
         state = viewModel.dialogState.value,
         toggleDialog = viewModel::toggleTokenDialog,
         onTokenTextFieldValueChange = viewModel::onTokenTextFieldValueChange,
-        saveToken = viewModel::saveToken
+        addBot = viewModel::addBot
     )
 }
 
@@ -38,27 +38,28 @@ fun TelegramBotSettingsScreen(
 fun TelegramBotSettingsScreenContent(
     state: TelegramBotSettingsScreenState = TelegramBotSettingsScreenState(),
     toggleTokenDialog: () -> Unit = {},
-    deleteBot: () -> Unit = {}
+    removeBot: () -> Unit = {}
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
     ) {
         ScreenTitle(title = "Telegram bot")
         Button(
-            enabled = !state.isBotRegistered,
+            enabled = !state.isBotAdded,
             onClick = { toggleTokenDialog() },
             modifier = Modifier
                 .padding(24.dp)
         ) {
             Text(text = "Add bot with API key")
         }
-        if(state.isBotRegistered){
+        if(state.isBotAdded){
             SettingsItem(
                 icon = Icons.AutoMirrored.Outlined.Send,
                 title = state.botName,
                 subtitle = state.botUsername,
                 showDeleteButton = true,
-                onDeleteClick = { deleteBot() }
+                onDeleteClick = { removeBot() }
             )
         }
     }
@@ -81,7 +82,7 @@ private fun PreviewTelegramBotSettingsScreenContentWithBotRegistered() {
         Surface {
             TelegramBotSettingsScreenContent(
                 state = TelegramBotSettingsScreenState(
-                    isBotRegistered = true,
+                    isBotAdded = true,
                     botName = "Awesome SMS relay bot",
                     botUsername = "@awesome_sms_relay_bot"
                 )

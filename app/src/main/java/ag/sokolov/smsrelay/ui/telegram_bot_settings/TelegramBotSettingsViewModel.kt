@@ -28,13 +28,13 @@ class TelegramBotSettingsViewModel @Inject constructor(
         observeTelegramBotUsername()
     }
 
-    fun deleteBot() {
+    fun removeBot() {
         viewModelScope.launch {
             removeTelegramBotUseCase()
         }
     }
 
-    fun saveToken(token: String) {
+    fun addBot(token: String) {
         viewModelScope.launch {
             addTelegramBotUseCase(token)
         }
@@ -60,7 +60,7 @@ class TelegramBotSettingsViewModel @Inject constructor(
             telegramBotInfoResultFlow.collect { result ->
                 result.onSuccess { telegramBot ->
                     screenState.value = screenState.value.copy(
-                        isBotRegistered = true,
+                        isBotAdded = true,
                         botName = telegramBot.name,
                         botUsername = "@${telegramBot.username}"
                     )
@@ -68,13 +68,13 @@ class TelegramBotSettingsViewModel @Inject constructor(
                     when (exception) {
                         is DomainException.BotNotFoundException -> {
                             screenState.value = screenState.value.copy(
-                                isBotRegistered = false
+                                isBotAdded = false
                             )
                         }
 
                         else -> {
                             screenState.value = screenState.value.copy(
-                                isBotRegistered = true,
+                                isBotAdded = true,
                                 botName = "Bot experiencing errors",
                                 botUsername = exception.localizedMessage
                                     ?: "Error: Unhandled exception"
