@@ -2,7 +2,7 @@ package ag.sokolov.smsrelay.ui.telegram_bot_settings
 
 import ag.sokolov.smsrelay.domain.use_cases.delete_telegram_bot_api_token.DeleteTelegramBotApiTokenUseCase
 import ag.sokolov.smsrelay.domain.use_cases.get_telegram_bot_details_result_flow.GetTelegramBotDetailsResultFlowUseCase
-import ag.sokolov.smsrelay.domain.use_cases.set_telegram_bot_api_token.SetTelegramBotApiTokenUseCase
+import ag.sokolov.smsrelay.domain.use_cases.add_telegram_bot.AddTelegramBotUseCase
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,7 +14,7 @@ import javax.inject.Inject
 class TelegramBotSettingsViewModel @Inject constructor(
     getTelegramBotDetailsResultFlowUseCase: GetTelegramBotDetailsResultFlowUseCase,
     private val deleteTelegramBotApiTokenUseCase: DeleteTelegramBotApiTokenUseCase,
-    private val setTelegramBotApiTokenUseCase: SetTelegramBotApiTokenUseCase
+    private val addTelegramBotUseCase: AddTelegramBotUseCase
 ) : ViewModel() {
 
     private val botApiTokenRegex: Regex = """^\d+:[A-Za-z0-9_-]{35}$""".toRegex()
@@ -35,7 +35,7 @@ class TelegramBotSettingsViewModel @Inject constructor(
 
     fun saveToken(token: String) {
         viewModelScope.launch {
-            setTelegramBotApiTokenUseCase(token)
+            addTelegramBotUseCase(token)
         }
     }
 
