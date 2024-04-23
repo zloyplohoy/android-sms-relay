@@ -48,7 +48,7 @@ fun TelegramBotSettingsScreenContent(
             enabled = !state.isBotRegistered,
             onClick = { toggleTokenDialog() },
             modifier = Modifier
-                .padding(16.dp)
+                .padding(24.dp)
         ) {
             Text(text = "Add bot with API key")
         }
