@@ -3,6 +3,7 @@ package ag.sokolov.smsrelay
 import ag.sokolov.smsrelay.ui.common.TopNavigationBar
 import ag.sokolov.smsrelay.ui.settings.SettingsScreen
 import ag.sokolov.smsrelay.ui.telegram_bot_settings.TelegramBotSettingsScreen
+import ag.sokolov.smsrelay.ui.telegram_recipient_settings.TelegramRecipientSettingsScreen
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -45,6 +46,7 @@ class MainActivity : ComponentActivity() {
                         ) {
                             composable("settings") { SettingsScreen(navigateToRoute = navController::navigate) }
                             composable("telegram_bot_settings") { TelegramBotSettingsScreen() }
+                            composable("telegram_recipient_settings") { TelegramRecipientSettingsScreen() }
                         }
                     }
                 }

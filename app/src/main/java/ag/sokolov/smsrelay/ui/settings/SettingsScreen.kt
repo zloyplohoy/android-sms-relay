@@ -46,7 +46,7 @@ fun SettingsScreenContent(
             icon = Icons.Outlined.Person,
             title = "Telegram recipient",
             subtitle = "Not configured",
-            onClick = { navigateToRoute("telegram_bot_settings") }
+            onClick = { navigateToRoute("telegram_recipient_settings") }
         )
         SettingsItem(
             icon = Icons.Outlined.MailOutline,
