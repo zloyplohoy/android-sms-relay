@@ -61,7 +61,7 @@ fun SettingsItem(
 
 @Preview
 @Composable
-fun PreviewSettingsItem() {
+private fun PreviewSettingsItem() {
     SMSRelayTheme {
         Surface {
             SettingsItem(
