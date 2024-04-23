@@ -1,8 +1,6 @@
 package ag.sokolov.smsrelay
 
-import ag.sokolov.smsrelay.ui.experimental.ExperimentalScreen
-import ag.sokolov.smsrelay.ui.experimental.telegram_bot_api_token_registration.TelegramBotApiTokenRegistrationScreen
-import ag.sokolov.smsrelay.ui.telegram_bot_api_token_registration.TelegramBotApiTokenRegistrationExperimentalScreen
+import ag.sokolov.smsrelay.ui.telegram_bot_settings.TelegramBotSettingsScreen
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -29,7 +27,7 @@ class MainActivity : ComponentActivity() {
                     // Greeting("Android")
 //                    ExperimentalScreen()
 //                    TelegramBotApiTokenRegistrationExperimentalScreen()
-                    TelegramBotApiTokenRegistrationScreen()
+                    TelegramBotSettingsScreen()
                 }
             }
         }

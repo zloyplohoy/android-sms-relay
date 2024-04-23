@@ -1,4 +1,4 @@
-package ag.sokolov.smsrelay.ui.experimental.telegram_bot_api_token_registration
+package ag.sokolov.smsrelay.ui.telegram_bot_settings
 
 import ag.sokolov.smsrelay.domain.use_case.delete_telegram_bot_api_token.DeleteTelegramBotApiTokenUseCase
 import ag.sokolov.smsrelay.domain.use_case.get_telegram_bot_details_flow.GetTelegramBotDetailsResultFlowUseCase
@@ -11,13 +11,13 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class TelegramBotApiTokenRegistrationViewModel @Inject constructor(
+class TelegramBotSettingsViewModel @Inject constructor(
     getTelegramBotDetailsResultFlowUseCase: GetTelegramBotDetailsResultFlowUseCase,
     private val setTelegramBotApiTokenUseCase: SetTelegramBotApiTokenUseCase,
     private val deleteTelegramBotApiTokenUseCase: DeleteTelegramBotApiTokenUseCase
 ) : ViewModel() {
 
-    val state = mutableStateOf(TelegramBotApiTokenRegistrationScreenState())
+    val state = mutableStateOf(TelegramBotSettingsScreenState())
     private val telegramBotDetailsResultFlow = getTelegramBotDetailsResultFlowUseCase()
 
     init {
