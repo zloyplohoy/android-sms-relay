@@ -1,4 +1,4 @@
-package ag.sokolov.smsrelay.domain.use_cases.register_telegram_recipient
+package ag.sokolov.smsrelay.domain.use_cases.add_telegram_recipient
 
 import ag.sokolov.smsrelay.domain.models.TelegramPrivateChatMessage
 import ag.sokolov.smsrelay.domain.repositories.TelegramBotApiRepository
@@ -8,7 +8,7 @@ import javax.inject.Inject
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-class RegisterTelegramRecipientUseCase @Inject constructor(
+class AddTelegramRecipientUseCase @Inject constructor(
     private val telegramConfigRepository: TelegramConfigRepository,
     private val telegramBotApiRepository: TelegramBotApiRepository
 ) {
