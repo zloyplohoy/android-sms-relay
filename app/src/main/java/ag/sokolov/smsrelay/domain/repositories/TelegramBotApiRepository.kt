@@ -6,10 +6,15 @@ import kotlin.time.Duration
 
 interface TelegramBotApiRepository {
     suspend fun getBotDetails(botApiToken: String): Result<TelegramBot>
+
     suspend fun getMessages(
-        botApiToken: String, longPollingTimeout: Duration
+        botApiToken: String,
+        longPollingTimeout: Duration
     ): Result<List<TelegramPrivateChatMessage>>
+
     suspend fun sendMessage(
-        botApiToken: String, text: String, chatId: Long
+        botApiToken: String,
+        text: String,
+        chatId: Long
     ): Result<Unit>
 }
