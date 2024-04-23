@@ -1,12 +1,14 @@
 package ag.sokolov.smsrelay.data.repositories
 
 import ag.sokolov.smsrelay.data.sources.remote.apis.telegram_bot.TelegramBotApiService
-import ag.sokolov.smsrelay.data.sources.remote.apis.telegram_bot.dtos.TelegramUserDto
 import ag.sokolov.smsrelay.data.sources.remote.apis.telegram_bot.dtos.TelegramMessageDto
-import ag.sokolov.smsrelay.domain.models.TelegramBot
+import ag.sokolov.smsrelay.data.sources.remote.apis.telegram_bot.dtos.TelegramUserDto
+import ag.sokolov.smsrelay.domain.errors.DomainException
+import ag.sokolov.smsrelay.domain.models.TelegramBotInfo
 import ag.sokolov.smsrelay.domain.models.TelegramPrivateChatMessage
 import ag.sokolov.smsrelay.domain.models.TelegramUser
 import ag.sokolov.smsrelay.domain.repositories.TelegramBotApiRepository
+import retrofit2.Response
 import java.io.IOException
 import javax.inject.Inject
 import kotlin.time.Duration
@@ -15,20 +17,46 @@ import kotlin.time.Duration
 class TelegramBotApiRepositoryImpl @Inject constructor(
     private val telegramBotApiService: TelegramBotApiService
 ) : TelegramBotApiRepository {
-    override suspend fun getBotDetails(botApiToken: String): Result<TelegramBot> {
-        val response = telegramBotApiService.getMe(botApiToken)
-        return if (response.isSuccessful && response.body() != null) {
-            // TODO: Why do we have body()!! here?
-            Result.success(response.body()!!.result.toBotDetails())
-        } else {
-            if (response.code() == 401) {
-                Result.failure(IllegalArgumentException("Telegram bot API token invalid"))
-            } else {
-                Result.failure(IOException("Telegram bot API request failed"))
-            }
+
+    override suspend fun getBotInfo(botApiToken: String): Result<TelegramBotInfo> = runCatching {
+        handleRequestExceptions { telegramBotApiService.getMe(botApiToken) }.result.toBotInfo()
+    }
+
+    private suspend fun <T> handleRequestExceptions(request: suspend () -> Response<T>): T {
+        try {
+            val response = request()
+            throwIfUnauthorized(response)
+            throwIfUnsuccessful(response)
+            throwIfEmptyBody(response)
+            return response.body()!!
+        } catch (e: DomainException) {
+            throw e
+        } catch (exception: IOException) {
+            throw DomainException.BotNetworkException()
+        } catch (exception: Exception) {
+            throw DomainException.UnhandledBotException()
         }
     }
 
+    private fun <T> throwIfUnauthorized(response: Response<T>) {
+        if (response.code() == 401) {
+            throw DomainException.BotUnauthorizedException()
+        }
+    }
+
+    private fun <T> throwIfUnsuccessful(response: Response<T>) {
+        if (!response.isSuccessful) {
+            throw DomainException.UnhandledBotException()
+        }
+    }
+
+    private fun <T> throwIfEmptyBody(response: Response<T>) {
+        if (response.body() == null) {
+            throw DomainException.UnhandledBotException()
+        }
+    }
+
+    // TODO: Rewrite with handler
     override suspend fun getMessages(
         botApiToken: String, longPollingTimeout: Duration
     ): Result<List<TelegramPrivateChatMessage>> {
@@ -49,6 +77,7 @@ class TelegramBotApiRepositoryImpl @Inject constructor(
         }
     }
 
+    // TODO: Rewrite with handler
     override suspend fun sendMessage(
         botApiToken: String, text: String, chatId: Long
     ): Result<Unit> {
@@ -62,17 +91,19 @@ class TelegramBotApiRepositoryImpl @Inject constructor(
     }
 }
 
-private fun TelegramUserDto.toBotDetails(): TelegramBot {
+private fun TelegramUserDto.toBotInfo(): TelegramBotInfo {
     require(this.isBot) { "User is not a bot" }
-    return TelegramBot(
-        id = this.id, name = this.firstName, username = this.username!!
+    return TelegramBotInfo(
+        name = this.firstName,
+        username = this.username!!
     )
 }
 
 private fun TelegramMessageDto.toTelegramMessage(): TelegramPrivateChatMessage {
     return TelegramPrivateChatMessage(
         // TODO: Verify that the chat is a private chat
-        from = this.from!!.toTelegramUser(), text = this.text
+        from = this.from!!.toTelegramUser(),
+        text = this.text
     )
 }
 

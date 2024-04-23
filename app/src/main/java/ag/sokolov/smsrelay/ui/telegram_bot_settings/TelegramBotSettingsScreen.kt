@@ -2,12 +2,14 @@ package ag.sokolov.smsrelay.ui.telegram_bot_settings
 
 import ag.sokolov.smsrelay.ui.common.ScreenTitle
 import ag.sokolov.smsrelay.ui.common.SettingsItem
+import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Send
 import androidx.compose.material3.Button
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -43,17 +45,18 @@ fun TelegramBotSettingsScreenContent(
     ) {
         ScreenTitle(title = "Telegram bot")
         Button(
+            enabled = !state.isBotRegistered,
             onClick = { toggleTokenDialog() },
             modifier = Modifier
                 .padding(16.dp)
         ) {
-            Text(text = "Open dialog")
+            Text(text = "Add bot with API key")
         }
         if(state.isBotRegistered){
             SettingsItem(
                 icon = Icons.AutoMirrored.Outlined.Send,
                 title = state.botName,
-                subtitle = "@${state.botUsername}",
+                subtitle = state.botUsername,
                 showDeleteButton = true,
                 onDeleteClick = { deleteBot() }
             )
@@ -61,38 +64,28 @@ fun TelegramBotSettingsScreenContent(
     }
 }
 
-// navigateToRoute: (String) -> Unit = {},
-
-//        navController: NavController
-
-//    val context = LocalContext.current
-//        Button(onClick = {
-////            val uri = Uri.parse("https://t.me/botfather?newbot")
-//            val uri = Uri.parse("tg://resolve?domain=botfather&start")
-//            val intent = Intent(Intent.ACTION_VIEW, uri)
-//            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-//
-//
-//            context.startActivity(intent)
-//        }) {
-//            Text(text = "Go see botfather")
-//        }
-
-
 @Preview
 @Composable
 private fun PreviewTelegramBotSettingsScreenContent() {
-    TelegramBotSettingsScreenContent()
+    SMSRelayTheme {
+        Surface {
+            TelegramBotSettingsScreenContent()
+        }
+    }
 }
 
 @Preview
 @Composable
 private fun PreviewTelegramBotSettingsScreenContentWithBotRegistered() {
-    TelegramBotSettingsScreenContent(
-        state = TelegramBotSettingsScreenState(
-            isBotRegistered = true,
-            botName = "Awesome SMS relay bot",
-            botUsername = "awesome_sms_relay_bot"
-        )
-    )
+    SMSRelayTheme {
+        Surface {
+            TelegramBotSettingsScreenContent(
+                state = TelegramBotSettingsScreenState(
+                    isBotRegistered = true,
+                    botName = "Awesome SMS relay bot",
+                    botUsername = "@awesome_sms_relay_bot"
+                )
+            )
+        }
+    }
 }

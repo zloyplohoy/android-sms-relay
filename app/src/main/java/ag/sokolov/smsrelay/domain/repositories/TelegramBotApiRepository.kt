@@ -1,11 +1,11 @@
 package ag.sokolov.smsrelay.domain.repositories
 
-import ag.sokolov.smsrelay.domain.models.TelegramBot
+import ag.sokolov.smsrelay.domain.models.TelegramBotInfo
 import ag.sokolov.smsrelay.domain.models.TelegramPrivateChatMessage
 import kotlin.time.Duration
 
 interface TelegramBotApiRepository {
-    suspend fun getBotDetails(botApiToken: String): Result<TelegramBot>
+    suspend fun getBotInfo(botApiToken: String): Result<TelegramBotInfo>
 
     suspend fun getMessages(
         botApiToken: String,

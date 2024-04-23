@@ -1,8 +1,9 @@
 package ag.sokolov.smsrelay.ui.telegram_bot_settings
 
-import ag.sokolov.smsrelay.domain.use_cases.remove_telegram_bot.RemoveTelegramBotUseCase
-import ag.sokolov.smsrelay.domain.use_cases.get_telegram_bot_details_result_flow.GetTelegramBotDetailsResultFlowUseCase
+import ag.sokolov.smsrelay.domain.errors.DomainException
 import ag.sokolov.smsrelay.domain.use_cases.add_telegram_bot.AddTelegramBotUseCase
+import ag.sokolov.smsrelay.domain.use_cases.get_telegram_bot_info_result_flow.GetTelegramBotInfoResultFlowUseCase
+import ag.sokolov.smsrelay.domain.use_cases.remove_telegram_bot.RemoveTelegramBotUseCase
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,13 +13,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TelegramBotSettingsViewModel @Inject constructor(
-    getTelegramBotDetailsResultFlowUseCase: GetTelegramBotDetailsResultFlowUseCase,
+    getTelegramBotInfoResultFlowUseCase: GetTelegramBotInfoResultFlowUseCase,
     private val removeTelegramBotUseCase: RemoveTelegramBotUseCase,
     private val addTelegramBotUseCase: AddTelegramBotUseCase
 ) : ViewModel() {
 
     private val botApiTokenRegex: Regex = """^\d+:[A-Za-z0-9_-]{35}$""".toRegex()
-    private val telegramBotDetailsResultFlow = getTelegramBotDetailsResultFlowUseCase()
+    private val telegramBotDetailsResultFlow = getTelegramBotInfoResultFlowUseCase()
 
     val screenState = mutableStateOf(TelegramBotSettingsScreenState())
     val dialogState = mutableStateOf(TelegramBotApiTokenDialogState())
@@ -47,8 +48,7 @@ class TelegramBotSettingsViewModel @Inject constructor(
 
     fun onTokenTextFieldValueChange(value: String) {
         dialogState.value = dialogState.value.copy(
-            tokenTextFieldValue = value,
-            isTokenStructureValid = isTokenStructureValid(value)
+            tokenTextFieldValue = value, isTokenStructureValid = isTokenStructureValid(value)
         )
     }
 
@@ -58,33 +58,30 @@ class TelegramBotSettingsViewModel @Inject constructor(
         viewModelScope.launch {
             telegramBotDetailsResultFlow.collect { result ->
                 result.onSuccess { telegramBot ->
-                        screenState.value = screenState.value.copy(
-                            isBotRegistered = true,
-                            botName = telegramBot.name,
-                            botUsername = telegramBot.username
-                        )
-                    }.onFailure {exception ->
-                        when (exception) {
-                            is IllegalArgumentException -> {
-                                screenState.value = screenState.value.copy(
-                                    isBotRegistered = false
-                                )
-                            }
+                    screenState.value = screenState.value.copy(
+                        isBotRegistered = true,
+                        botName = telegramBot.name,
+                        botUsername = "@${telegramBot.username}"
+                    )
+                }.onFailure { exception ->
+                    when (exception) {
+                        is DomainException.BotNotFoundException -> {
+                            screenState.value = screenState.value.copy(
+                                isBotRegistered = false
+                            )
+                        }
+
+                        else -> {
+                            screenState.value = screenState.value.copy(
+                                isBotRegistered = true,
+                                botName = "Bot experiencing errors",
+                                botUsername = exception.localizedMessage
+                                    ?: "Error: Unhandled exception"
+                            )
                         }
                     }
+                }
             }
         }
     }
 }
-
-
-
-//    fun onTokenTextFieldValueChange(value: String) {
-//        state.value = state.value.copy(tokenTextFieldValue = value)
-//    }
-//
-//    fun setTelegramBotApiToken() {
-//        viewModelScope.launch {
-//            setTelegramBotApiTokenUseCase(state.value.tokenTextFieldValue)
-//        }
-//    }

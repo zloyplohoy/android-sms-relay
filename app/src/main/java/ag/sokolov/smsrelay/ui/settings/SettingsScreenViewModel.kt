@@ -1,6 +1,6 @@
 package ag.sokolov.smsrelay.ui.settings
 
-import ag.sokolov.smsrelay.domain.use_cases.get_telegram_bot_username_flow.GetTelegramBotUsernameResultFlowUseCase
+import ag.sokolov.smsrelay.domain.use_cases.get_telegram_bot_info_result_flow.GetTelegramBotInfoResultFlowUseCase
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,11 +10,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingsScreenViewModel @Inject constructor(
-    getTelegramBotUsernameResultFlowUseCase: GetTelegramBotUsernameResultFlowUseCase
+    getTelegramBotInfoResultFlowUseCase: GetTelegramBotInfoResultFlowUseCase
 ): ViewModel() {
     val state = mutableStateOf(SettingsScreenState())
 
-    private val telegramBotUsernameResultFlow = getTelegramBotUsernameResultFlowUseCase()
+    private val telegramBotUsernameResultFlow = getTelegramBotInfoResultFlowUseCase()
 
     init {
         observeTelegramBotUsername()
@@ -25,8 +25,8 @@ class SettingsScreenViewModel @Inject constructor(
             telegramBotUsernameResultFlow.collect { result ->
                 state.value = state.value.copy(
                     botConfiguration = result.fold(
-                        onSuccess = { "@$it" },
-                        onFailure = { it.localizedMessage ?: "Unknown error" }
+                        onSuccess = { "@${it.username}" },
+                        onFailure = { it.localizedMessage ?: "Unhandled exception" }
                     )
                 )
             }
