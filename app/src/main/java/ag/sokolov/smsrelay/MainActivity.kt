@@ -7,14 +7,11 @@ import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -46,7 +43,7 @@ class MainActivity : ComponentActivity() {
                             navController = navController, startDestination = "settings"
                         ) {
                             composable("settings") { SettingsScreen(navigateToRoute = navController::navigate) }
-                            composable("telegram_bot_settings") { TelegramBotSettingsScreen(navController = navController)
+                            composable("telegram_bot_settings") { TelegramBotSettingsScreen()
                             }
                         }
                     }

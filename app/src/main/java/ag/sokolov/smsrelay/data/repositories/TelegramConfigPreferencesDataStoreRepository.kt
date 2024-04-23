@@ -1,6 +1,6 @@
 package ag.sokolov.smsrelay.data.repositories
 
-import ag.sokolov.smsrelay.domain.repository.TelegramConfigRepository
+import ag.sokolov.smsrelay.domain.repositories.TelegramConfigRepository
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit

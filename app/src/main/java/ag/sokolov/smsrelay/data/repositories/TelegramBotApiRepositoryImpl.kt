@@ -1,12 +1,12 @@
 package ag.sokolov.smsrelay.data.repositories
 
-import ag.sokolov.smsrelay.data.sources.remote.api.telegram_bot.TelegramBotApiService
-import ag.sokolov.smsrelay.data.sources.remote.api.telegram_bot.dto.TelegramUserDto
-import ag.sokolov.smsrelay.data.sources.remote.api.telegram_bot.dto.TelegramMessageDto
-import ag.sokolov.smsrelay.domain.model.TelegramBot
-import ag.sokolov.smsrelay.domain.model.TelegramPrivateChatMessage
-import ag.sokolov.smsrelay.domain.model.TelegramUser
-import ag.sokolov.smsrelay.domain.repository.TelegramBotApiRepository
+import ag.sokolov.smsrelay.data.sources.remote.apis.telegram_bot.TelegramBotApiService
+import ag.sokolov.smsrelay.data.sources.remote.apis.telegram_bot.dtos.TelegramUserDto
+import ag.sokolov.smsrelay.data.sources.remote.apis.telegram_bot.dtos.TelegramMessageDto
+import ag.sokolov.smsrelay.domain.models.TelegramBot
+import ag.sokolov.smsrelay.domain.models.TelegramPrivateChatMessage
+import ag.sokolov.smsrelay.domain.models.TelegramUser
+import ag.sokolov.smsrelay.domain.repositories.TelegramBotApiRepository
 import java.io.IOException
 import javax.inject.Inject
 import kotlin.time.Duration

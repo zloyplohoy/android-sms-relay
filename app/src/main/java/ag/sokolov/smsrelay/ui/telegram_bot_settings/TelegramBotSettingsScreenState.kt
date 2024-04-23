@@ -1,6 +1,7 @@
 package ag.sokolov.smsrelay.ui.telegram_bot_settings
 
 data class TelegramBotSettingsScreenState(
-    val tokenTextFieldValue: String = "",
-    val botUsername: String = "Loading..."
+    val isBotRegistered: Boolean = false,
+    val botUsername: String = "",
+    val botName: String = "",
 )

@@ -1,6 +1,6 @@
 package ag.sokolov.smsrelay.ui.settings
 
-import ag.sokolov.smsrelay.domain.use_case.get_telegram_bot_username_flow.GetTelegramBotUsernameResultFlowUseCase
+import ag.sokolov.smsrelay.domain.use_cases.get_telegram_bot_username_flow.GetTelegramBotUsernameResultFlowUseCase
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

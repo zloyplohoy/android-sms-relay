@@ -1,8 +1,8 @@
 package ag.sokolov.smsrelay.ui.telegram_bot_settings
 
-import ag.sokolov.smsrelay.domain.use_case.delete_telegram_bot_api_token.DeleteTelegramBotApiTokenUseCase
-import ag.sokolov.smsrelay.domain.use_case.get_telegram_bot_username_flow.GetTelegramBotUsernameResultFlowUseCase
-import ag.sokolov.smsrelay.domain.use_case.set_telegram_bot_api_token.SetTelegramBotApiTokenUseCase
+import ag.sokolov.smsrelay.domain.use_cases.delete_telegram_bot_api_token.DeleteTelegramBotApiTokenUseCase
+import ag.sokolov.smsrelay.domain.use_cases.get_telegram_bot_details_result_flow.GetTelegramBotDetailsResultFlowUseCase
+import ag.sokolov.smsrelay.domain.use_cases.set_telegram_bot_api_token.SetTelegramBotApiTokenUseCase
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,43 +12,79 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TelegramBotSettingsViewModel @Inject constructor(
-    getTelegramBotUsernameResultFlowUseCase: GetTelegramBotUsernameResultFlowUseCase,
-    private val setTelegramBotApiTokenUseCase: SetTelegramBotApiTokenUseCase,
-    private val deleteTelegramBotApiTokenUseCase: DeleteTelegramBotApiTokenUseCase
+    getTelegramBotDetailsResultFlowUseCase: GetTelegramBotDetailsResultFlowUseCase,
+    private val deleteTelegramBotApiTokenUseCase: DeleteTelegramBotApiTokenUseCase,
+    private val setTelegramBotApiTokenUseCase: SetTelegramBotApiTokenUseCase
 ) : ViewModel() {
 
-    val state = mutableStateOf(TelegramBotSettingsScreenState())
-    private val telegramBotUsernameResultFlow = getTelegramBotUsernameResultFlowUseCase()
+    private val botApiTokenRegex: Regex = """^\d+:[A-Za-z0-9_-]{35}$""".toRegex()
+    private val telegramBotDetailsResultFlow = getTelegramBotDetailsResultFlowUseCase()
+
+    val screenState = mutableStateOf(TelegramBotSettingsScreenState())
+    val dialogState = mutableStateOf(TelegramBotApiTokenDialogState())
 
     init {
         observeTelegramBotUsername()
     }
 
-    fun onTokenTextFieldValueChange(value: String) {
-        state.value = state.value.copy(tokenTextFieldValue = value)
-    }
-
-    fun setTelegramBotApiToken() {
-        viewModelScope.launch {
-            setTelegramBotApiTokenUseCase(state.value.tokenTextFieldValue)
-        }
-    }
-
-    fun deleteTelegramBotApiToken() {
+    fun deleteBot() {
         viewModelScope.launch {
             deleteTelegramBotApiTokenUseCase()
         }
     }
 
+    fun saveToken(token: String) {
+        viewModelScope.launch {
+            setTelegramBotApiTokenUseCase(token)
+        }
+    }
+
+    fun toggleTokenDialog() {
+        dialogState.value = dialogState.value.copy(
+            isDialogVisible = !dialogState.value.isDialogVisible
+        )
+    }
+
+    fun onTokenTextFieldValueChange(value: String) {
+        dialogState.value = dialogState.value.copy(
+            tokenTextFieldValue = value,
+            isTokenStructureValid = isTokenStructureValid(value)
+        )
+    }
+
+    private fun isTokenStructureValid(token: String) = token.matches(botApiTokenRegex)
+
     private fun observeTelegramBotUsername() {
         viewModelScope.launch {
-            telegramBotUsernameResultFlow.collect { result ->
-                state.value = state.value.copy(
-                    botUsername = result.fold(
-                        onSuccess = { "@$it" },
-                        onFailure = { it.localizedMessage ?: "Unknown error" })
-                )
+            telegramBotDetailsResultFlow.collect { result ->
+                result.onSuccess { telegramBot ->
+                        screenState.value = screenState.value.copy(
+                            isBotRegistered = true,
+                            botName = telegramBot.name,
+                            botUsername = telegramBot.username
+                        )
+                    }.onFailure {exception ->
+                        when (exception) {
+                            is IllegalArgumentException -> {
+                                screenState.value = screenState.value.copy(
+                                    isBotRegistered = false
+                                )
+                            }
+                        }
+                    }
             }
         }
     }
 }
+
+
+
+//    fun onTokenTextFieldValueChange(value: String) {
+//        state.value = state.value.copy(tokenTextFieldValue = value)
+//    }
+//
+//    fun setTelegramBotApiToken() {
+//        viewModelScope.launch {
+//            setTelegramBotApiTokenUseCase(state.value.tokenTextFieldValue)
+//        }
+//    }
