@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
@@ -53,11 +54,15 @@ fun SettingsItem(
         ) {
             Text(
                 text = title,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.titleLarge
             )
             Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = subtitle,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.labelLarge,
                 fontWeight = FontWeight.Light
             )
@@ -65,6 +70,7 @@ fun SettingsItem(
         if (showDeleteButton) {
             Spacer(
                 modifier = Modifier
+                    .padding(start = 16.dp)
                     .width(1.dp)
                     .height(32.dp)
                     .background(MaterialTheme.colorScheme.onBackground)
