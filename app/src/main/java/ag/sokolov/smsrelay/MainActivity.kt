@@ -1,5 +1,6 @@
 package ag.sokolov.smsrelay
 
+import ag.sokolov.smsrelay.ui.settings.SettingsScreen
 import ag.sokolov.smsrelay.ui.telegram_bot_settings.TelegramBotSettingsScreen
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
 import android.os.Bundle
@@ -26,9 +27,10 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val navController = rememberNavController()
                     NavHost(
-                        navController = navController, startDestination = "telegram_bot_settings"
+                        navController = navController, startDestination = "settings"
                     ) {
-                        composable("telegram_bot_settings") { TelegramBotSettingsScreen() }
+                        composable("settings") { SettingsScreen(navController = navController) }
+                        composable("telegram_bot_settings") { TelegramBotSettingsScreen(navController = navController) }
                     }
                 }
             }
