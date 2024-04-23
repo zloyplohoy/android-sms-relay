@@ -7,5 +7,6 @@ class AddTelegramBotUseCase @Inject constructor(
     private val telegramConfigRepository: TelegramConfigRepository
 ) {
     suspend operator fun invoke(botApiToken: String): Result<Unit> =
+        // TODO: Handle (map) repository errors
         telegramConfigRepository.setBotApiToken(botApiToken)
 }

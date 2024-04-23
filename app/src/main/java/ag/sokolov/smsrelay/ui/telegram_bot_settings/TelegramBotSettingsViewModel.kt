@@ -1,6 +1,6 @@
 package ag.sokolov.smsrelay.ui.telegram_bot_settings
 
-import ag.sokolov.smsrelay.domain.use_cases.delete_telegram_bot_api_token.DeleteTelegramBotApiTokenUseCase
+import ag.sokolov.smsrelay.domain.use_cases.remove_telegram_bot.RemoveTelegramBotUseCase
 import ag.sokolov.smsrelay.domain.use_cases.get_telegram_bot_details_result_flow.GetTelegramBotDetailsResultFlowUseCase
 import ag.sokolov.smsrelay.domain.use_cases.add_telegram_bot.AddTelegramBotUseCase
 import androidx.compose.runtime.mutableStateOf
@@ -13,7 +13,7 @@ import javax.inject.Inject
 @HiltViewModel
 class TelegramBotSettingsViewModel @Inject constructor(
     getTelegramBotDetailsResultFlowUseCase: GetTelegramBotDetailsResultFlowUseCase,
-    private val deleteTelegramBotApiTokenUseCase: DeleteTelegramBotApiTokenUseCase,
+    private val removeTelegramBotUseCase: RemoveTelegramBotUseCase,
     private val addTelegramBotUseCase: AddTelegramBotUseCase
 ) : ViewModel() {
 
@@ -29,7 +29,7 @@ class TelegramBotSettingsViewModel @Inject constructor(
 
     fun deleteBot() {
         viewModelScope.launch {
-            deleteTelegramBotApiTokenUseCase()
+            removeTelegramBotUseCase()
         }
     }
 
