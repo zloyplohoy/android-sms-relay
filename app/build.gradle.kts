@@ -84,4 +84,6 @@ dependencies {
     implementation(libs.retrofit.converter.kotlinx.serialization)
     // OkHttp
     implementation(libs.okhttp)
+    // WorkManager
+    implementation(libs.work.runtime.ktx)
 }

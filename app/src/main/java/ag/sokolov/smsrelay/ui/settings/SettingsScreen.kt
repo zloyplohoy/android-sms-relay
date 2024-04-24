@@ -52,7 +52,7 @@ fun SettingsScreenContent(
             icon = Icons.Outlined.MailOutline,
             title = "SMS permissions",
             subtitle = "Not granted",
-            onClick = { navigateToRoute("telegram_bot_settings") }
+            onClick = { navigateToRoute("system_permissions_settings") }
         )
     }
 }
