@@ -4,6 +4,7 @@ import ag.sokolov.smsrelay.domain.errors.DomainException
 import ag.sokolov.smsrelay.domain.use_cases.add_telegram_bot.AddTelegramBotUseCase
 import ag.sokolov.smsrelay.domain.use_cases.get_telegram_bot_info_result_flow.GetTelegramBotInfoResultFlowUseCase
 import ag.sokolov.smsrelay.domain.use_cases.remove_telegram_bot.RemoveTelegramBotUseCase
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -21,7 +22,7 @@ class TelegramBotSettingsViewModel @Inject constructor(
     private val botApiTokenRegex: Regex = """^\d+:[A-Za-z0-9_-]{35}$""".toRegex()
     private val telegramBotInfoResultFlow = getTelegramBotInfoResultFlowUseCase()
 
-    val screenState = mutableStateOf(TelegramBotSettingsScreenState())
+    val screenState: MutableState<TelegramBotSettingsScreenState> = mutableStateOf(TelegramBotSettingsScreenState.Loading)
     val dialogState = mutableStateOf(TelegramBotApiTokenDialogState())
 
     init {
@@ -59,24 +60,22 @@ class TelegramBotSettingsViewModel @Inject constructor(
         viewModelScope.launch {
             telegramBotInfoResultFlow.collect { result ->
                 result.onSuccess { telegramBot ->
-                    screenState.value = screenState.value.copy(
+                    screenState.value = TelegramBotSettingsScreenState.Configured(
                         isBotAdded = true,
-                        botName = telegramBot.name,
-                        botUsername = "@${telegramBot.username}"
+                        botTitle = telegramBot.name,
+                        botDescription = "@${telegramBot.username}"
                     )
                 }.onFailure { exception ->
                     when (exception) {
                         is DomainException.BotNotFoundException -> {
-                            screenState.value = screenState.value.copy(
-                                isBotAdded = false
-                            )
+                            screenState.value = TelegramBotSettingsScreenState.NotConfigured
                         }
 
                         else -> {
-                            screenState.value = screenState.value.copy(
+                            screenState.value = TelegramBotSettingsScreenState.Configured(
                                 isBotAdded = true,
-                                botName = "Bot experiencing errors",
-                                botUsername = exception.localizedMessage
+                                botTitle = "Bot experiencing errors",
+                                botDescription = exception.localizedMessage
                                     ?: "Error: Unhandled exception"
                             )
                         }

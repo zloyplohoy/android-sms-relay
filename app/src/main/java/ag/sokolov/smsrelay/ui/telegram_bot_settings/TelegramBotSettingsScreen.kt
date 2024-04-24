@@ -5,16 +5,12 @@ import ag.sokolov.smsrelay.ui.common.SettingsItem
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Send
-import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
@@ -36,7 +32,7 @@ fun TelegramBotSettingsScreen(
 
 @Composable
 fun TelegramBotSettingsScreenContent(
-    state: TelegramBotSettingsScreenState = TelegramBotSettingsScreenState(),
+    state: TelegramBotSettingsScreenState = TelegramBotSettingsScreenState.Loading,
     toggleTokenDialog: () -> Unit = {},
     removeBot: () -> Unit = {}
 ) {
@@ -45,23 +41,15 @@ fun TelegramBotSettingsScreenContent(
             .fillMaxWidth()
     ) {
         ScreenTitle(title = "Telegram bot")
-        Button(
-            enabled = !state.isBotAdded,
+        SettingsItem(
+            icon = Icons.AutoMirrored.Outlined.Send,
+            title = state.botTitle,
+            description = state.botDescription,
+            isClickable = !state.isBotAdded,
             onClick = { toggleTokenDialog() },
-            modifier = Modifier
-                .padding(24.dp)
-        ) {
-            Text(text = "Add bot with API key")
-        }
-        if(state.isBotAdded){
-            SettingsItem(
-                icon = Icons.AutoMirrored.Outlined.Send,
-                title = state.botName,
-                description = state.botUsername,
-                isDeletable = true,
-                onDeleteClick = { removeBot() }
-            )
-        }
+            isDeletable = state.isBotAdded,
+            onDeleteClick = { removeBot() }
+        )
     }
 }
 
@@ -70,7 +58,21 @@ fun TelegramBotSettingsScreenContent(
 private fun PreviewTelegramBotSettingsScreenContent() {
     SMSRelayTheme {
         Surface {
-            TelegramBotSettingsScreenContent()
+            TelegramBotSettingsScreenContent(
+                state = TelegramBotSettingsScreenState.Loading
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewTelegramBotSettingsScreenContentLoading() {
+    SMSRelayTheme {
+        Surface {
+            TelegramBotSettingsScreenContent(
+                state = TelegramBotSettingsScreenState.NotConfigured
+            )
         }
     }
 }
@@ -81,10 +83,10 @@ private fun PreviewTelegramBotSettingsScreenContentBotAdded() {
     SMSRelayTheme {
         Surface {
             TelegramBotSettingsScreenContent(
-                state = TelegramBotSettingsScreenState(
+                state = TelegramBotSettingsScreenState.Configured(
                     isBotAdded = true,
-                    botName = "Awesome SMS relay bot",
-                    botUsername = "@awesome_sms_relay_bot"
+                    botTitle = "Awesome SMS relay bot",
+                    botDescription = "@awesome_sms_relay_bot"
                 )
             )
         }
