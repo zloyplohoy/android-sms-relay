@@ -53,8 +53,8 @@ fun TelegramRecipientSettingsScreenContent(
             SettingsItem(
                 icon = Icons.Outlined.Person,
                 title = state.recipientName,
-                subtitle = state.recipientUsername,
-                showDeleteButton = true,
+                description = state.recipientUsername,
+                isDeletable = true,
                 onDeleteClick = { removeRecipient() }
             )
         }

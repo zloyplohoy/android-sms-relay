@@ -6,15 +6,14 @@ import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.List
 import androidx.compose.material.icons.automirrored.outlined.Send
-import androidx.compose.material.icons.outlined.MailOutline
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 
 @Composable
 fun SettingsScreen(
@@ -39,19 +38,22 @@ fun SettingsScreenContent(
         SettingsItem(
             icon = Icons.AutoMirrored.Outlined.Send,
             title = "Telegram bot",
-            subtitle = state.botConfiguration,
+            description = state.botConfiguration,
+            isClickable = true,
             onClick = { navigateToRoute("telegram_bot_settings") }
         )
         SettingsItem(
             icon = Icons.Outlined.Person,
-            title = "Telegram recipient",
-            subtitle = "Not configured",
+            title = "Recipient",
+            description = "Not configured",
+            isClickable = true,
             onClick = { navigateToRoute("telegram_recipient_settings") }
         )
         SettingsItem(
-            icon = Icons.Outlined.MailOutline,
-            title = "SMS permissions",
-            subtitle = "Not granted",
+            icon = Icons.AutoMirrored.Outlined.List,
+            title = "Permissions",
+            description = "Not granted",
+            isClickable = true,
             onClick = { navigateToRoute("system_permissions_settings") }
         )
     }

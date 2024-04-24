@@ -57,8 +57,8 @@ fun TelegramBotSettingsScreenContent(
             SettingsItem(
                 icon = Icons.AutoMirrored.Outlined.Send,
                 title = state.botName,
-                subtitle = state.botUsername,
-                showDeleteButton = true,
+                description = state.botUsername,
+                isDeletable = true,
                 onDeleteClick = { removeBot() }
             )
         }

@@ -32,16 +32,17 @@ import androidx.compose.ui.unit.dp
 fun SettingsItem(
     icon: ImageVector,
     title: String,
-    subtitle: String,
+    description: String,
+    isClickable: Boolean = false,
     onClick: () -> Unit = {},
-    showDeleteButton: Boolean = false,
+    isDeletable: Boolean = false,
     onDeleteClick: () -> Unit = {},
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick() }
+            .then(if (isClickable) { Modifier.clickable { onClick() } } else { Modifier })
             .padding(vertical = 16.dp)
     ) {
         Icon(
@@ -60,14 +61,14 @@ fun SettingsItem(
             )
             Spacer(modifier = Modifier.height(2.dp))
             Text(
-                text = subtitle,
+                text = description,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.labelLarge,
                 fontWeight = FontWeight.Light
             )
         }
-        if (showDeleteButton) {
+        if (isDeletable) {
             Spacer(
                 modifier = Modifier
                     .padding(start = 16.dp)
@@ -95,7 +96,7 @@ private fun PreviewSettingsItem() {
         Surface {
             SettingsItem(icon = Icons.AutoMirrored.Filled.Send,
                 title = "Telegram bot",
-                subtitle = "Not configured",
+                description = "Not configured",
                 onClick = {},
                 onDeleteClick = {})
         }
@@ -111,10 +112,10 @@ private fun PreviewSettingsItemWithDeleteButton() {
             SettingsItem(
                 icon = Icons.AutoMirrored.Filled.Send,
                 title = "Telegram bot",
-                subtitle = "Not configured",
+                description = "Not configured",
                 onClick = {},
                 onDeleteClick = {},
-                showDeleteButton = true
+                isDeletable = true
             )
         }
     }
