@@ -12,6 +12,7 @@ composeBom = "2024.04.01"
 ksp = "1.9.23-1.0.20"
 daggerHilt = "2.51.1"
 androidxHilt = "1.2.0"
+# DataStore
 datastorePreferences = "1.1.0"
 # Kotlin serialization
 kotlinSerialization = "1.9.23"
