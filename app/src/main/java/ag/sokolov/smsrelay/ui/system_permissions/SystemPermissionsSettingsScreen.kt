@@ -1,6 +1,5 @@
 package ag.sokolov.smsrelay.ui.system_permissions
 
-import ag.sokolov.smsrelay.ui.common.ScreenTitle
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,7 +23,7 @@ fun SystemPermissionsSettingsScreenContent() {
         modifier = Modifier
             .fillMaxWidth()
     ) {
-        ScreenTitle(title = "Permissions")
+//        ScreenTitle(title = "Permissions")
     }
 }
 

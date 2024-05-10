@@ -1,5 +1,7 @@
 package ag.sokolov.smsrelay.data.repositories
 
+import ag.sokolov.smsrelay.domain.models.TelegramSettings
+import ag.sokolov.smsrelay.domain.models.TelegramSettingsStatus
 import ag.sokolov.smsrelay.domain.repositories.TelegramConfigRepository
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -47,7 +49,10 @@ class TelegramConfigPreferencesDataStoreRepository @Inject constructor(
     override fun getBotApiTokenFlow(): Flow<String?> =
         dataStore.data.map { telegramConfig -> telegramConfig[BOT_API_TOKEN] }
 
-    override suspend fun deleteBotApiToken(): Result<Unit> = runCatching{
+    override fun getRecipientIdFlow(): Flow<Long?> =
+        dataStore.data.map { telegramConfig -> telegramConfig[RECIPIENT_ID] }
+
+    override suspend fun deleteBotApiToken(): Result<Unit> = runCatching {
         dataStore.edit { telegramConfig ->
             telegramConfig.remove(BOT_API_TOKEN)
         }

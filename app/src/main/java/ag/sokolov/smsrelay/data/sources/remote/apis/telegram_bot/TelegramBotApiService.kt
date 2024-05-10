@@ -22,4 +22,9 @@ interface TelegramBotApiService {
         chatId: Long,
         text: String,
     ): Response<TelegramBotApiResponseDto<TelegramMessageDto>>
+
+    suspend fun getChat(
+        token: String,
+        chatId: Long
+    ): Response<TelegramBotApiResponseDto<TelegramUserDto>>
 }

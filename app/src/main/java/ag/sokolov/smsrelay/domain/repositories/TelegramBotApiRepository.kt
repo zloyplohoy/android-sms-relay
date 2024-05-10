@@ -2,6 +2,7 @@ package ag.sokolov.smsrelay.domain.repositories
 
 import ag.sokolov.smsrelay.domain.models.TelegramBotInfo
 import ag.sokolov.smsrelay.domain.models.TelegramPrivateChatMessage
+import ag.sokolov.smsrelay.domain.models.TelegramUser
 import kotlin.time.Duration
 
 interface TelegramBotApiRepository {
@@ -17,4 +18,9 @@ interface TelegramBotApiRepository {
         text: String,
         chatId: Long
     ): Result<Unit>
+
+    suspend fun getChat(
+        botApiToken: String,
+        chatId: Long
+    ): Result<TelegramUser>
 }

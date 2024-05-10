@@ -1,5 +1,6 @@
 package ag.sokolov.smsrelay.domain.repositories
 
+import ag.sokolov.smsrelay.domain.models.TelegramSettings
 import kotlinx.coroutines.flow.Flow
 
 interface TelegramConfigRepository {
@@ -8,5 +9,6 @@ interface TelegramConfigRepository {
     suspend fun getRecipientId(): Result<Long>
     suspend fun setRecipientId(recipientId: Long): Result<Unit>
     fun getBotApiTokenFlow(): Flow<String?>
+    fun getRecipientIdFlow(): Flow<Long?>
     suspend fun deleteBotApiToken(): Result<Unit>
 }

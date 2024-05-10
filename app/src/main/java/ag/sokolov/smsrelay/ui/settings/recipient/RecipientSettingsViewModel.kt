@@ -1,10 +1,12 @@
-package ag.sokolov.smsrelay.ui.telegram_recipient_settings
+package ag.sokolov.smsrelay.ui.settings.recipient
 
-import ag.sokolov.smsrelay.domain.use_cases.get_telegram_bot_info_result_flow.GetTelegramBotInfoResultFlowUseCase
+import ag.sokolov.smsrelay.domain.use_cases.get_telegram_bot_info.GetTelegramBotInfoUseCase
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.first
@@ -12,10 +14,14 @@ import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
-class TelegramRecipientSettingsViewModel @Inject constructor(
-    private val getTelegramBotInfoResultFlowUseCase: GetTelegramBotInfoResultFlowUseCase
+class RecipientSettingsViewModel @Inject constructor(
+    private val getTelegramBotInfoResultFlowUseCase: GetTelegramBotInfoUseCase
 ) : ViewModel() {
-    val state = mutableStateOf(TelegramRecipientSettingsScreenState())
+    var state by mutableStateOf(RecipientSettingsScreenState())
+        private set
+
+    fun onAction(action: RecipientSettingsAction) {
+    }
 
     fun addRecipient(context: Context) {
         val verificationCode = UUID.randomUUID().toString()

@@ -22,6 +22,10 @@ class TelegramBotApiRepositoryImpl @Inject constructor(
         handleRequestExceptions { telegramBotApiService.getMe(botApiToken) }.result.toBotInfo()
     }
 
+    override suspend fun getChat(botApiToken: String, chatId: Long): Result<TelegramUser> = runCatching {
+        handleRequestExceptions { telegramBotApiService.getChat(botApiToken, chatId) }.result.toTelegramUser()
+    }
+
     private suspend fun <T> handleRequestExceptions(request: suspend () -> Response<T>): T {
         try {
             val response = request()
@@ -40,7 +44,7 @@ class TelegramBotApiRepositoryImpl @Inject constructor(
 
     private fun <T> throwIfUnauthorized(response: Response<T>) {
         if (response.code() == 401) {
-            throw DomainException.BotUnauthorizedException()
+            throw DomainException.InvalidBotApiTokenException()
         }
     }
 
