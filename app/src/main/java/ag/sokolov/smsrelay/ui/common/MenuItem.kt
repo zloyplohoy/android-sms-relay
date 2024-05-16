@@ -70,8 +70,7 @@ fun MenuItem(
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.titleLarge
             )
-            AnimatedVisibility(visible = description?.let { true } ?: false,
-                enter = expandVertically() + fadeIn(animationSpec = tween(delayMillis = DefaultDurationMillis))) {
+            description?.let {
                 Text(
                     text = description ?: "",
                     maxLines = 1,
@@ -84,7 +83,7 @@ fun MenuItem(
         extraIcon?.let { extraIcon ->
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement =Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Spacer(
                     modifier = Modifier

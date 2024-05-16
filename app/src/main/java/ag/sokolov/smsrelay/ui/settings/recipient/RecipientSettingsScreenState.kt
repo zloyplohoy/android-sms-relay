@@ -1,9 +1,9 @@
 package ag.sokolov.smsrelay.ui.settings.recipient
 
-data class RecipientSettingsScreenState (
-    val isRecipientConfigured: Boolean = false,
-    val recipientName: String = "",
-    val recipientUsername: String? = null,
-    val showWarning: Boolean = false,
-    val showDeleteButton: Boolean = false
-)
+sealed class RecipientSettingsScreenState {
+    data object Loading : RecipientSettingsScreenState()
+    data object NotConfigured : RecipientSettingsScreenState()
+    data class Configured(val firstName: String, val lastName: String?, val username: String?) : RecipientSettingsScreenState()
+    data class GenericError(val errorMessage: String? = null) : RecipientSettingsScreenState()
+    data class RecipientError(val errorMessage: String? = null): RecipientSettingsScreenState()
+}

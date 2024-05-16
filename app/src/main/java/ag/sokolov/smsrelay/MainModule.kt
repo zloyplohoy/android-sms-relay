@@ -1,11 +1,11 @@
 package ag.sokolov.smsrelay
 
+import ag.sokolov.smsrelay.data.repositories.ConfigurationPreferencesDataStoreRepository
 import ag.sokolov.smsrelay.data.repositories.TelegramBotApiRepositoryImpl
-import ag.sokolov.smsrelay.data.repositories.TelegramConfigPreferencesDataStoreRepository
 import ag.sokolov.smsrelay.data.sources.remote.apis.telegram_bot.TelegramBotApiService
 import ag.sokolov.smsrelay.data.sources.remote.apis.telegram_bot.retrofit.RetrofitTelegramBotApiService
+import ag.sokolov.smsrelay.domain.repositories.ConfigurationRepository
 import ag.sokolov.smsrelay.domain.repositories.TelegramBotApiRepository
-import ag.sokolov.smsrelay.domain.repositories.TelegramConfigRepository
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
@@ -28,27 +28,30 @@ import javax.inject.Singleton
 abstract class MainModule {
 
     @Binds
-    abstract fun bindTelegramConfigRepository(impl: TelegramConfigPreferencesDataStoreRepository): TelegramConfigRepository
+    abstract fun bindTelegramConfigRepository(impl: ConfigurationPreferencesDataStoreRepository): ConfigurationRepository
 
     @Binds
     abstract fun bindTelegramBotApiRepository(impl: TelegramBotApiRepositoryImpl): TelegramBotApiRepository
 
     companion object {
-        @Singleton
         @Provides
+        @Singleton
+        fun provideApplicationContext(@ApplicationContext appContext: Context): Context = appContext
+
+        @Provides
+        @Singleton
         fun provideApplicationConfigurationPreferencesDataStore(@ApplicationContext appContext: Context): DataStore<Preferences> =
             PreferenceDataStoreFactory.create {
                 appContext.preferencesDataStoreFile("application_configuration")
             }
 
-        @Singleton
         @Provides
+        @Singleton
         fun provideTelegramBotApi(): TelegramBotApiService {
             val json = Json { ignoreUnknownKeys = true }
             val jsonMediaType = "application/json".toMediaType()
 
-            return Retrofit.Builder()
-                .baseUrl("https://api.telegram.org/")
+            return Retrofit.Builder().baseUrl("https://api.telegram.org/")
                 .addConverterFactory(json.asConverterFactory(jsonMediaType)).build()
                 .create(RetrofitTelegramBotApiService::class.java)
         }

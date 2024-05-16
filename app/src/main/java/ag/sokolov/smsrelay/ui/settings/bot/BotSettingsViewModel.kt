@@ -2,7 +2,7 @@ package ag.sokolov.smsrelay.ui.settings.bot
 
 import ag.sokolov.smsrelay.domain.errors.DomainException
 import ag.sokolov.smsrelay.domain.use_cases.add_telegram_bot.AddTelegramBotUseCase
-import ag.sokolov.smsrelay.domain.use_cases.get_telegram_bot_info.GetTelegramBotInfoUseCase
+import ag.sokolov.smsrelay.domain.use_cases.get_telegram_bot.GetTelegramBotUseCase
 import ag.sokolov.smsrelay.domain.use_cases.remove_telegram_bot.RemoveTelegramBotUseCase
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -15,21 +15,20 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BotSettingsViewModel @Inject constructor(
-    private val getTelegramBotInfoUseCase: GetTelegramBotInfoUseCase,
     private val removeTelegramBotUseCase: RemoveTelegramBotUseCase,
-    private val addTelegramBotUseCase: AddTelegramBotUseCase
+    private val addTelegramBotUseCase: AddTelegramBotUseCase,
+    private val getTelegramBotUseCase: GetTelegramBotUseCase
 ) : ViewModel() {
 
-    var state by mutableStateOf(BotSettingsScreenState())
+    var state by mutableStateOf<BotSettingsScreenState>(BotSettingsScreenState.Loading)
         private set
 
     init {
-        observeTelegramBotUsername()
+        observeTelegramBot()
     }
 
     fun onAction(action: BotSettingsAction) {
         when (action) {
-            is BotSettingsAction.ToggleTokenDialog -> toggleTokenDialog()
             is BotSettingsAction.AddBot -> addBot(action.botApiToken)
             is BotSettingsAction.RemoveBot -> removeBot()
         }
@@ -37,57 +36,36 @@ class BotSettingsViewModel @Inject constructor(
 
     private fun removeBot() {
         viewModelScope.launch {
+            state = BotSettingsScreenState.NotConfigured
             removeTelegramBotUseCase()
         }
     }
 
     private fun addBot(token: String) {
-        state = BotSettingsScreenState()
+        state = BotSettingsScreenState.Loading
         viewModelScope.launch {
             addTelegramBotUseCase(token)
         }
     }
 
-    private fun toggleTokenDialog() {
-        state = state.copy(showTokenDialog = !state.showTokenDialog)
-    }
-
-    private fun observeTelegramBotUsername() {
+    private fun observeTelegramBot() {
         viewModelScope.launch {
-            getTelegramBotInfoUseCase().collect { result ->
-                result.onSuccess { telegramBot ->
-                    state = BotSettingsScreenState(
-                        isBotConfigured = true,
-                        botTitle = telegramBot.name,
-                        botDescription = "@${telegramBot.username}",
-                        showDeleteButton = true
+            getTelegramBotUseCase().collect { telegramBotResult ->
+                telegramBotResult.onSuccess { telegramBot ->
+                    state = telegramBot?.let {
+                        BotSettingsScreenState.Configured(
+                            botName = it.name,
+                            botUsername = it.username
+                        )
+                    } ?: BotSettingsScreenState.NotConfigured
+                }.onFailure { telegramBotError ->
+                    state = BotSettingsScreenState.Error(
+                        errorMessage = when(telegramBotError) {
+                            is DomainException.InvalidBotApiTokenException -> "Invalid token, click to update"
+                            is DomainException.BotNetworkException -> "Network unavailable"
+                            else -> "Unhandled error"
+                        }
                     )
-                }.onFailure { exception ->
-                    when (exception) {
-                        is DomainException.BotNotConfiguredException -> {
-                            state = BotSettingsScreenState(
-                                isBotConfigured = false, botTitle = "Add a Telegram bot"
-                            )
-                        }
-
-                        is DomainException.InvalidBotApiTokenException -> {
-                            state = BotSettingsScreenState(
-                                isBotConfigured = true,
-                                botTitle = "API token invalid",
-                                botDescription = "Click to update",
-                                showWarning = true
-                            )
-                        }
-
-                        else -> {
-                            state = BotSettingsScreenState(
-                                isBotConfigured = true,
-                                botTitle = "Error",
-                                botDescription = "Unhandled exception",
-                                showWarning = true
-                            )
-                        }
-                    }
                 }
             }
         }

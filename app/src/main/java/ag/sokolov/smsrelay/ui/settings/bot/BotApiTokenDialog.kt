@@ -25,11 +25,11 @@ import androidx.compose.ui.window.Dialog
 
 @Composable
 fun BotApiTokenDialog(
-    onAction: (BotSettingsAction) -> Unit,
+    toggleDialog: () -> Unit, onAction: (BotSettingsAction) -> Unit
 ) {
     var tokenTextFieldValue by rememberSaveable { mutableStateOf("") }
 
-    Dialog(onDismissRequest = { onAction(BotSettingsAction.ToggleTokenDialog) }) {
+    Dialog(onDismissRequest = { toggleDialog() }) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -59,15 +59,14 @@ fun BotApiTokenDialog(
                 Text(text = "CANCEL",
                     style = MaterialTheme.typography.labelMedium,
                     modifier = Modifier
-                        .clickable {
-                            onAction(BotSettingsAction.ToggleTokenDialog)
-                        }
+                        .clickable { toggleDialog() }
                         .padding(16.dp))
                 Text(text = "SAVE TOKEN",
                     style = MaterialTheme.typography.labelMedium,
                     modifier = Modifier
                         .clickable {
-                            onAction(BotSettingsAction.AddBot(tokenTextFieldValue))
+                            toggleDialog()
+                            onAction(BotSettingsAction.AddBot(botApiToken = tokenTextFieldValue))
                         }
                         .padding(16.dp))
             }
@@ -81,7 +80,7 @@ fun BotApiTokenDialog(
 private fun PreviewTelegramBotApiTokenDialog() {
     SMSRelayTheme {
         Surface {
-            BotApiTokenDialog(onAction = {})
+            BotApiTokenDialog(onAction = {}, toggleDialog = {})
         }
     }
 }

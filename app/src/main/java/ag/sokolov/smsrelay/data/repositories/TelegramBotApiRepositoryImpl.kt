@@ -4,7 +4,7 @@ import ag.sokolov.smsrelay.data.sources.remote.apis.telegram_bot.TelegramBotApiS
 import ag.sokolov.smsrelay.data.sources.remote.apis.telegram_bot.dtos.TelegramMessageDto
 import ag.sokolov.smsrelay.data.sources.remote.apis.telegram_bot.dtos.TelegramUserDto
 import ag.sokolov.smsrelay.domain.errors.DomainException
-import ag.sokolov.smsrelay.domain.models.TelegramBotInfo
+import ag.sokolov.smsrelay.domain.models.TelegramBot
 import ag.sokolov.smsrelay.domain.models.TelegramPrivateChatMessage
 import ag.sokolov.smsrelay.domain.models.TelegramUser
 import ag.sokolov.smsrelay.domain.repositories.TelegramBotApiRepository
@@ -18,11 +18,11 @@ class TelegramBotApiRepositoryImpl @Inject constructor(
     private val telegramBotApiService: TelegramBotApiService
 ) : TelegramBotApiRepository {
 
-    override suspend fun getBotInfo(botApiToken: String): Result<TelegramBotInfo> = runCatching {
+    override suspend fun getTelegramBot(botApiToken: String): Result<TelegramBot> = runCatching {
         handleRequestExceptions { telegramBotApiService.getMe(botApiToken) }.result.toBotInfo()
     }
 
-    override suspend fun getChat(botApiToken: String, chatId: Long): Result<TelegramUser> = runCatching {
+    override suspend fun getChat(chatId: Long, botApiToken: String): Result<TelegramUser> = runCatching {
         handleRequestExceptions { telegramBotApiService.getChat(botApiToken, chatId) }.result.toTelegramUser()
     }
 
@@ -95,9 +95,9 @@ class TelegramBotApiRepositoryImpl @Inject constructor(
     }
 }
 
-private fun TelegramUserDto.toBotInfo(): TelegramBotInfo {
+private fun TelegramUserDto.toBotInfo(): TelegramBot {
     require(this.isBot) { "User is not a bot" }
-    return TelegramBotInfo(
+    return TelegramBot(
         name = this.firstName,
         username = this.username!!
     )
@@ -113,8 +113,8 @@ private fun TelegramMessageDto.toTelegramMessage(): TelegramPrivateChatMessage {
 
 private fun TelegramUserDto.toTelegramUser(): TelegramUser {
     return TelegramUser(
-        id = this.id,
         firstName = this.firstName,
         lastName = this.lastName,
+        username = this.username
     )
 }

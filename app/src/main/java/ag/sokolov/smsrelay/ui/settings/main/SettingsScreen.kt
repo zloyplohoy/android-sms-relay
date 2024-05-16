@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.List
 import androidx.compose.material.icons.automirrored.outlined.Send
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -27,14 +28,14 @@ fun SettingsScreen(
             icon = Icons.AutoMirrored.Outlined.Send,
             title = "Telegram bot",
             description = state.botDescription,
-            onClick = { navigate(SettingsNavRoutes.BOT) })
-        MenuItem(
-            icon = Icons.Outlined.Person,
+            onClick = { navigate(SettingsNavRoutes.BOT) },
+            extraIcon = if (state.showBotWarning) Icons.Filled.Warning else null
+        )
+        MenuItem(icon = Icons.Outlined.Person,
             title = "Recipient",
             description = state.recipientConfiguration,
             onClick = { navigate(SettingsNavRoutes.RECIPIENT) })
-        MenuItem(
-            icon = Icons.AutoMirrored.Outlined.List,
+        MenuItem(icon = Icons.AutoMirrored.Outlined.List,
             title = "Permissions",
             description = state.permissionsConfiguration,
             onClick = { navigate(SettingsNavRoutes.PERMISSIONS) })

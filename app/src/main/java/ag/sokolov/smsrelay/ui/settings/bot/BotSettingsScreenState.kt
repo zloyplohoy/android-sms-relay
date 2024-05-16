@@ -1,10 +1,8 @@
 package ag.sokolov.smsrelay.ui.settings.bot
 
-data class BotSettingsScreenState(
-    val isBotConfigured: Boolean = true,
-    val botTitle: String = "Loading...",
-    val botDescription: String? = null,
-    val showWarning: Boolean = false,
-    val showDeleteButton: Boolean = false,
-    val showTokenDialog: Boolean = false
-)
+sealed class BotSettingsScreenState {
+    data object Loading : BotSettingsScreenState()
+    data object NotConfigured : BotSettingsScreenState()
+    data class Configured(val botName: String, val botUsername: String) : BotSettingsScreenState()
+    data class Error(val errorMessage: String? = null) : BotSettingsScreenState()
+}
