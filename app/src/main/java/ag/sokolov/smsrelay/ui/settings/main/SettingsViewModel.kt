@@ -1,8 +1,8 @@
 package ag.sokolov.smsrelay.ui.settings.main
 
-import ag.sokolov.smsrelay.domain.errors.TelegramBotException
-import ag.sokolov.smsrelay.domain.use_cases.get_telegram_bot.GetTelegramBotUseCase
-import ag.sokolov.smsrelay.domain.use_cases.get_telegram_recipient.GetTelegramRecipientUseCase
+import ag.sokolov.smsrelay.domain.exception.TelegramBotException
+import ag.sokolov.smsrelay.domain.use_case.get_telegram_bot.GetTelegramBotUseCase
+import ag.sokolov.smsrelay.domain.use_case.get_telegram_recipient.GetTelegramRecipientUseCase
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
