@@ -6,6 +6,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class TelegramBotApiResponseDto<T>(
-    val ok: Boolean,
-    val result: T
+    val ok: Boolean, val result: T
 )

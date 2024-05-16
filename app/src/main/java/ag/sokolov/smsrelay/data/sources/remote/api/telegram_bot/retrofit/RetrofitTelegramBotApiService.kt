@@ -38,7 +38,6 @@ interface RetrofitTelegramBotApiService : TelegramBotApiService {
     // https://core.telegram.org/bots/api#getchat
     @GET("/bot{token}/getChat")
     override suspend fun getChat(
-        @Path("token") token: String,
-        @Query("chat_id") chatId: Long
+        @Path("token") token: String, @Query("chat_id") chatId: Long
     ): Response<TelegramBotApiResponseDto<TelegramUserDto>>
 }
