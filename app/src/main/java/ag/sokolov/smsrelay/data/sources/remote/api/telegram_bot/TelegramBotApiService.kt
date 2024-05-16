@@ -1,9 +1,9 @@
-package ag.sokolov.smsrelay.data.sources.remote.apis.telegram_bot
+package ag.sokolov.smsrelay.data.sources.remote.api.telegram_bot
 
-import ag.sokolov.smsrelay.data.sources.remote.apis.telegram_bot.dtos.TelegramBotApiResponseDto
-import ag.sokolov.smsrelay.data.sources.remote.apis.telegram_bot.dtos.TelegramUserDto
-import ag.sokolov.smsrelay.data.sources.remote.apis.telegram_bot.dtos.TelegramMessageDto
-import ag.sokolov.smsrelay.data.sources.remote.apis.telegram_bot.dtos.TelegramBotApiUpdateDto
+import ag.sokolov.smsrelay.data.sources.remote.api.telegram_bot.dto.TelegramBotApiResponseDto
+import ag.sokolov.smsrelay.data.sources.remote.api.telegram_bot.dto.TelegramUserDto
+import ag.sokolov.smsrelay.data.sources.remote.api.telegram_bot.dto.TelegramMessageDto
+import ag.sokolov.smsrelay.data.sources.remote.api.telegram_bot.dto.TelegramBotApiUpdateDto
 import retrofit2.Response
 
 interface TelegramBotApiService {

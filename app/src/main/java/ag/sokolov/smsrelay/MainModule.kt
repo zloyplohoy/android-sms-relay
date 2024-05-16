@@ -2,8 +2,8 @@ package ag.sokolov.smsrelay
 
 import ag.sokolov.smsrelay.data.repositories.ConfigurationPreferencesDataStoreRepository
 import ag.sokolov.smsrelay.data.repositories.TelegramBotApiRepositoryImpl
-import ag.sokolov.smsrelay.data.sources.remote.apis.telegram_bot.TelegramBotApiService
-import ag.sokolov.smsrelay.data.sources.remote.apis.telegram_bot.retrofit.RetrofitTelegramBotApiService
+import ag.sokolov.smsrelay.data.sources.remote.api.telegram_bot.TelegramBotApiService
+import ag.sokolov.smsrelay.data.sources.remote.api.telegram_bot.retrofit.RetrofitTelegramBotApiService
 import ag.sokolov.smsrelay.domain.repositories.ConfigurationRepository
 import ag.sokolov.smsrelay.domain.repositories.TelegramBotApiRepository
 import android.content.Context

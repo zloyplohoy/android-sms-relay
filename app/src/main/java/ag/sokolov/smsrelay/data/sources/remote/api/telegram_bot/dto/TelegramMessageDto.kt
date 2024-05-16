@@ -1,4 +1,4 @@
-package ag.sokolov.smsrelay.data.sources.remote.apis.telegram_bot.dtos
+package ag.sokolov.smsrelay.data.sources.remote.api.telegram_bot.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -7,8 +7,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class TelegramMessageDto(
-    @SerialName("message_id") val messageId: Long,
     val from: TelegramUserDto?,
-    val date: Long,
     val text: String?
 )

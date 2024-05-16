@@ -1,6 +1,6 @@
 package ag.sokolov.smsrelay.ui.settings.main
 
-import ag.sokolov.smsrelay.domain.errors.DomainException
+import ag.sokolov.smsrelay.domain.errors.TelegramBotException
 import ag.sokolov.smsrelay.domain.use_cases.get_telegram_bot.GetTelegramBotUseCase
 import ag.sokolov.smsrelay.domain.use_cases.get_telegram_recipient.GetTelegramRecipientUseCase
 import androidx.compose.runtime.getValue
@@ -41,8 +41,8 @@ class SettingsViewModel @Inject constructor(
                 }.onFailure { telegramBotError ->
                     state = state.copy(
                         showBotWarning = true, botDescription = when (telegramBotError) {
-                            is DomainException.InvalidBotApiTokenException -> "Invalid API token"
-                            is DomainException.BotNetworkException -> "Network unavailable"
+                            is TelegramBotException.BotApiTokenInvalid -> "Invalid API token"
+                            is TelegramBotException.NetworkUnavailable -> "Network unavailable"
                             else -> "Unhandled error"
                         }
                     )
@@ -64,9 +64,9 @@ class SettingsViewModel @Inject constructor(
                 }.onFailure { telegramRecipientError ->
                     state = state.copy(
                         recipientConfiguration = when(telegramRecipientError) {
-                            is DomainException.BotNotConfiguredException -> "Configure the bot first"
-                            is DomainException.BotNetworkException -> "Network unavailable"
-                            is DomainException.InvalidBotApiTokenException -> "Check Telegram bot settings"
+                            is TelegramBotException.BotApiTokenMissing -> "Configure the bot first"
+                            is TelegramBotException.NetworkUnavailable -> "Network unavailable"
+                            is TelegramBotException.BotApiTokenInvalid -> "Check Telegram bot settings"
                             else -> "Unhandled error"
                         }
                     )

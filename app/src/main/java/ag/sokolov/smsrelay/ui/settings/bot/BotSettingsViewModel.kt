@@ -1,6 +1,6 @@
 package ag.sokolov.smsrelay.ui.settings.bot
 
-import ag.sokolov.smsrelay.domain.errors.DomainException
+import ag.sokolov.smsrelay.domain.errors.TelegramBotException
 import ag.sokolov.smsrelay.domain.use_cases.add_telegram_bot.AddTelegramBotUseCase
 import ag.sokolov.smsrelay.domain.use_cases.get_telegram_bot.GetTelegramBotUseCase
 import ag.sokolov.smsrelay.domain.use_cases.remove_telegram_bot.RemoveTelegramBotUseCase
@@ -61,8 +61,8 @@ class BotSettingsViewModel @Inject constructor(
                 }.onFailure { telegramBotError ->
                     state = BotSettingsScreenState.Error(
                         errorMessage = when(telegramBotError) {
-                            is DomainException.InvalidBotApiTokenException -> "Invalid token, click to update"
-                            is DomainException.BotNetworkException -> "Network unavailable"
+                            is TelegramBotException.BotApiTokenInvalid -> "Invalid token, click to update"
+                            is TelegramBotException.NetworkUnavailable -> "Network unavailable"
                             else -> "Unhandled error"
                         }
                     )

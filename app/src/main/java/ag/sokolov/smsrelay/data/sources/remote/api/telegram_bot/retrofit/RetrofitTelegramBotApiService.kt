@@ -1,10 +1,10 @@
-package ag.sokolov.smsrelay.data.sources.remote.apis.telegram_bot.retrofit
+package ag.sokolov.smsrelay.data.sources.remote.api.telegram_bot.retrofit
 
-import ag.sokolov.smsrelay.data.sources.remote.apis.telegram_bot.TelegramBotApiService
-import ag.sokolov.smsrelay.data.sources.remote.apis.telegram_bot.dtos.TelegramBotApiResponseDto
-import ag.sokolov.smsrelay.data.sources.remote.apis.telegram_bot.dtos.TelegramBotApiUpdateDto
-import ag.sokolov.smsrelay.data.sources.remote.apis.telegram_bot.dtos.TelegramMessageDto
-import ag.sokolov.smsrelay.data.sources.remote.apis.telegram_bot.dtos.TelegramUserDto
+import ag.sokolov.smsrelay.data.sources.remote.api.telegram_bot.TelegramBotApiService
+import ag.sokolov.smsrelay.data.sources.remote.api.telegram_bot.dto.TelegramBotApiResponseDto
+import ag.sokolov.smsrelay.data.sources.remote.api.telegram_bot.dto.TelegramBotApiUpdateDto
+import ag.sokolov.smsrelay.data.sources.remote.api.telegram_bot.dto.TelegramMessageDto
+import ag.sokolov.smsrelay.data.sources.remote.api.telegram_bot.dto.TelegramUserDto
 import retrofit2.Response
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded

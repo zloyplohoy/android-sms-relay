@@ -1,9 +1,9 @@
 package ag.sokolov.smsrelay.data.repositories
 
-import ag.sokolov.smsrelay.data.sources.remote.apis.telegram_bot.TelegramBotApiService
-import ag.sokolov.smsrelay.data.sources.remote.apis.telegram_bot.dtos.TelegramMessageDto
-import ag.sokolov.smsrelay.data.sources.remote.apis.telegram_bot.dtos.TelegramUserDto
-import ag.sokolov.smsrelay.domain.errors.DomainException
+import ag.sokolov.smsrelay.data.sources.remote.api.telegram_bot.TelegramBotApiService
+import ag.sokolov.smsrelay.data.sources.remote.api.telegram_bot.dto.TelegramMessageDto
+import ag.sokolov.smsrelay.data.sources.remote.api.telegram_bot.dto.TelegramUserDto
+import ag.sokolov.smsrelay.domain.errors.TelegramBotException
 import ag.sokolov.smsrelay.domain.models.TelegramBot
 import ag.sokolov.smsrelay.domain.models.TelegramPrivateChatMessage
 import ag.sokolov.smsrelay.domain.models.TelegramUser
@@ -33,30 +33,30 @@ class TelegramBotApiRepositoryImpl @Inject constructor(
             throwIfUnsuccessful(response)
             throwIfEmptyBody(response)
             return response.body()!!
-        } catch (e: DomainException) {
+        } catch (e: TelegramBotException) {
             throw e
         } catch (exception: IOException) {
-            throw DomainException.BotNetworkException()
+            throw TelegramBotException.NetworkUnavailable()
         } catch (exception: Exception) {
-            throw DomainException.UnhandledBotException()
+            throw TelegramBotException.UnhandledException()
         }
     }
 
     private fun <T> throwIfUnauthorized(response: Response<T>) {
         if (response.code() == 401) {
-            throw DomainException.InvalidBotApiTokenException()
+            throw TelegramBotException.BotApiTokenInvalid()
         }
     }
 
     private fun <T> throwIfUnsuccessful(response: Response<T>) {
         if (!response.isSuccessful) {
-            throw DomainException.UnhandledBotException()
+            throw TelegramBotException.UnhandledException()
         }
     }
 
     private fun <T> throwIfEmptyBody(response: Response<T>) {
         if (response.body() == null) {
-            throw DomainException.UnhandledBotException()
+            throw TelegramBotException.UnhandledException()
         }
     }
 
@@ -96,7 +96,6 @@ class TelegramBotApiRepositoryImpl @Inject constructor(
 }
 
 private fun TelegramUserDto.toBotInfo(): TelegramBot {
-    require(this.isBot) { "User is not a bot" }
     return TelegramBot(
         name = this.firstName,
         username = this.username!!

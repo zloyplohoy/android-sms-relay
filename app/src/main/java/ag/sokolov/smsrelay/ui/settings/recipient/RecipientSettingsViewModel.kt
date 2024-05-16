@@ -1,8 +1,7 @@
 package ag.sokolov.smsrelay.ui.settings.recipient
 
-import ag.sokolov.smsrelay.domain.errors.DomainException
+import ag.sokolov.smsrelay.domain.errors.TelegramBotException
 import ag.sokolov.smsrelay.domain.models.TelegramUser
-import ag.sokolov.smsrelay.domain.services.add_recipient.AddRecipientService
 import ag.sokolov.smsrelay.domain.use_cases.get_telegram_recipient.GetTelegramRecipientUseCase
 import ag.sokolov.smsrelay.domain.use_cases.is_telegram_installed_use_case.IsTelegramInstalledUseCase
 import androidx.compose.runtime.getValue
@@ -82,10 +81,10 @@ class RecipientSettingsViewModel @Inject constructor(
 
     private fun getRecipientErrorScreenState(error: Throwable) =
         when (error) {
-            is DomainException.BotNotConfiguredException -> RecipientSettingsScreenState.GenericError("Telegram bot must be configured first")
-            is DomainException.InvalidBotApiTokenException -> RecipientSettingsScreenState.GenericError("Check Telegram bot settings")
-            is DomainException.BotNetworkException -> RecipientSettingsScreenState.GenericError("Network unavailable")
-            is DomainException.RecipientUnauthorized -> RecipientSettingsScreenState.RecipientError("Click to authorize recipient")
+            is TelegramBotException.BotApiTokenMissing -> RecipientSettingsScreenState.GenericError("Telegram bot must be configured first")
+            is TelegramBotException.BotApiTokenInvalid -> RecipientSettingsScreenState.GenericError("Check Telegram bot settings")
+            is TelegramBotException.NetworkUnavailable -> RecipientSettingsScreenState.GenericError("Network unavailable")
+            is TelegramBotException.RecipientNotAllowed -> RecipientSettingsScreenState.RecipientError("Click to authorize recipient")
             else -> RecipientSettingsScreenState.RecipientError("Unhandled exception")
         }
 }

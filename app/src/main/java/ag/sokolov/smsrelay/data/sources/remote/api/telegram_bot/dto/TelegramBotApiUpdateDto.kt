@@ -1,4 +1,4 @@
-package ag.sokolov.smsrelay.data.sources.remote.apis.telegram_bot.dtos
+package ag.sokolov.smsrelay.data.sources.remote.api.telegram_bot.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

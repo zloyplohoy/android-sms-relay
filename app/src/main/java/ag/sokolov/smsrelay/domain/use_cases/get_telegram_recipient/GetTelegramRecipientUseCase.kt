@@ -1,6 +1,6 @@
 package ag.sokolov.smsrelay.domain.use_cases.get_telegram_recipient
 
-import ag.sokolov.smsrelay.domain.errors.DomainException
+import ag.sokolov.smsrelay.domain.errors.TelegramBotException
 import ag.sokolov.smsrelay.domain.models.TelegramUser
 import ag.sokolov.smsrelay.domain.repositories.ConfigurationRepository
 import ag.sokolov.smsrelay.domain.repositories.TelegramBotApiRepository
@@ -34,8 +34,8 @@ class GetTelegramRecipientUseCase @Inject constructor(
             }.distinctUntilChanged()
 
     private suspend fun validateBotApiToken(token: String?) {
-        if (token == null) throw DomainException.BotNotConfiguredException()
-        if (isBotApiTokenInvalid(token)) throw DomainException.InvalidBotApiTokenException()
+        if (token == null) throw TelegramBotException.BotApiTokenMissing()
+        if (isBotApiTokenInvalid(token)) throw TelegramBotException.BotApiTokenInvalid()
     }
 
     private suspend fun isBotApiTokenInvalid(token: String) =
