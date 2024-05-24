@@ -27,41 +27,41 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 abstract class MainModule {
 
-  @Binds
-  abstract fun bindConfigurationRepository(
-      impl: PreferencesDataStoreConfigurationRepository
-  ): ConfigurationRepository
+    @Binds
+    abstract fun bindConfigurationRepository(
+        impl: PreferencesDataStoreConfigurationRepository
+    ): ConfigurationRepository
 
-  @Binds
-  abstract fun bindTelegramBotApiRepository(
-      impl: TelegramBotApiRepositoryImpl
-  ): TelegramBotApiRepository
+    @Binds
+    abstract fun bindTelegramBotApiRepository(
+        impl: TelegramBotApiRepositoryImpl
+    ): TelegramBotApiRepository
 
-  companion object {
-    @Provides
-    @Singleton
-    fun provideApplicationConfigurationPreferencesDataStore(
-        @ApplicationContext appContext: Context
-    ): DataStore<Preferences> =
-        PreferenceDataStoreFactory.create {
-          appContext.preferencesDataStoreFile("application_configuration")
+    companion object {
+        @Provides
+        @Singleton
+        fun provideApplicationConfigurationPreferencesDataStore(
+            @ApplicationContext appContext: Context
+        ): DataStore<Preferences> =
+            PreferenceDataStoreFactory.create {
+                appContext.preferencesDataStoreFile("application_configuration")
+            }
+
+        @Provides
+        @Singleton
+        fun provideApplicationContext(@ApplicationContext appContext: Context): Context = appContext
+
+        @Provides
+        @Singleton
+        fun provideTelegramBotApi2(): TelegramBotApiService {
+            val json = Json { ignoreUnknownKeys = true }
+            val jsonMediaType = "application/json".toMediaType()
+
+            return Retrofit.Builder()
+                .baseUrl("https://api.telegram.org/")
+                .addConverterFactory(json.asConverterFactory(jsonMediaType))
+                .build()
+                .create(RetrofitTelegramBotApiService::class.java)
         }
-
-    @Provides
-    @Singleton
-    fun provideApplicationContext(@ApplicationContext appContext: Context): Context = appContext
-
-    @Provides
-    @Singleton
-    fun provideTelegramBotApi2(): TelegramBotApiService {
-      val json = Json { ignoreUnknownKeys = true }
-      val jsonMediaType = "application/json".toMediaType()
-
-      return Retrofit.Builder()
-          .baseUrl("https://api.telegram.org/")
-          .addConverterFactory(json.asConverterFactory(jsonMediaType))
-          .build()
-          .create(RetrofitTelegramBotApiService::class.java)
     }
-  }
 }
