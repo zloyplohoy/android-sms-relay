@@ -32,37 +32,23 @@ fun BotSettingsScreen(
 
     Column(modifier = Modifier.fillMaxWidth()) {
         MenuHeader(title = "Telegram bot", onBackClick = { onBackClick() })
-        MenuItem(
-            icon = if (state is BotSettingsScreenState.NotConfigured) Icons.Filled.Add else null,
-            title =
-                when (state) {
-                    is BotSettingsScreenState.Loading -> "Loading..."
-                    is BotSettingsScreenState.NotConfigured -> "Add a Telegram bot"
-                    is BotSettingsScreenState.Configured -> state.botName
-                    is BotSettingsScreenState.Error -> "Error"
-                },
-            description =
-                when (state) {
-                    is BotSettingsScreenState.Configured -> "@${state.botUsername}"
-                    is BotSettingsScreenState.Error -> state.errorMessage ?: "Unhandled error"
-                    else -> null
-                },
-            onClick =
-                when (state) {
-                    is BotSettingsScreenState.NotConfigured,
-                    is BotSettingsScreenState.Error -> ({ toggleTokenDialog() })
-                    else -> null
-                },
-            extraIcon =
-                when (state) {
-                    is BotSettingsScreenState.Error -> Icons.Filled.Warning
-                    is BotSettingsScreenState.Configured -> Icons.Filled.Clear
-                    else -> null
-                },
-            onExtraClick =
-                if (state is BotSettingsScreenState.Configured)
-                    ({ onAction(BotSettingsAction.RemoveBot) })
-                else null)
+        when (state) {
+            is BotSettingsScreenState.NotConfigured ->
+                MenuItem(
+                    icon = Icons.Filled.Add, title = "Add a bot", onClick = { toggleTokenDialog() })
+            is BotSettingsScreenState.Configured ->
+                MenuItem(
+                    title = state.botName,
+                    description = "@${state.botUsername}",
+                    extraIcon = Icons.Filled.Clear,
+                    onExtraClick = { onAction(BotSettingsAction.RemoveBot) })
+            is BotSettingsScreenState.Error ->
+                MenuItem(
+                    title = "Error",
+                    description = state.errorMessage ?: "Unhandled error",
+                    extraIcon = Icons.Filled.Warning)
+            else -> Unit
+        }
     }
     if (showTokenDialog) {
         BotApiTokenDialog(toggleDialog = ::toggleTokenDialog, onAction = onAction)
