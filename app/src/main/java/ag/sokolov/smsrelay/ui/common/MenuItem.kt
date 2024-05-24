@@ -1,11 +1,6 @@
 package ag.sokolov.smsrelay.ui.common
 
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.AnimationConstants.DefaultDurationMillis
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -46,71 +41,60 @@ fun MenuItem(
     extraIcon: ImageVector? = null,
     onExtraClick: (() -> Unit)? = null
 ) {
-    Row(verticalAlignment = Alignment.CenterVertically,
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(80.dp)
-            .then(onClick?.let { Modifier.clickable(onClick = it) } ?: Modifier)
-            .padding(
-                start = 32.dp, end = 16.dp, top = 16.dp, bottom = 16.dp
-            )) {
-        icon?.let { icon ->
-            Icon(
-                imageVector = icon,
-                contentDescription = "Setting icon",
-            )
-        }
-        Column(
-            modifier = Modifier.weight(1f)
-        ) {
-            Text(
-                text = title,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.titleLarge
-            )
-            description?.let {
+        modifier =
+            Modifier.fillMaxWidth()
+                .height(80.dp)
+                .then(onClick?.let { Modifier.clickable(onClick = it) } ?: Modifier)
+                .padding(start = 32.dp, end = 16.dp, top = 16.dp, bottom = 16.dp)) {
+            icon?.let { icon ->
+                Icon(
+                    imageVector = icon,
+                    contentDescription = "Setting icon",
+                )
+            }
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = description ?: "",
+                    text = title,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.labelLarge,
-                    fontWeight = FontWeight.Light
-                )
-            }
-        }
-        extraIcon?.let { extraIcon ->
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Spacer(
-                    modifier = Modifier
-                        .width(1.dp)
-                        .height(32.dp)
-                        .background(MaterialTheme.colorScheme.onBackground)
-                )
-                onExtraClick?.let { onExtraClick ->
-                    IconButton(
-                        onClick = { onExtraClick() },
-                    ) {
-                        Icon(
-                            imageVector = extraIcon, contentDescription = ""
-                        )
-                    }
-                } ?: run {
-                    Icon(
-                        imageVector = extraIcon,
-                        contentDescription = "",
-                        modifier = Modifier.padding(horizontal = 12.dp)
-                    )
+                    style = MaterialTheme.typography.titleLarge)
+                description?.let {
+                    Text(
+                        text = description ?: "",
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.Light)
                 }
             }
-
-        } ?: Spacer(modifier = Modifier.width(0.dp))
-
-    }
+            extraIcon?.let { extraIcon ->
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Spacer(
+                            modifier =
+                                Modifier.width(1.dp)
+                                    .height(32.dp)
+                                    .background(MaterialTheme.colorScheme.onBackground))
+                        onExtraClick?.let { onExtraClick ->
+                            IconButton(
+                                onClick = { onExtraClick() },
+                            ) {
+                                Icon(imageVector = extraIcon, contentDescription = "")
+                            }
+                        }
+                            ?: run {
+                                Icon(
+                                    imageVector = extraIcon,
+                                    contentDescription = "",
+                                    modifier = Modifier.padding(horizontal = 12.dp))
+                            }
+                    }
+            } ?: Spacer(modifier = Modifier.width(0.dp))
+        }
 }
 
 @Preview
@@ -118,9 +102,7 @@ fun MenuItem(
 private fun PreviewItemAdd() {
     SMSRelayTheme {
         Surface {
-            MenuItem(
-                icon = Icons.Filled.Add, title = "An incredibly long name for a menu item"
-            )
+            MenuItem(icon = Icons.Filled.Add, title = "An incredibly long name for a menu item")
         }
     }
 }
@@ -130,7 +112,8 @@ private fun PreviewItemAdd() {
 private fun PreviewItemWithDescription() {
     SMSRelayTheme {
         Surface {
-            MenuItem(icon = Icons.AutoMirrored.Filled.Send,
+            MenuItem(
+                icon = Icons.AutoMirrored.Filled.Send,
                 title = "An unreasonably long menu item name",
                 description = "An unreasonably long and meaningless menu item description",
                 onClick = {})
@@ -143,7 +126,8 @@ private fun PreviewItemWithDescription() {
 private fun PreviewItemWithDeleteButton() {
     SMSRelayTheme {
         Surface {
-            MenuItem(icon = Icons.Filled.Person,
+            MenuItem(
+                icon = Icons.Filled.Person,
                 title = "An unreasonably long menu item name",
                 description = "An unreasonably long and meaningless menu item description",
                 extraIcon = Icons.Filled.Clear,
@@ -157,7 +141,8 @@ private fun PreviewItemWithDeleteButton() {
 private fun PreviewClickableItemWithDeleteButton() {
     SMSRelayTheme {
         Surface {
-            MenuItem(icon = Icons.Filled.Person,
+            MenuItem(
+                icon = Icons.Filled.Person,
                 title = "An unreasonably long menu item name",
                 description = "An unreasonably long and meaningless menu item description",
                 onClick = {},
@@ -177,8 +162,7 @@ private fun PreviewClickableItemWithWarningExtraIcon() {
                 title = "An unreasonably long menu item name",
                 description = "An unreasonably long and meaningless menu item description",
                 onClick = {},
-                extraIcon = Icons.Filled.Warning
-            )
+                extraIcon = Icons.Filled.Warning)
         }
     }
 }
@@ -194,18 +178,19 @@ private fun PreviewMenuItemColumn() {
                     title = "Telegram bot",
                     description = "@sms_relay",
                 )
-                MenuItem(icon = Icons.Filled.Person,
+                MenuItem(
+                    icon = Icons.Filled.Person,
                     title = "Recipient",
                     description = "Aleksei Sokolov",
                     onClick = {})
-                MenuItem(icon = Icons.AutoMirrored.Filled.List,
+                MenuItem(
+                    icon = Icons.AutoMirrored.Filled.List,
                     title = "An unreasonably long menu item name",
                     description = "An unreasonably long and meaningless menu item description",
                     onClick = {},
                     extraIcon = Icons.Filled.Clear,
                     onExtraClick = {})
             }
-
         }
     }
 }

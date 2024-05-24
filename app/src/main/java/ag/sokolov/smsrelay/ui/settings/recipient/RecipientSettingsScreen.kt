@@ -20,43 +20,47 @@ fun RecipientSettingsScreen(
 ) {
     Column {
         MenuHeader(title = "Recipient", onBackClick = { onBackClick() })
-        MenuItem(icon = if (state is RecipientSettingsScreenState.NotConfigured) Icons.Filled.Add else null,
-            title = when (state) {
-                is RecipientSettingsScreenState.Loading -> "Loading..."
-                is RecipientSettingsScreenState.NotConfigured -> "Add recipient"
-                is RecipientSettingsScreenState.Configured -> state.lastName?.let { "${state.firstName} ${state.lastName}" }
-                    ?: state.firstName
-
-                is RecipientSettingsScreenState.GenericError, is RecipientSettingsScreenState.RecipientError -> "Error"
-            },
-            description = when (state) {
-                is RecipientSettingsScreenState.Configured -> state.username
-                is RecipientSettingsScreenState.GenericError -> state.errorMessage
-                    ?: "Unhandled error"
-
-                is RecipientSettingsScreenState.RecipientError -> state.errorMessage
-                    ?: "Unhandled error"
-
-                else -> null
-            },
-            onClick = when (state) {
-                is RecipientSettingsScreenState.NotConfigured, is RecipientSettingsScreenState.RecipientError -> ({
-                    onAction(
-                        RecipientSettingsAction.AddRecipient
-                    )
-                })
-
-                else -> null
-            },
-            extraIcon = when (state) {
-                is RecipientSettingsScreenState.GenericError, is RecipientSettingsScreenState.RecipientError -> Icons.Filled.Warning
-                is RecipientSettingsScreenState.Configured -> Icons.Filled.Clear
-                else -> null
-            },
-            onExtraClick = if (state is RecipientSettingsScreenState.Configured) ({
-                onAction(RecipientSettingsAction.RemoveRecipient)
-            }) else null
-        )
+        MenuItem(
+            icon =
+                if (state is RecipientSettingsScreenState.NotConfigured) Icons.Filled.Add else null,
+            title =
+                when (state) {
+                    is RecipientSettingsScreenState.Loading -> "Loading..."
+                    is RecipientSettingsScreenState.NotConfigured -> "Add recipient"
+                    is RecipientSettingsScreenState.Configured ->
+                        state.lastName?.let { "${state.firstName} ${state.lastName}" }
+                            ?: state.firstName
+                    is RecipientSettingsScreenState.GenericError,
+                    is RecipientSettingsScreenState.RecipientError -> "Error"
+                },
+            description =
+                when (state) {
+                    is RecipientSettingsScreenState.Configured -> state.username
+                    is RecipientSettingsScreenState.GenericError ->
+                        state.errorMessage ?: "Unhandled error"
+                    is RecipientSettingsScreenState.RecipientError ->
+                        state.errorMessage ?: "Unhandled error"
+                    else -> null
+                },
+            onClick =
+                when (state) {
+                    is RecipientSettingsScreenState.NotConfigured,
+                    is RecipientSettingsScreenState.RecipientError -> ({
+                            onAction(RecipientSettingsAction.AddRecipient)
+                        })
+                    else -> null
+                },
+            extraIcon =
+                when (state) {
+                    is RecipientSettingsScreenState.GenericError,
+                    is RecipientSettingsScreenState.RecipientError -> Icons.Filled.Warning
+                    is RecipientSettingsScreenState.Configured -> Icons.Filled.Clear
+                    else -> null
+                },
+            onExtraClick =
+                if (state is RecipientSettingsScreenState.Configured)
+                    ({ onAction(RecipientSettingsAction.RemoveRecipient) })
+                else null)
     }
 }
 
@@ -65,7 +69,21 @@ fun RecipientSettingsScreen(
 private fun PreviewRecipientSettingsScreen() {
     SMSRelayTheme {
         Surface {
-            RecipientSettingsScreen(state = RecipientSettingsScreenState.Loading,
+            RecipientSettingsScreen(
+                state = RecipientSettingsScreenState.Loading, onAction = {}, onBackClick = {})
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewRecipientSettingsScreenConfigured() {
+    SMSRelayTheme {
+        Surface {
+            RecipientSettingsScreen(
+                state =
+                    RecipientSettingsScreenState.Configured(
+                        firstName = "Aleksei", lastName = "Sokolov", username = "@username"),
                 onAction = {},
                 onBackClick = {})
         }

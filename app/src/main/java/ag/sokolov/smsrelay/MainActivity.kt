@@ -22,17 +22,14 @@ class MainActivity : ComponentActivity() {
             SMSRelayTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    val navHostController = rememberNavController()
-                    NavHost(
-                        navController = navHostController,
-                        startDestination = SettingsNavRoutes.GRAPH_ROOT
-                    ) {
-                        settingsNavGraph(navHostController)
+                    color = MaterialTheme.colorScheme.background) {
+                        val navHostController = rememberNavController()
+                        NavHost(
+                            navController = navHostController,
+                            startDestination = SettingsNavRoutes.GRAPH_ROOT) {
+                                settingsNavGraph(navHostController)
+                            }
                     }
-
-                }
             }
         }
     }

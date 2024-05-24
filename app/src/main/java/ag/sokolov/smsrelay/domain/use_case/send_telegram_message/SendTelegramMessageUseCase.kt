@@ -1,14 +1,14 @@
 package ag.sokolov.smsrelay.domain.use_case.send_telegram_message
 
-//import ag.sokolov.smsrelay.domain.repositories.TelegramBotApiRepository
-//import ag.sokolov.smsrelay.domain.repositories.ConfigurationRepository
-//import javax.inject.Inject
+// import ag.sokolov.smsrelay.domain.repositories.TelegramBotApiRepository
+// import ag.sokolov.smsrelay.domain.repositories.ConfigurationRepository
+// import javax.inject.Inject
 //
 //
-//class SendTelegramMessageUseCase @Inject constructor(
+// class SendTelegramMessageUseCase @Inject constructor(
 //    private val configurationRepository: ConfigurationRepository,
 //    private val telegramBotApiRepository: TelegramBotApiRepository
-//) {
+// ) {
 //    suspend operator fun invoke(text: String): Result<Unit> = runCatching {
 //        val botApiToken: String = getTelegramBotApiTokenOrThrow()
 //        val recipientId: Long = getTelegramRecipientIdOrThrow()
@@ -24,4 +24,4 @@ package ag.sokolov.smsrelay.domain.use_case.send_telegram_message
 //
 //    private suspend fun getTelegramRecipientIdOrThrow(): Long =
 //        configurationRepository.getTelegramRecipientId().getOrThrow()
-//}
+// }

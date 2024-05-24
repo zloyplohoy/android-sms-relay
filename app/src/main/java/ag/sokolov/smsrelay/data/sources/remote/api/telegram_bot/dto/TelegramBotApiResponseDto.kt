@@ -4,7 +4,4 @@ import kotlinx.serialization.Serializable
 
 // https://core.telegram.org/bots/api#making-requests
 
-@Serializable
-data class TelegramBotApiResponseDto<T>(
-    val ok: Boolean, val result: T
-)
+@Serializable data class TelegramBotApiResponseDto<T>(val ok: Boolean, val result: T)

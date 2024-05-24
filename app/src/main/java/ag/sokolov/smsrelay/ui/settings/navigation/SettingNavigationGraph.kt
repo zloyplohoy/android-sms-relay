@@ -1,9 +1,9 @@
 package ag.sokolov.smsrelay.ui.settings.navigation
 
-import ag.sokolov.smsrelay.ui.settings.main.SettingsScreen
-import ag.sokolov.smsrelay.ui.settings.main.SettingsViewModel
 import ag.sokolov.smsrelay.ui.settings.bot.BotSettingsScreen
 import ag.sokolov.smsrelay.ui.settings.bot.BotSettingsViewModel
+import ag.sokolov.smsrelay.ui.settings.main.SettingsScreen
+import ag.sokolov.smsrelay.ui.settings.main.SettingsViewModel
 import ag.sokolov.smsrelay.ui.settings.recipient.RecipientSettingsScreen
 import ag.sokolov.smsrelay.ui.settings.recipient.RecipientSettingsViewModel
 import androidx.compose.animation.AnimatedContentTransitionScope
@@ -22,47 +22,52 @@ object SettingsNavRoutes {
 }
 
 fun NavGraphBuilder.settingsNavGraph(navHostController: NavHostController) {
-    navigation(
-        route = SettingsNavRoutes.GRAPH_ROOT, startDestination = SettingsNavRoutes.MAIN
-    ) {
+    navigation(route = SettingsNavRoutes.GRAPH_ROOT, startDestination = SettingsNavRoutes.MAIN) {
         composable(
             route = SettingsNavRoutes.MAIN,
-            exitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Left) },
-            popEnterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Right) }
-        ) {
-            val viewModel: SettingsViewModel = hiltViewModel()
+            exitTransition = {
+                slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Left)
+            },
+            popEnterTransition = {
+                slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Right)
+            }) {
+                val viewModel: SettingsViewModel = hiltViewModel()
 
-            SettingsScreen(
-                state = viewModel.state,
-                navigate = navHostController::navigate,
-            )
-        }
+                SettingsScreen(
+                    state = viewModel.state,
+                    navigate = navHostController::navigate,
+                )
+            }
         composable(
             route = SettingsNavRoutes.BOT,
-            enterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left) },
-            popExitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right) }
-        ) {
-            val viewModel: BotSettingsViewModel = hiltViewModel()
+            enterTransition = {
+                slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left)
+            },
+            popExitTransition = {
+                slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
+            }) {
+                val viewModel: BotSettingsViewModel = hiltViewModel()
 
-            BotSettingsScreen(
-                state = viewModel.state,
-                onAction = viewModel::onAction,
-                onBackClick = navHostController::popBackStack
-            )
-        }
+                BotSettingsScreen(
+                    state = viewModel.state,
+                    onAction = viewModel::onAction,
+                    onBackClick = navHostController::popBackStack)
+            }
 
         composable(
             route = SettingsNavRoutes.RECIPIENT,
-            enterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left) },
-            popExitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right) }
-        ) {
-            val viewModel: RecipientSettingsViewModel = hiltViewModel()
+            enterTransition = {
+                slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left)
+            },
+            popExitTransition = {
+                slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
+            }) {
+                val viewModel: RecipientSettingsViewModel = hiltViewModel()
 
-            RecipientSettingsScreen(
-                state = viewModel.state,
-                onAction = viewModel::onAction,
-                onBackClick = navHostController::popBackStack
-            )
-        }
+                RecipientSettingsScreen(
+                    state = viewModel.state,
+                    onAction = viewModel::onAction,
+                    onBackClick = navHostController::popBackStack)
+            }
     }
 }

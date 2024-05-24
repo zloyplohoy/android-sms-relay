@@ -24,51 +24,37 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 
 @Composable
-fun BotApiTokenDialog(
-    toggleDialog: () -> Unit, onAction: (BotSettingsAction) -> Unit
-) {
+fun BotApiTokenDialog(toggleDialog: () -> Unit, onAction: (BotSettingsAction) -> Unit) {
     var tokenTextFieldValue by rememberSaveable { mutableStateOf("") }
 
     Dialog(onDismissRequest = { toggleDialog() }) {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
+        Card(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
             Text(
                 text = "API token",
                 style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(
-                    horizontal = 16.dp, vertical = 16.dp
-                ),
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
             )
             TextField(
                 value = tokenTextFieldValue,
-                onValueChange = { value: String ->
-                    tokenTextFieldValue = value
-                },
+                onValueChange = { value: String -> tokenTextFieldValue = value },
                 singleLine = true,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                visualTransformation = VisualTransformation.None
-            )
-            Row(
-                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End
-            ) {
-                Text(text = "CANCEL",
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                visualTransformation = VisualTransformation.None)
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                Text(
+                    text = "CANCEL",
                     style = MaterialTheme.typography.labelMedium,
-                    modifier = Modifier
-                        .clickable { toggleDialog() }
-                        .padding(16.dp))
-                Text(text = "SAVE TOKEN",
+                    modifier = Modifier.clickable { toggleDialog() }.padding(16.dp))
+                Text(
+                    text = "SAVE TOKEN",
                     style = MaterialTheme.typography.labelMedium,
-                    modifier = Modifier
-                        .clickable {
-                            toggleDialog()
-                            onAction(BotSettingsAction.AddBot(botApiToken = tokenTextFieldValue))
-                        }
-                        .padding(16.dp))
+                    modifier =
+                        Modifier.clickable {
+                                toggleDialog()
+                                onAction(
+                                    BotSettingsAction.AddBot(botApiToken = tokenTextFieldValue))
+                            }
+                            .padding(16.dp))
             }
         }
     }
@@ -78,9 +64,5 @@ fun BotApiTokenDialog(
 @PreviewLightDark
 @Composable
 private fun PreviewTelegramBotApiTokenDialog() {
-    SMSRelayTheme {
-        Surface {
-            BotApiTokenDialog(onAction = {}, toggleDialog = {})
-        }
-    }
+    SMSRelayTheme { Surface { BotApiTokenDialog(onAction = {}, toggleDialog = {}) } }
 }

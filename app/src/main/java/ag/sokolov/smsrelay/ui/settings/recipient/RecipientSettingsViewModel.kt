@@ -1,7 +1,10 @@
 package ag.sokolov.smsrelay.ui.settings.recipient
 
-import ag.sokolov.smsrelay.domain.exception.TelegramBotException
+import ag.sokolov.smsrelay.domain.model.DomainError
+import ag.sokolov.smsrelay.domain.model.Response
 import ag.sokolov.smsrelay.domain.model.TelegramUser
+import ag.sokolov.smsrelay.domain.repository.ConfigurationRepository
+import ag.sokolov.smsrelay.domain.use_case.add_telegram_recipient.AddTelegramRecipientUseCase
 import ag.sokolov.smsrelay.domain.use_case.get_telegram_recipient.GetTelegramRecipientUseCase
 import ag.sokolov.smsrelay.domain.use_case.is_telegram_installed_use_case.IsTelegramInstalledUseCase
 import androidx.compose.runtime.getValue
@@ -10,14 +13,19 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 @HiltViewModel
-class RecipientSettingsViewModel @Inject constructor(
-    private val getTelegramRecipientUseCase: GetTelegramRecipientUseCase,
+class RecipientSettingsViewModel
+@Inject
+constructor(
+    private val addTelegramRecipientUseCase: AddTelegramRecipientUseCase,
     private val isTelegramInstalledUseCase: IsTelegramInstalledUseCase,
+    private val configurationRepository: ConfigurationRepository,
+    private val getTelegramRecipientUseCase: GetTelegramRecipientUseCase
 ) : ViewModel() {
+
     var state by mutableStateOf<RecipientSettingsScreenState>(RecipientSettingsScreenState.Loading)
         private set
 
@@ -28,63 +36,49 @@ class RecipientSettingsViewModel @Inject constructor(
     fun onAction(action: RecipientSettingsAction) {
         when (action) {
             is RecipientSettingsAction.AddRecipient -> {
-
+                viewModelScope.launch { addTelegramRecipientUseCase() }
             }
             is RecipientSettingsAction.RemoveRecipient -> {
-                // TODO: Delete recipient
+                viewModelScope.launch { configurationRepository.deleteTelegramRecipientId() }
             }
         }
     }
-
-//    fun addRecipient(context: Context) {
-//        val verificationCode = UUID.randomUUID().toString()
-//
-//        // Start workManager listener
-//        // Generate validation code
-//        // Launch intent
-//        val url = ""
-//        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-//    }
-//
-//    private suspend fun generateTgLink(verificationCode: String): String {
-////        val botUsername = getTelegramBotInfoResultFlowUseCase().first().getOrThrow()
-////        return "tg://resolve?domain=${botUsername}&start=$verificationCode"
-//        return ""
-//    }
 
     private fun observeTelegramRecipient() {
         viewModelScope.launch {
-            getTelegramRecipientUseCase().collect { telegramRecipientResult ->
-                telegramRecipientResult.onSuccess { telegramRecipient ->
-                    state = telegramRecipient?.let {
-                        getRecipientConfiguredScreenState(it)
-                    } ?: getRecipientNotConfiguredScreenState()
-                }.onFailure { recipientError ->
-                    state = getRecipientErrorScreenState(recipientError)
-                }
+            getTelegramRecipientUseCase().collect { response ->
+                state =
+                    when (response) {
+                        is Response.Success -> getRecipientConfiguredScreenState(response.data)
+                        is Response.Failure -> getRecipientErrorScreenState(response.error)
+                    }
             }
         }
     }
 
-    private fun getRecipientConfiguredScreenState(telegramUser: TelegramUser) =
+    private fun getRecipientConfiguredScreenState(telegramRecipient: TelegramUser) =
         RecipientSettingsScreenState.Configured(
-            firstName = telegramUser.firstName,
-            lastName = telegramUser.lastName,
-            username = telegramUser.username
-        )
+            firstName = telegramRecipient.firstName,
+            lastName = telegramRecipient.lastName,
+            username = telegramRecipient.username)
 
-    private fun getRecipientNotConfiguredScreenState() = if (isTelegramInstalledUseCase()) {
-        RecipientSettingsScreenState.NotConfigured
-    } else {
-        RecipientSettingsScreenState.RecipientError(errorMessage = "Telegram must be installed")
-    }
-
-    private fun getRecipientErrorScreenState(error: Throwable) =
-        when (error) {
-            is TelegramBotException.BotApiTokenMissing -> RecipientSettingsScreenState.GenericError("Telegram bot must be configured first")
-            is TelegramBotException.BotApiTokenInvalid -> RecipientSettingsScreenState.GenericError("Check Telegram bot settings")
-            is TelegramBotException.NetworkUnavailable -> RecipientSettingsScreenState.GenericError("Network unavailable")
-            is TelegramBotException.RecipientNotAllowed -> RecipientSettingsScreenState.RecipientError("Click to authorize recipient")
+    private fun getRecipientErrorScreenState(exception: DomainError) =
+        when (exception) {
+            is DomainError.BotApiTokenMissing ->
+                RecipientSettingsScreenState.GenericError("Telegram bot must be configured first")
+            is DomainError.BotApiTokenInvalid ->
+                RecipientSettingsScreenState.GenericError("Check Telegram bot settings")
+            is DomainError.NetworkUnavailable ->
+                RecipientSettingsScreenState.GenericError("Network unavailable")
+            is DomainError.RecipientNotAllowed ->
+                RecipientSettingsScreenState.RecipientError("Click to re-register recipient")
+            is DomainError.RecipientIdMissing ->
+                if (isTelegramInstalledUseCase()) {
+                    RecipientSettingsScreenState.NotConfigured
+                } else {
+                    RecipientSettingsScreenState.RecipientError(
+                        errorMessage = "Telegram must be installed")
+                }
             else -> RecipientSettingsScreenState.RecipientError("Unhandled exception")
         }
 }

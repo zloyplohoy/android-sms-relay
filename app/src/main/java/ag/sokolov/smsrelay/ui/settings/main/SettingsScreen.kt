@@ -18,24 +18,27 @@ import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun SettingsScreen(
-    state: SettingsScreenState = SettingsScreenState(), navigate: (String) -> Unit = {}
+    state: SettingsScreenState = SettingsScreenState(),
+    navigate: (String) -> Unit = {}
 ) {
-    Column(
-        modifier = Modifier.fillMaxWidth()
-    ) {
+    Column(modifier = Modifier.fillMaxWidth()) {
         MenuHeader(title = "Settings")
         MenuItem(
             icon = Icons.AutoMirrored.Outlined.Send,
             title = "Telegram bot",
-            description = state.botDescription,
+            description = state.botStatusDescription,
             onClick = { navigate(SettingsNavRoutes.BOT) },
-            extraIcon = if (state.showBotWarning) Icons.Filled.Warning else null
-        )
-        MenuItem(icon = Icons.Outlined.Person,
+            extraIcon = if (state.showBotWarning) Icons.Filled.Warning else null)
+        MenuItem(
+            icon = Icons.Outlined.Person,
             title = "Recipient",
-            description = state.recipientConfiguration,
-            onClick = { navigate(SettingsNavRoutes.RECIPIENT) })
-        MenuItem(icon = Icons.AutoMirrored.Outlined.List,
+            description = state.recipientStatusDescription,
+            onClick =
+                if (state.allowRecipientConfiguration) ({ navigate(SettingsNavRoutes.RECIPIENT) })
+                else null,
+            extraIcon = if (state.showRecipientWarning) Icons.Filled.Warning else null)
+        MenuItem(
+            icon = Icons.AutoMirrored.Outlined.List,
             title = "Permissions",
             description = state.permissionsConfiguration,
             onClick = { navigate(SettingsNavRoutes.PERMISSIONS) })
@@ -45,11 +48,7 @@ fun SettingsScreen(
 @Preview
 @Composable
 private fun PreviewSettingsScreen() {
-    SMSRelayTheme {
-        Surface {
-            SettingsScreen()
-        }
-    }
+    SMSRelayTheme { Surface { SettingsScreen() } }
 }
 
 @Preview
@@ -57,11 +56,7 @@ private fun PreviewSettingsScreen() {
 private fun PreviewSettingsScreenFilled() {
     SMSRelayTheme {
         Surface {
-            SettingsScreen(
-                state = SettingsScreenState(
-                    botDescription = "@sms_relay_bot"
-                )
-            )
+            SettingsScreen(state = SettingsScreenState(botStatusDescription = "@sms_relay_bot"))
         }
     }
 }

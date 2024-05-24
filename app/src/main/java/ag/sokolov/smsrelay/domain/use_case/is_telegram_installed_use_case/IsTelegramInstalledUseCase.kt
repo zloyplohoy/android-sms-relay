@@ -4,15 +4,13 @@ import android.content.Context
 import android.content.pm.PackageManager
 import javax.inject.Inject
 
-class IsTelegramInstalledUseCase @Inject constructor(
-    private val context: Context
-) {
-    operator fun invoke(): Boolean = try {
-        context.packageManager.getPackageInfo(
-            "org.telegram.messenger", PackageManager.GET_ACTIVITIES
-        )
-        true
-    } catch (e: PackageManager.NameNotFoundException) {
-        false
-    }
+class IsTelegramInstalledUseCase @Inject constructor(private val context: Context) {
+    operator fun invoke(): Boolean =
+        try {
+            context.packageManager.getPackageInfo(
+                "org.telegram.messenger", PackageManager.GET_ACTIVITIES)
+            true
+        } catch (e: PackageManager.NameNotFoundException) {
+            false
+        }
 }

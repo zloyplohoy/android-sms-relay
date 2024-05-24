@@ -4,7 +4,4 @@ import kotlinx.serialization.Serializable
 
 // https://core.telegram.org/bots/api#message
 
-@Serializable
-data class TelegramMessageDto(
-    val from: TelegramUserDto?, val text: String?
-)
+@Serializable data class TelegramMessageDto(val from: TelegramUserDto?, val text: String?)

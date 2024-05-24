@@ -19,51 +19,32 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun MenuHeader(
-    title: String, onBackClick: (() -> Unit)? = null
-) {
+fun MenuHeader(title: String, onBackClick: (() -> Unit)? = null) {
     Column {
-        Row(
-            modifier = Modifier
-                .height(64.dp)
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-        ) {
+        Row(modifier = Modifier.height(64.dp).fillMaxWidth().padding(horizontal = 16.dp)) {
             onBackClick?.let { onBackClick ->
                 IconButton(onClick = { onBackClick() }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Navigate back"
-                    )
+                        contentDescription = "Navigate back")
                 }
             }
         }
         Text(
             text = title,
             style = MaterialTheme.typography.displayMedium,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 32.dp, vertical = 32.dp)
-        )
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp, vertical = 32.dp))
     }
 }
 
 @Preview
 @Composable
 private fun PreviewMenuHeader() {
-    SMSRelayTheme {
-        Surface {
-            MenuHeader(title = "Settings")
-        }
-    }
+    SMSRelayTheme { Surface { MenuHeader(title = "Settings") } }
 }
 
 @Preview
 @Composable
 private fun PreviewMenuHeaderWithBackButton() {
-    SMSRelayTheme {
-        Surface {
-            MenuHeader(title = "Settings", onBackClick = {})
-        }
-    }
+    SMSRelayTheme { Surface { MenuHeader(title = "Settings", onBackClick = {}) } }
 }
