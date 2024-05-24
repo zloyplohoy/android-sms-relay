@@ -52,8 +52,13 @@ fun BotApiTokenDialog(toggleDialog: () -> Unit, onAction: (SettingsAction) -> Un
                     modifier =
                         Modifier.clickable {
                                 toggleDialog()
-                                onAction(
-                                    SettingsAction.AddTelegramBot(botApiToken = tokenTextFieldValue))
+                                if (tokenTextFieldValue == "") {
+                                    onAction(SettingsAction.RemoveTelegramBot)
+                                } else {
+                                    onAction(
+                                        SettingsAction.AddTelegramBot(
+                                            botApiToken = tokenTextFieldValue))
+                                }
                             }
                             .padding(16.dp))
             }
