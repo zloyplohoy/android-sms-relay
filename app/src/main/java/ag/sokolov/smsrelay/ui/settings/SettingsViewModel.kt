@@ -90,7 +90,7 @@ constructor(
                     is DomainError.BotApiTokenInvalid -> "Check bot settings"
                     is DomainError.NetworkUnavailable -> "Network unavailable"
                     is DomainError.RecipientIdMissing -> "Not configured"
-                    is DomainError.RecipientNotAllowed -> "Validation required"
+                    is DomainError.RecipientInvalid -> "Validation required"
                     else -> "Unhandled error"
                 }
         }
@@ -102,12 +102,10 @@ constructor(
             telegramRecipientResponse.error::class in
                 setOf(
                     DomainError.NetworkUnavailable::class,
-                    DomainError.RecipientNotAllowed::class,
+                    DomainError.RecipientInvalid::class,
                     DomainError.UnhandledError::class))
 
-    private fun getBotState(
-        telegramBotResponse: Response<TelegramBot, DomainError>
-    ): BotState =
+    private fun getBotState(telegramBotResponse: Response<TelegramBot, DomainError>): BotState =
         when (telegramBotResponse) {
             is Response.Success ->
                 BotState.Configured(
@@ -116,8 +114,7 @@ constructor(
             is Response.Failure ->
                 when (telegramBotResponse.error) {
                     is DomainError.BotApiTokenMissing -> BotState.NotConfigured
-                    is DomainError.BotApiTokenInvalid ->
-                        BotState.Error("Bot API token invalid")
+                    is DomainError.BotApiTokenInvalid -> BotState.Error("Bot API token invalid")
                     else -> BotState.Error("Unhandled error")
                 }
         }

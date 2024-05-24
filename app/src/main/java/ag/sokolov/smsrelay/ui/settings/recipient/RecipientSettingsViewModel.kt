@@ -70,7 +70,7 @@ constructor(
                 RecipientSettingsScreenState.GenericError("Check Telegram bot settings")
             is DomainError.NetworkUnavailable ->
                 RecipientSettingsScreenState.GenericError("Network unavailable")
-            is DomainError.RecipientNotAllowed ->
+            is DomainError.RecipientInvalid ->
                 RecipientSettingsScreenState.RecipientError("Click to re-register recipient")
             is DomainError.RecipientIdMissing ->
                 if (isTelegramInstalledUseCase()) {

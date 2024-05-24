@@ -5,6 +5,7 @@ import ag.sokolov.smsrelay.domain.model.Response
 import ag.sokolov.smsrelay.domain.model.TelegramBot
 import ag.sokolov.smsrelay.domain.repository.ConfigurationRepository
 import ag.sokolov.smsrelay.domain.repository.TelegramBotApiRepository
+import android.util.Log
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject

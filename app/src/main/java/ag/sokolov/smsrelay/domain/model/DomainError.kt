@@ -9,7 +9,7 @@ sealed class DomainError {
 
     data object RecipientIdMissing : DomainError()
 
-    data object RecipientNotAllowed : DomainError()
+    data object RecipientInvalid : DomainError()
 
     data object UnhandledError : DomainError()
 }

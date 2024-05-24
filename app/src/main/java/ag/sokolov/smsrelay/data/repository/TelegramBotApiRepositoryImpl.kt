@@ -44,7 +44,7 @@ constructor(
         } catch (e: HttpException) {
             Response.Failure(
                 when (e.code()) {
-                    400 -> DomainError.RecipientNotAllowed
+                    400 -> DomainError.RecipientInvalid
                     401 -> DomainError.BotApiTokenInvalid
                     else -> DomainError.UnhandledError
                 })

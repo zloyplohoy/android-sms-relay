@@ -2,6 +2,8 @@ package ag.sokolov.smsrelay.ui.settings.main
 
 import ag.sokolov.smsrelay.ui.common.MenuHeader
 import ag.sokolov.smsrelay.ui.common.MenuItem
+import ag.sokolov.smsrelay.ui.common.MenuItem2
+import ag.sokolov.smsrelay.ui.common.MenuItemWarningBlock
 import ag.sokolov.smsrelay.ui.settings.BotState
 import ag.sokolov.smsrelay.ui.settings.SettingsState
 import ag.sokolov.smsrelay.ui.settings.navigation.SettingsNavRoutes
@@ -39,14 +41,17 @@ fun SettingsScreen(state: SettingsState = SettingsState(), navigate: (String) ->
 }
 
 @Composable
-fun TelegramBotMenuItemWrapper(botState: BotState, onClick: () -> Unit = {}) {
+fun TelegramBotMenuItemWrapper(botState: BotState, onClick: () -> Unit) {
     when (botState) {
         is BotState.Loading -> TelegramBotMenuItem(onClick = onClick, description = "Loading...")
         is BotState.Configured ->
             TelegramBotMenuItem(onClick = onClick, description = "@${botState.botUsername}")
         is BotState.NotConfigured ->
             TelegramBotMenuItem(onClick = onClick, description = "Not configured")
-        is BotState.Error -> TelegramBotMenuItem(description = botState.errorMessage)
+        is BotState.Error ->
+            TelegramBotMenuItem(onClick = onClick, description = botState.errorMessage) {
+                MenuItemWarningBlock()
+            }
     }
 }
 
@@ -54,14 +59,15 @@ fun TelegramBotMenuItemWrapper(botState: BotState, onClick: () -> Unit = {}) {
 fun TelegramBotMenuItem(
     onClick: () -> Unit = {},
     description: String?,
-    isWarningDisplayed: Boolean = false
+    content: @Composable (() -> Unit)? = null
 ) {
-    MenuItem(
+    MenuItem2(
         icon = Icons.AutoMirrored.Outlined.Send,
         title = "Telegram bot",
         description = description,
-        onClick = onClick,
-        extraIcon = if (isWarningDisplayed) Icons.Filled.Warning else null)
+        onClick = onClick) {
+            content?.let { it() }
+        }
 }
 
 @Preview
