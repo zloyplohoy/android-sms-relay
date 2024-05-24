@@ -64,7 +64,7 @@ constructor(
     }
 
     private fun updateState(
-        telegramBotResponse: Response<TelegramBot, DomainError>,
+        telegramBotResponse: Response<TelegramBot?, DomainError>,
         telegramRecipientResponse: Response<TelegramUser, DomainError>
     ) {
         state =
@@ -105,15 +105,17 @@ constructor(
                     DomainError.RecipientInvalid::class,
                     DomainError.UnhandledError::class))
 
-    private fun getBotState(telegramBotResponse: Response<TelegramBot, DomainError>): BotState =
+    private fun getBotState(telegramBotResponse: Response<TelegramBot?, DomainError>): BotState =
         when (telegramBotResponse) {
             is Response.Success ->
-                BotState.Configured(
-                    botName = telegramBotResponse.data.name,
-                    botUsername = telegramBotResponse.data.username)
+                telegramBotResponse.data?.let {telegramBot ->
+                    BotState.Configured(
+                        botName = telegramBot.name,
+                        botUsername = telegramBot.username)
+                } ?: BotState.NotConfigured
+
             is Response.Failure ->
                 when (telegramBotResponse.error) {
-                    is DomainError.BotApiTokenMissing -> BotState.NotConfigured
                     is DomainError.BotApiTokenInvalid -> BotState.Error("Bot API token invalid")
                     else -> BotState.Error("Unhandled error")
                 }

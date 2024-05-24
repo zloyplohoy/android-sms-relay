@@ -16,9 +16,9 @@ constructor(
     private val configurationRepository: ConfigurationRepository,
     private val telegramBotApiRepository: TelegramBotApiRepository
 ) {
-    operator fun invoke(): Flow<Response<TelegramBot, DomainError>> =
+    operator fun invoke(): Flow<Response<TelegramBot?, DomainError>> =
         configurationRepository.getTelegramBotApiToken().map { telegramBotApiToken ->
             telegramBotApiToken?.let { telegramBotApiRepository.getTelegramBot(it) }
-                ?: Response.Failure(DomainError.BotApiTokenMissing)
+                ?: Response.Success(null)
         }
 }
