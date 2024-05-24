@@ -22,7 +22,7 @@ fun SettingsScreen(
     navigate: (String) -> Unit = {}
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
-        MenuHeader(title = "Settings")
+        MenuHeader(title = "Settings", isLoading = state.isLoading)
         MenuItem(
             icon = Icons.AutoMirrored.Outlined.Send,
             title = "Telegram bot",
@@ -45,7 +45,7 @@ fun SettingsScreen(
 
 @Preview
 @Composable
-private fun PreviewSettingsScreen() {
+private fun PreviewSettingsScreenLoading() {
     SMSRelayTheme { Surface { SettingsScreen() } }
 }
 
@@ -54,7 +54,12 @@ private fun PreviewSettingsScreen() {
 private fun PreviewSettingsScreenFilled() {
     SMSRelayTheme {
         Surface {
-            SettingsScreen(state = SettingsScreenState(botStatusDescription = "@sms_relay_bot"))
+            SettingsScreen(
+                state =
+                    SettingsScreenState(
+                        isLoading = false,
+                        botStatusDescription = "@sms_relay_bot",
+                        recipientStatusDescription = "Aleksei Sokolov"))
         }
     }
 }

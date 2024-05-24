@@ -12,9 +12,9 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel
@@ -50,6 +50,7 @@ constructor(
     ) {
         state =
             state.copy(
+                isLoading = false,
                 botStatusDescription = getBotStatusDescription(telegramBotResponse),
                 showBotWarning = isBotWarningDisplayed(telegramBotResponse),
                 recipientStatusDescription =
