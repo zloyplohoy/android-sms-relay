@@ -33,9 +33,7 @@ fun SettingsScreen(
             icon = Icons.Outlined.Person,
             title = "Recipient",
             description = state.recipientStatusDescription,
-            onClick =
-                if (state.allowRecipientConfiguration) ({ navigate(SettingsNavRoutes.RECIPIENT) })
-                else null,
+            onClick = { navigate(SettingsNavRoutes.RECIPIENT) },
             extraIcon = if (state.showRecipientWarning) Icons.Filled.Warning else null)
         MenuItem(
             icon = Icons.AutoMirrored.Outlined.List,

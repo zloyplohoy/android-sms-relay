@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 @HiltViewModel
@@ -25,70 +26,62 @@ constructor(
         private set
 
     init {
-        observeTelegramBot()
-        observeTelegramRecipient()
+        observeConfiguration()
     }
 
-    private fun observeTelegramBot() {
+    private fun observeConfiguration() {
         viewModelScope.launch {
-            getTelegramBotUseCase().collect { response ->
-                when (response) {
-                    is Response.Success ->
-                        state =
-                            state.copy(
-                                showBotWarning = false,
-                                allowRecipientConfiguration = true,
-                                botStatusDescription = response.data.name)
-                    is Response.Failure ->
-                        state =
-                            state.copy(
-                                showBotWarning = response.error !is DomainError.BotApiTokenMissing,
-                                allowRecipientConfiguration = false,
-                                botStatusDescription =
-                                    when (response.error) {
-                                        is DomainError.BotApiTokenInvalid -> "Invalid API token"
-                                        is DomainError.NetworkUnavailable -> "Network unavailable"
-                                        is DomainError.BotApiTokenMissing -> "Not configured"
-                                        else -> "Unhandled error"
-                                    })
+            combine(getTelegramBotUseCase(), getTelegramRecipientUseCase()) {
+                    telegramBotResponse,
+                    telegramRecipientResponse ->
+                    telegramBotResponse to telegramRecipientResponse
                 }
-            }
-        }
-    }
-
-    private fun observeTelegramRecipient() {
-        viewModelScope.launch {
-            getTelegramRecipientUseCase().collect { response ->
-                when (response) {
-                    is Response.Success ->
-                        state =
-                            state.copy(
-                                allowRecipientConfiguration = true,
-                                showBotWarning = false,
-                                recipientStatusDescription =
-                                    response.data.lastName?.let {
-                                        "${response.data.firstName} ${response.data.lastName}"
-                                    } ?: response.data.firstName)
-                    is Response.Failure ->
-                        state =
-                            state.copy(
-                                allowRecipientConfiguration =
-                                    response.error !is DomainError.BotApiTokenMissing,
-                                showRecipientWarning =
-                                    response.error !is DomainError.RecipientIdMissing,
-                                recipientStatusDescription =
-                                    when (response.error) {
-                                        is DomainError.BotApiTokenMissing ->
-                                            "Configure the bot first"
-                                        is DomainError.NetworkUnavailable -> "Network unavailable"
-                                        is DomainError.BotApiTokenInvalid ->
-                                            "Check Telegram bot settings"
-                                        is DomainError.RecipientIdMissing -> "Not configured"
-                                        is DomainError.RecipientNotAllowed -> "Validation required"
-                                        else -> "Unhandled error"
-                                    })
+                .collect { (telegramBotResponse, telegramRecipientResponse) ->
+                    state =
+                        state.copy(
+                            botStatusDescription =
+                                when (telegramBotResponse) {
+                                    is Response.Success -> "@${telegramBotResponse.data.username}"
+                                    is Response.Failure ->
+                                        when (telegramBotResponse.error) {
+                                            is DomainError.BotApiTokenMissing -> "Not configured"
+                                            is DomainError.BotApiTokenInvalid -> "Invalid API token"
+                                            is DomainError.NetworkUnavailable ->
+                                                "Network unavailable"
+                                            else -> "Unhandled error"
+                                        }
+                                },
+                            showBotWarning =
+                                (telegramBotResponse is Response.Failure &&
+                                    telegramBotResponse.error !is DomainError.BotApiTokenMissing),
+                            recipientStatusDescription =
+                                when (telegramRecipientResponse) {
+                                    is Response.Success ->
+                                        telegramRecipientResponse.data.lastName?.let {
+                                            "${telegramRecipientResponse.data.firstName} ${telegramRecipientResponse.data.lastName}"
+                                        } ?: telegramRecipientResponse.data.firstName
+                                    is Response.Failure ->
+                                        when (telegramRecipientResponse.error) {
+                                            is DomainError.BotApiTokenMissing ->
+                                                "Configure the bot first"
+                                            is DomainError.BotApiTokenInvalid ->
+                                                "Check bot settings"
+                                            is DomainError.NetworkUnavailable ->
+                                                "Network unavailable"
+                                            is DomainError.RecipientIdMissing -> "Not configured"
+                                            is DomainError.RecipientNotAllowed ->
+                                                "Validation required"
+                                            else -> "Unhandled error"
+                                        }
+                                },
+                            showRecipientWarning =
+                                (telegramRecipientResponse is Response.Failure &&
+                                    telegramRecipientResponse.error::class in
+                                        setOf(
+                                            DomainError.NetworkUnavailable::class,
+                                            DomainError.RecipientNotAllowed::class,
+                                            DomainError.UnhandledError::class)))
                 }
-            }
         }
     }
 }
