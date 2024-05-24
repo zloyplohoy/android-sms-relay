@@ -8,20 +8,19 @@ import ag.sokolov.smsrelay.domain.repository.ConfigurationRepository
 import ag.sokolov.smsrelay.domain.repository.TelegramBotApiRepository
 import android.content.Context
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStoreFile
+import androidx.datastore.preferences.preferencesDataStore
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
-import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -38,18 +37,13 @@ abstract class MainModule {
     ): TelegramBotApiRepository
 
     companion object {
+        private val Context.dataStore by preferencesDataStore("application_configuration")
+
         @Provides
         @Singleton
         fun provideApplicationConfigurationPreferencesDataStore(
             @ApplicationContext appContext: Context
-        ): DataStore<Preferences> =
-            PreferenceDataStoreFactory.create {
-                appContext.preferencesDataStoreFile("application_configuration")
-            }
-
-        @Provides
-        @Singleton
-        fun provideApplicationContext(@ApplicationContext appContext: Context): Context = appContext
+        ): DataStore<Preferences> = appContext.dataStore
 
         @Provides
         @Singleton
