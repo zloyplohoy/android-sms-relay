@@ -123,6 +123,20 @@ private fun PreviewItemWithDescription() {
 
 @Preview
 @Composable
+private fun PreviewItemWithNoIcon() {
+    SMSRelayTheme {
+        Surface {
+            MenuItem(
+                title = "An unreasonably long menu item name",
+                description = "An unreasonably long and meaningless menu item description",
+                extraIcon = Icons.Filled.Clear,
+                onExtraClick = {})
+        }
+    }
+}
+
+@Preview
+@Composable
 private fun PreviewItemWithDeleteButton() {
     SMSRelayTheme {
         Surface {
