@@ -15,14 +15,12 @@ constructor(
     private val configurationRepository: ConfigurationRepository,
     private val telegramBotApiRepository: TelegramBotApiRepository
 ) {
-    operator fun invoke(): Flow<Response<TelegramUser, DomainError>> =
+    operator fun invoke(): Flow<Response<TelegramUser?, DomainError>> =
         combine(
             configurationRepository.getTelegramBotApiToken(),
             configurationRepository.getTelegramRecipientId()) { botApiToken, recipientId ->
-                if (botApiToken == null) {
-                    Response.Failure(DomainError.BotApiTokenMissing)
-                } else if (recipientId == null) {
-                    Response.Failure(DomainError.RecipientIdMissing)
+                if (botApiToken == null || recipientId == null) {
+                    Response.Success(null)
                 } else {
                     telegramBotApiRepository.getTelegramRecipient(botApiToken, recipientId)
                 }

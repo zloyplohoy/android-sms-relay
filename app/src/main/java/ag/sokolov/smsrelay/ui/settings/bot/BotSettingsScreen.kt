@@ -26,6 +26,7 @@ fun BotSettingsScreen(
     onAction: (SettingsAction) -> Unit,
     onBackClick: () -> Unit
 ) {
+    // TODO: If the token is failing, do not display a warning, but a clear (delete) block
     var showTokenDialog by rememberSaveable { mutableStateOf(false) }
 
     fun toggleTokenDialog() {

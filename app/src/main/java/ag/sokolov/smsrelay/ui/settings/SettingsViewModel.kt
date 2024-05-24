@@ -65,7 +65,7 @@ constructor(
 
     private fun updateState(
         telegramBotResponse: Response<TelegramBot?, DomainError>,
-        telegramRecipientResponse: Response<TelegramUser, DomainError>
+        telegramRecipientResponse: Response<TelegramUser?, DomainError>
     ) {
         state =
             state.copy(
@@ -77,26 +77,26 @@ constructor(
     }
 
     private fun getRecipientStatusDescription(
-        telegramRecipientResponse: Response<TelegramUser, DomainError>
+        telegramRecipientResponse: Response<TelegramUser?, DomainError>
     ): String =
         when (telegramRecipientResponse) {
             is Response.Success ->
-                telegramRecipientResponse.data.lastName?.let {
-                    "${telegramRecipientResponse.data.firstName} ${telegramRecipientResponse.data.lastName}"
-                } ?: telegramRecipientResponse.data.firstName
+                telegramRecipientResponse.data?.let {telegramUser ->
+                    telegramUser.lastName?.let {
+                        "${telegramUser.firstName} ${telegramUser.lastName}"
+                    } ?: telegramUser.firstName
+                } ?: "Not configured"
             is Response.Failure ->
                 when (telegramRecipientResponse.error) {
-                    is DomainError.BotApiTokenMissing -> "Configure the bot first"
                     is DomainError.BotApiTokenInvalid -> "Check bot settings"
                     is DomainError.NetworkUnavailable -> "Network unavailable"
-                    is DomainError.RecipientIdMissing -> "Not configured"
                     is DomainError.RecipientInvalid -> "Validation required"
                     else -> "Unhandled error"
                 }
         }
 
     private fun isRecipientWarningDisplayed(
-        telegramRecipientResponse: Response<TelegramUser, DomainError>
+        telegramRecipientResponse: Response<TelegramUser?, DomainError>
     ): Boolean =
         (telegramRecipientResponse is Response.Failure &&
             telegramRecipientResponse.error::class in

@@ -56,29 +56,26 @@ constructor(
         }
     }
 
-    private fun getRecipientConfiguredScreenState(telegramRecipient: TelegramUser) =
-        RecipientSettingsScreenState.Configured(
-            firstName = telegramRecipient.firstName,
-            lastName = telegramRecipient.lastName,
-            username = telegramRecipient.username)
+    private fun getRecipientConfiguredScreenState(telegramRecipient: TelegramUser?) =
+        telegramRecipient?.let {
+            RecipientSettingsScreenState.Configured(
+                firstName = it.firstName, lastName = it.lastName, username = it.username)
+        }
+            ?: if (isTelegramInstalledUseCase()) {
+                RecipientSettingsScreenState.NotConfigured
+            } else {
+                RecipientSettingsScreenState.RecipientError(
+                    errorMessage = "Telegram must be installed")
+            }
 
     private fun getRecipientErrorScreenState(exception: DomainError) =
         when (exception) {
-            is DomainError.BotApiTokenMissing ->
-                RecipientSettingsScreenState.GenericError("Telegram bot must be configured first")
             is DomainError.BotApiTokenInvalid ->
                 RecipientSettingsScreenState.GenericError("Check Telegram bot settings")
             is DomainError.NetworkUnavailable ->
                 RecipientSettingsScreenState.GenericError("Network unavailable")
             is DomainError.RecipientInvalid ->
                 RecipientSettingsScreenState.RecipientError("Click to re-register recipient")
-            is DomainError.RecipientIdMissing ->
-                if (isTelegramInstalledUseCase()) {
-                    RecipientSettingsScreenState.NotConfigured
-                } else {
-                    RecipientSettingsScreenState.RecipientError(
-                        errorMessage = "Telegram must be installed")
-                }
             else -> RecipientSettingsScreenState.RecipientError("Unhandled exception")
         }
 }
