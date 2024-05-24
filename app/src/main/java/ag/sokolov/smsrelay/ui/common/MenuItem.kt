@@ -63,7 +63,7 @@ fun MenuItem(
                     style = MaterialTheme.typography.titleLarge)
                 description?.let {
                     Text(
-                        text = description ?: "",
+                        text = it,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         style = MaterialTheme.typography.labelLarge,
