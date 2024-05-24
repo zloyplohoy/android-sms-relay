@@ -6,5 +6,5 @@ import javax.inject.Inject
 class DeleteTelegramBotUseCase
 @Inject
 constructor(private val configurationRepository: ConfigurationRepository) {
-    suspend operator fun invoke() = configurationRepository.deleteTelegramBotApiToken()
+    suspend operator fun invoke() = configurationRepository.deleteTelegramApiTokenAndRecipientId()
 }

@@ -32,8 +32,11 @@ constructor(private val dataStore: DataStore<Preferences>) : ConfigurationReposi
                 onFailure = { Response.Failure(DomainError.UnhandledError) },
             )
 
-    override suspend fun deleteTelegramBotApiToken(): Result<Unit> = runCatching {
-        dataStore.edit { telegramConfig -> telegramConfig.remove(TELEGRAM_BOT_API_TOKEN) }
+    override suspend fun deleteTelegramApiTokenAndRecipientId(): Result<Unit> = runCatching {
+        dataStore.edit { telegramConfig ->
+            telegramConfig.remove(TELEGRAM_BOT_API_TOKEN)
+            telegramConfig.remove(TELEGRAM_RECIPIENT_ID)
+        }
     }
 
     override fun getTelegramRecipientId(): Flow<Long?> =

@@ -10,7 +10,7 @@ interface ConfigurationRepository {
 
     suspend fun setTelegramBotApiToken(botApiToken: String): Response<Unit, DomainError>
 
-    suspend fun deleteTelegramBotApiToken(): Result<Unit>
+    suspend fun deleteTelegramApiTokenAndRecipientId(): Result<Unit>
 
     // Telegram recipient ID
     fun getTelegramRecipientId(): Flow<Long?>
