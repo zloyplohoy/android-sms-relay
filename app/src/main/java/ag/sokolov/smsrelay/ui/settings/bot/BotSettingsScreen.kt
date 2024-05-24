@@ -2,6 +2,8 @@ package ag.sokolov.smsrelay.ui.settings.bot
 
 import ag.sokolov.smsrelay.ui.common.MenuHeader
 import ag.sokolov.smsrelay.ui.common.MenuItem
+import ag.sokolov.smsrelay.ui.settings.BotState
+import ag.sokolov.smsrelay.ui.settings.SettingsAction
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,8 +22,8 @@ import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun BotSettingsScreen(
-    state: BotSettingsScreenState,
-    onAction: (BotSettingsAction) -> Unit,
+    state: BotState,
+    onAction: (SettingsAction) -> Unit,
     onBackClick: () -> Unit
 ) {
     var showTokenDialog by rememberSaveable { mutableStateOf(false) }
@@ -33,16 +35,16 @@ fun BotSettingsScreen(
     Column(modifier = Modifier.fillMaxWidth()) {
         MenuHeader(title = "Telegram bot", onBackClick = { onBackClick() })
         when (state) {
-            is BotSettingsScreenState.NotConfigured ->
+            is BotState.NotConfigured ->
                 MenuItem(
                     icon = Icons.Filled.Add, title = "Add a bot", onClick = { toggleTokenDialog() })
-            is BotSettingsScreenState.Configured ->
+            is BotState.Configured ->
                 MenuItem(
                     title = state.botName,
                     description = "@${state.botUsername}",
                     extraIcon = Icons.Filled.Clear,
-                    onExtraClick = { onAction(BotSettingsAction.RemoveBot) })
-            is BotSettingsScreenState.Error ->
+                    onExtraClick = { onAction(SettingsAction.RemoveTelegramBot) })
+            is BotState.Error ->
                 MenuItem(
                     title = "Error",
                     description = state.errorMessage ?: "Unhandled error",
@@ -61,7 +63,7 @@ private fun PreviewBotSettingsScreenLoading() {
     SMSRelayTheme {
         Surface {
             BotSettingsScreen(
-                state = BotSettingsScreenState.Loading, onAction = {}, onBackClick = {})
+                state = BotState.Loading, onAction = {}, onBackClick = {})
         }
     }
 }
@@ -72,7 +74,7 @@ private fun PreviewBotSettingsScreenNotConfigured() {
     SMSRelayTheme {
         Surface {
             BotSettingsScreen(
-                state = BotSettingsScreenState.NotConfigured, onAction = {}, onBackClick = {})
+                state = BotState.NotConfigured, onAction = {}, onBackClick = {})
         }
     }
 }
@@ -84,7 +86,7 @@ private fun PreviewBotSettingsScreenConfigured() {
         Surface {
             BotSettingsScreen(
                 state =
-                    BotSettingsScreenState.Configured(
+                    BotState.Configured(
                         botName = "My awesome bot", botUsername = "my_awesome_bot"),
                 onAction = {},
                 onBackClick = {})
@@ -98,7 +100,7 @@ private fun PreviewBotSettingsScreenError() {
     SMSRelayTheme {
         Surface {
             BotSettingsScreen(
-                state = BotSettingsScreenState.Error("Well, that escalated quickly"),
+                state = BotState.Error("Well, that escalated quickly"),
                 onAction = {},
                 onBackClick = {})
         }

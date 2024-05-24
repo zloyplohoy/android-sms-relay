@@ -1,5 +1,6 @@
 package ag.sokolov.smsrelay.ui.settings.bot
 
+import ag.sokolov.smsrelay.ui.settings.SettingsAction
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 
 @Composable
-fun BotApiTokenDialog(toggleDialog: () -> Unit, onAction: (BotSettingsAction) -> Unit) {
+fun BotApiTokenDialog(toggleDialog: () -> Unit, onAction: (SettingsAction) -> Unit) {
     var tokenTextFieldValue by rememberSaveable { mutableStateOf("") }
 
     Dialog(onDismissRequest = { toggleDialog() }) {
@@ -52,7 +53,7 @@ fun BotApiTokenDialog(toggleDialog: () -> Unit, onAction: (BotSettingsAction) ->
                         Modifier.clickable {
                                 toggleDialog()
                                 onAction(
-                                    BotSettingsAction.AddBot(botApiToken = tokenTextFieldValue))
+                                    SettingsAction.AddTelegramBot(botApiToken = tokenTextFieldValue))
                             }
                             .padding(16.dp))
             }

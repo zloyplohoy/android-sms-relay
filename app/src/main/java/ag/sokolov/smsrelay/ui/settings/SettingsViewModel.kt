@@ -1,9 +1,11 @@
-package ag.sokolov.smsrelay.ui.settings.main
+package ag.sokolov.smsrelay.ui.settings
 
 import ag.sokolov.smsrelay.domain.model.DomainError
 import ag.sokolov.smsrelay.domain.model.Response
 import ag.sokolov.smsrelay.domain.model.TelegramBot
 import ag.sokolov.smsrelay.domain.model.TelegramUser
+import ag.sokolov.smsrelay.domain.use_case.add_telegram_bot.AddTelegramBotUseCase
+import ag.sokolov.smsrelay.domain.use_case.delete_telegram_bot.DeleteTelegramBotUseCase
 import ag.sokolov.smsrelay.domain.use_case.get_telegram_bot.GetTelegramBotUseCase
 import ag.sokolov.smsrelay.domain.use_case.get_telegram_recipient.GetTelegramRecipientUseCase
 import androidx.compose.runtime.getValue
@@ -12,23 +14,40 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel
 @Inject
 constructor(
     private val getTelegramBotUseCase: GetTelegramBotUseCase,
-    private val getTelegramRecipientUseCase: GetTelegramRecipientUseCase
+    private val getTelegramRecipientUseCase: GetTelegramRecipientUseCase,
+    private val addTelegramBotUseCase: AddTelegramBotUseCase,
+    private val deleteTelegramBotUseCase: DeleteTelegramBotUseCase
 ) : ViewModel() {
 
-    var state by mutableStateOf(SettingsScreenState())
+    var state by mutableStateOf(SettingsState())
         private set
 
     init {
         observeConfiguration()
+    }
+
+    fun onAction(action: SettingsAction) {
+        when (action) {
+            is SettingsAction.AddTelegramBot -> addBot(action.botApiToken)
+            is SettingsAction.RemoveTelegramBot -> removeBot()
+        }
+    }
+
+    private fun addBot(botApiToken: String) {
+        viewModelScope.launch { addTelegramBotUseCase(botApiToken) }
+    }
+
+    private fun removeBot() {
+        viewModelScope.launch { deleteTelegramBotUseCase() }
     }
 
     private fun observeConfiguration() {
@@ -51,32 +70,11 @@ constructor(
         state =
             state.copy(
                 isLoading = false,
-                botStatusDescription = getBotStatusDescription(telegramBotResponse),
-                showBotWarning = isBotWarningDisplayed(telegramBotResponse),
                 recipientStatusDescription =
                     getRecipientStatusDescription(telegramRecipientResponse),
-                showRecipientWarning = isRecipientWarningDisplayed(telegramRecipientResponse))
+                showRecipientWarning = isRecipientWarningDisplayed(telegramRecipientResponse),
+                botState = getBotState(telegramBotResponse))
     }
-
-    private fun getBotStatusDescription(
-        telegramBotResponse: Response<TelegramBot, DomainError>
-    ): String =
-        when (telegramBotResponse) {
-            is Response.Success -> "@${telegramBotResponse.data.username}"
-            is Response.Failure ->
-                when (telegramBotResponse.error) {
-                    is DomainError.BotApiTokenMissing -> "Not configured"
-                    is DomainError.BotApiTokenInvalid -> "Invalid API token"
-                    is DomainError.NetworkUnavailable -> "Network unavailable"
-                    else -> "Unhandled error"
-                }
-        }
-
-    private fun isBotWarningDisplayed(
-        telegramBotResponse: Response<TelegramBot, DomainError>
-    ): Boolean =
-        (telegramBotResponse is Response.Failure &&
-            telegramBotResponse.error !is DomainError.BotApiTokenMissing)
 
     private fun getRecipientStatusDescription(
         telegramRecipientResponse: Response<TelegramUser, DomainError>
@@ -106,4 +104,21 @@ constructor(
                     DomainError.NetworkUnavailable::class,
                     DomainError.RecipientNotAllowed::class,
                     DomainError.UnhandledError::class))
+
+    private fun getBotState(
+        telegramBotResponse: Response<TelegramBot, DomainError>
+    ): BotState =
+        when (telegramBotResponse) {
+            is Response.Success ->
+                BotState.Configured(
+                    botName = telegramBotResponse.data.name,
+                    botUsername = telegramBotResponse.data.username)
+            is Response.Failure ->
+                when (telegramBotResponse.error) {
+                    is DomainError.BotApiTokenMissing -> BotState.NotConfigured
+                    is DomainError.BotApiTokenInvalid ->
+                        BotState.Error("Bot API token invalid")
+                    else -> BotState.Error("Unhandled error")
+                }
+        }
 }
