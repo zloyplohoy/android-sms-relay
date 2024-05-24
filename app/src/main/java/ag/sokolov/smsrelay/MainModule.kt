@@ -53,7 +53,7 @@ abstract class MainModule {
 
         @Provides
         @Singleton
-        fun provideTelegramBotApi2(): TelegramBotApiService {
+        fun provideTelegramBotApi(): TelegramBotApiService {
             val json = Json { ignoreUnknownKeys = true }
             val jsonMediaType = "application/json".toMediaType()
 
