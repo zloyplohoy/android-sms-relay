@@ -56,21 +56,6 @@ constructor(
         longPollingTimeout: Duration
     ): Result<List<TelegramPrivateChatMessage>> {
         TODO()
-        //        // 1. Request updates from API with polling timeout
-        //        // 2. Limit updates to messages only
-        //        val getUpdatesResponse = telegramBotApiService.getUpdates(
-        //            token = botApiToken,
-        //            timeout = longPollingTimeout.inWholeMilliseconds,
-        //            allowedUpdates = listOf("message")
-        //        )
-        //
-        //        return if (getUpdatesResponse.isSuccessful && getUpdatesResponse.body() != null) {
-        //            // TODO: Why do we have body()!! here?
-        //            Result.success(getUpdatesResponse.body()!!.result.map {
-        // it.message!!.toTelegramMessage() })
-        //        } else {
-        //            Result.failure(IOException("API request failed"))
-        //        }
     }
 
     // TODO: Rewrite with handler
@@ -80,14 +65,6 @@ constructor(
         chatId: Long
     ): Result<Unit> {
         TODO()
-        //        val sendMessageResponse =
-        //            telegramBotApiService.sendMessage(token = botApiToken, text = text, chatId =
-        // chatId)
-        //        return if (sendMessageResponse.isSuccessful) {
-        //            Result.success(Unit)
-        //        } else {
-        //            Result.failure(IOException("API request failed"))
-        //        }
     }
 }
 
