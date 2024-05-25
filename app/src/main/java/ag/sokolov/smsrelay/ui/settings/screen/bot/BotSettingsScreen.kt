@@ -47,7 +47,7 @@ fun BotSettingsScreen(
                     MenuItemClearBlock(onClick = { onAction(SettingsAction.RemoveTelegramBot) })
                 }
             is BotState.Error ->
-                MenuItem(title = "Error", description = state.errorMessage ?: "Unhandled error") {
+                MenuItem(title = "Error", description = state.errorMessage) {
                     MenuItemClearBlock(onClick = { onAction(SettingsAction.RemoveTelegramBot) })
                 }
         }

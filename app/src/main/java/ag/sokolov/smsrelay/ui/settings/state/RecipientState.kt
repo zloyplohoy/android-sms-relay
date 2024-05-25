@@ -10,7 +10,7 @@ sealed class RecipientState {
 
     data class Configured(val fullName: String, val username: String? = null) : RecipientState()
 
-    data class RecipientError(val errorMessage: String? = null) : RecipientState()
+    data class RecipientError(val errorMessage: String) : RecipientState()
 
-    data class BotError(val errorMessage: String? = null) : RecipientState()
+    data class BotError(val errorMessage: String) : RecipientState()
 }

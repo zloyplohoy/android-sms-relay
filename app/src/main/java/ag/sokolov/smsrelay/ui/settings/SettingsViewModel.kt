@@ -111,7 +111,7 @@ constructor(
                 when (telegramRecipientResponse.error) {
                     is DomainError.NetworkUnavailable,
                     DomainError.BotApiTokenInvalid ->
-                        RecipientState.BotError("Check Telegram bot settings")
+                        RecipientState.BotError("Check bot settings")
                     is DomainError.RecipientInvalid ->
                         RecipientState.RecipientError("Recipient blocked the bot")
                     else -> RecipientState.RecipientError("Unhandled error")

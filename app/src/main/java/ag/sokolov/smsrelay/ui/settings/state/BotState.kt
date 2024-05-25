@@ -10,5 +10,5 @@ sealed class BotState {
 
     data class Configured(val botName: String, val botUsername: String) : BotState()
 
-    data class Error(val errorMessage: String? = null) : BotState()
+    data class Error(val errorMessage: String) : BotState()
 }

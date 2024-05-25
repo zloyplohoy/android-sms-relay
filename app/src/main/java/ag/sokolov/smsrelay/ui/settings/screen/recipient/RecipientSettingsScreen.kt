@@ -37,11 +37,11 @@ fun RecipientSettingsScreen(
                     MenuItemClearBlock(onClick = { onAction(SettingsAction.RemoveRecipient) })
                 }
             is RecipientState.RecipientError ->
-                MenuItem(title = "Error", description = "Recipient blocked the bot") {
+                MenuItem(title = "Error", description = state.errorMessage) {
                     MenuItemClearBlock(onClick = { onAction(SettingsAction.RemoveRecipient) })
                 }
             is RecipientState.BotError ->
-                MenuItem(title = "Offline", description = "Check bot settings") {
+                MenuItem(title = "Offline", description = state.errorMessage) {
                     MenuItemWarningBlock()
                 }
         }
