@@ -21,9 +21,10 @@ fun TelegramRecipientMenuItem(recipientState: RecipientState, onClick: () -> Uni
             TelegramRecipientMenuItemContent(
                 onClick = onClick, description = recipientState.fullName)
         is RecipientState.RecipientError ->
-            TelegramRecipientMenuItemContent(description = recipientState.errorMessage) {
-                MenuItemWarningBlock()
-            }
+            TelegramRecipientMenuItemContent(
+                onClick = onClick, description = recipientState.errorMessage) {
+                    MenuItemWarningBlock()
+                }
         is RecipientState.BotError ->
             TelegramRecipientMenuItemContent(
                 onClick = onClick, description = recipientState.errorMessage)
