@@ -43,8 +43,7 @@ private fun PreviewSettingsScreenConfigured() {
                         botState =
                             BotState.Configured(
                                 botName = "Awesome SMS bot", botUsername = "awesome_sms_bot"),
-                        recipientState = RecipientState.Configured(fullName = "Aleksei Sokolov"))
-            )
+                        recipientState = RecipientState.Configured(fullName = "Aleksei Sokolov")))
         }
     }
 }
