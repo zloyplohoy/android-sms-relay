@@ -17,6 +17,7 @@ class AndroidSystemRepositoryImpl
 @Inject
 constructor(@ApplicationContext private val context: Context) : AndroidSystemRepository {
 
+    // TODO: Understand why the class gets instantiated three times despite being a Singleton
     override fun getConnectionStatus(): Flow<Boolean> = callbackFlow {
         val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -26,15 +27,13 @@ constructor(@ApplicationContext private val context: Context) : AndroidSystemRep
         val networkCallback =
             object : ConnectivityManager.NetworkCallback() {
                 override fun onAvailable(network: Network) {
+                    super.onAvailable(network)
                     trySend(true)
                 }
 
                 override fun onLost(network: Network) {
-                    trySend(false)
-                }
-
-                override fun onUnavailable() {
-                    trySend(false)
+                    super.onLost(network)
+                    trySend(isOnline(connectivityManager))
                 }
             }
 
