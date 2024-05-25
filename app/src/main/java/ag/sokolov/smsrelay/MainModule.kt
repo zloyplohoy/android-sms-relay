@@ -10,7 +10,9 @@ import ag.sokolov.smsrelay.domain.repository.AndroidSystemRepository
 import ag.sokolov.smsrelay.domain.repository.TelegramBotApiRepository
 import android.content.Context
 import androidx.datastore.core.DataStore
+import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.Binds
 import dagger.Module
@@ -31,7 +33,7 @@ abstract class MainModule {
     @Binds
     abstract fun bindAndroidSystemRepository(
         impl: AndroidSystemRepositoryImpl
-    ) : AndroidSystemRepository
+    ): AndroidSystemRepository
 
     @Binds
     abstract fun bindConfigurationRepository(
@@ -44,7 +46,10 @@ abstract class MainModule {
     ): TelegramBotApiRepository
 
     companion object {
-        private val Context.dataStore by preferencesDataStore("application_configuration")
+        private val Context.dataStore by
+            preferencesDataStore(
+                name = "application_configuration",
+                corruptionHandler = ReplaceFileCorruptionHandler { emptyPreferences() })
 
         @Provides
         @Singleton
