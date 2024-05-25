@@ -1,7 +1,7 @@
 package ag.sokolov.smsrelay.ui.settings.bot
 
 import ag.sokolov.smsrelay.ui.common.MenuHeader
-import ag.sokolov.smsrelay.ui.common.MenuItem2
+import ag.sokolov.smsrelay.ui.common.MenuItem
 import ag.sokolov.smsrelay.ui.common.MenuItemClearBlock
 import ag.sokolov.smsrelay.ui.settings.common.BotState
 import ag.sokolov.smsrelay.ui.settings.common.SettingsAction
@@ -40,14 +40,14 @@ fun BotSettingsScreen(
         when (state) {
             is BotState.Loading -> Unit
             is BotState.NotConfigured ->
-                MenuItem2(
+                MenuItem(
                     icon = Icons.Filled.Add, title = "Add a bot", onClick = { toggleTokenDialog() })
             is BotState.Configured ->
-                MenuItem2(title = state.botName, description = "@${state.botUsername}") {
+                MenuItem(title = state.botName, description = "@${state.botUsername}") {
                     MenuItemClearBlock(onClick = { onAction(SettingsAction.RemoveTelegramBot) })
                 }
             is BotState.Error ->
-                MenuItem2(title = "Error", description = state.errorMessage ?: "Unhandled error") {
+                MenuItem(title = "Error", description = state.errorMessage ?: "Unhandled error") {
                     MenuItemClearBlock(onClick = { onAction(SettingsAction.RemoveTelegramBot) })
                 }
         }

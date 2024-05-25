@@ -1,7 +1,7 @@
 package ag.sokolov.smsrelay.ui.settings.recipient
 
 import ag.sokolov.smsrelay.ui.common.MenuHeader
-import ag.sokolov.smsrelay.ui.common.MenuItem2
+import ag.sokolov.smsrelay.ui.common.MenuItem
 import ag.sokolov.smsrelay.ui.common.MenuItemClearBlock
 import ag.sokolov.smsrelay.ui.settings.common.RecipientState
 import ag.sokolov.smsrelay.ui.settings.common.SettingsAction
@@ -27,20 +27,20 @@ fun RecipientSettingsScreen(
         when (state) {
             is RecipientState.Loading -> Unit
             is RecipientState.NotConfigured ->
-                MenuItem2(
+                MenuItem(
                     icon = Icons.Outlined.Add,
                     title = "Add recipient",
                     onClick = { onAction(SettingsAction.AddRecipient) })
             is RecipientState.Configured ->
-                MenuItem2(title = state.fullName, description = state.username?.let { "@$it" }) {
+                MenuItem(title = state.fullName, description = state.username?.let { "@$it" }) {
                     MenuItemClearBlock(onClick = { onAction(SettingsAction.RemoveRecipient) })
                 }
             is RecipientState.RecipientError ->
-                MenuItem2(title = "Error", description = "Recipient blocked the bot") {
+                MenuItem(title = "Error", description = "Recipient blocked the bot") {
                     MenuItemClearBlock(onClick = { onAction(SettingsAction.RemoveRecipient) })
                 }
             is RecipientState.BotError ->
-                MenuItem2(title = "Error", description = "Check bot settings")
+                MenuItem(title = "Error", description = "Check bot settings")
         }
     }
 }

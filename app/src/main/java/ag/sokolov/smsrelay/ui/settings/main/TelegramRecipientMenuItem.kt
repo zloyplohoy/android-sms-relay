@@ -1,6 +1,6 @@
 package ag.sokolov.smsrelay.ui.settings.main
 
-import ag.sokolov.smsrelay.ui.common.MenuItem2
+import ag.sokolov.smsrelay.ui.common.MenuItem
 import ag.sokolov.smsrelay.ui.common.MenuItemWarningBlock
 import ag.sokolov.smsrelay.ui.settings.common.RecipientState
 import androidx.compose.material.icons.Icons
@@ -36,7 +36,7 @@ fun TelegramRecipientMenuItemContent(
     description: String?,
     content: @Composable (() -> Unit)? = null
 ) {
-    MenuItem2(
+    MenuItem(
         icon = Icons.Outlined.Person,
         title = "Recipient",
         description = description,

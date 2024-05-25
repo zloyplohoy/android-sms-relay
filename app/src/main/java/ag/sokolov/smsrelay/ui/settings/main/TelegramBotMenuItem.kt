@@ -1,6 +1,6 @@
 package ag.sokolov.smsrelay.ui.settings.main
 
-import ag.sokolov.smsrelay.ui.common.MenuItem2
+import ag.sokolov.smsrelay.ui.common.MenuItem
 import ag.sokolov.smsrelay.ui.common.MenuItemWarningBlock
 import ag.sokolov.smsrelay.ui.settings.common.BotState
 import androidx.compose.material.icons.Icons
@@ -32,7 +32,7 @@ fun TelegramBotMenuItemContent(
     description: String?,
     content: @Composable (() -> Unit)? = null
 ) {
-    MenuItem2(
+    MenuItem(
         icon = Icons.AutoMirrored.Outlined.Send,
         title = "Telegram bot",
         description = description,
