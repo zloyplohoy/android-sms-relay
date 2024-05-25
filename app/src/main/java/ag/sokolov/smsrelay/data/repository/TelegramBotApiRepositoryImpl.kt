@@ -23,7 +23,7 @@ constructor(
         try {
             Response.Success(telegramBotApiService.getMe(botApiToken).result.toBotInfo())
         } catch (e: IOException) {
-            Response.Failure(DomainError.NetworkUnavailable)
+            Response.Failure(DomainError.NetworkError)
         } catch (e: HttpException) {
             Response.Failure(
                 when (e.code()) {
@@ -43,7 +43,7 @@ constructor(
             Response.Success(
                 telegramBotApiService.getChat(botApiToken, recipientId).result.toTelegramUser())
         } catch (e: IOException) {
-            Response.Failure(DomainError.NetworkUnavailable)
+            Response.Failure(DomainError.NetworkError)
         } catch (e: HttpException) {
             Response.Failure(
                 when (e.code()) {

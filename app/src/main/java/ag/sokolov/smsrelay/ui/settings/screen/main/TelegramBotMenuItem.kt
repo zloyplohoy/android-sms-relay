@@ -11,10 +11,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun TelegramBotMenuItem(botState: BotState, onClick: () -> Unit) {
+fun TelegramBotMenuItem(botState: BotState, onClick: (() -> Unit)?) =
     when (botState) {
         is BotState.Loading ->
-            TelegramBotMenuItemContent(onClick = onClick, description = "Loading...")
+            TelegramBotMenuItemContent(onClick = onClick, description = botState.message)
         is BotState.Configured ->
             TelegramBotMenuItemContent(onClick = onClick, description = botState.botName)
         is BotState.NotConfigured ->
@@ -24,11 +24,10 @@ fun TelegramBotMenuItem(botState: BotState, onClick: () -> Unit) {
                 MenuItemWarningBlock()
             }
     }
-}
 
 @Composable
 fun TelegramBotMenuItemContent(
-    onClick: () -> Unit = {},
+    onClick: (() -> Unit)? = {},
     description: String?,
     content: @Composable (() -> Unit)? = null
 ) {
@@ -44,7 +43,7 @@ fun TelegramBotMenuItemContent(
 @Preview
 @Composable
 private fun TelegramBotMenuItemLoading() {
-    MaterialTheme { Surface { TelegramBotMenuItem(botState = BotState.Loading, onClick = {}) } }
+    MaterialTheme { Surface { TelegramBotMenuItem(botState = BotState.Loading(), onClick = {}) } }
 }
 
 @Preview

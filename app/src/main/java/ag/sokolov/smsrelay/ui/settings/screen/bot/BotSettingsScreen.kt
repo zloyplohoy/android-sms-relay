@@ -38,7 +38,7 @@ fun BotSettingsScreen(
             isLoading = state is BotState.Loading,
             onBackClick = { onBackClick() })
         when (state) {
-            is BotState.Loading -> Unit
+            is BotState.Loading -> MenuItem(title = state.message)
             is BotState.NotConfigured ->
                 MenuItem(
                     icon = Icons.Filled.Add, title = "Add a bot", onClick = { toggleTokenDialog() })
@@ -61,7 +61,7 @@ fun BotSettingsScreen(
 @Composable
 private fun PreviewBotSettingsScreenLoading() {
     SMSRelayTheme {
-        Surface { BotSettingsScreen(state = BotState.Loading, onAction = {}, onBackClick = {}) }
+        Surface { BotSettingsScreen(state = BotState.Loading(), onAction = {}, onBackClick = {}) }
     }
 }
 

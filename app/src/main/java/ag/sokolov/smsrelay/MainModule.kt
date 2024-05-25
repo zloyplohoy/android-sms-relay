@@ -1,10 +1,12 @@
 package ag.sokolov.smsrelay
 
 import ag.sokolov.smsrelay.data.repository.PreferencesDataStoreConfigurationRepository
+import ag.sokolov.smsrelay.data.repository.AndroidSystemRepositoryImpl
 import ag.sokolov.smsrelay.data.repository.TelegramBotApiRepositoryImpl
 import ag.sokolov.smsrelay.data.sources.remote.api.telegram_bot.TelegramBotApiService
 import ag.sokolov.smsrelay.data.sources.remote.api.telegram_bot.retrofit.RetrofitTelegramBotApiService
 import ag.sokolov.smsrelay.domain.repository.ConfigurationRepository
+import ag.sokolov.smsrelay.domain.repository.AndroidSystemRepository
 import ag.sokolov.smsrelay.domain.repository.TelegramBotApiRepository
 import android.content.Context
 import androidx.datastore.core.DataStore
@@ -25,6 +27,11 @@ import retrofit2.converter.kotlinx.serialization.asConverterFactory
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class MainModule {
+
+    @Binds
+    abstract fun bindAndroidSystemRepository(
+        impl: AndroidSystemRepositoryImpl
+    ) : AndroidSystemRepository
 
     @Binds
     abstract fun bindConfigurationRepository(

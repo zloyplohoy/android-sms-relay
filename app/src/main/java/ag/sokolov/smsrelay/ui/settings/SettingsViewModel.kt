@@ -7,8 +7,10 @@ import ag.sokolov.smsrelay.domain.model.TelegramUser
 import ag.sokolov.smsrelay.domain.use_case.add_telegram_bot.AddTelegramBotUseCase
 import ag.sokolov.smsrelay.domain.use_case.add_telegram_recipient.AddTelegramRecipientUseCase
 import ag.sokolov.smsrelay.domain.use_case.delete_telegram_bot.DeleteTelegramBotUseCase
+import ag.sokolov.smsrelay.domain.use_case.delete_telegram_recipient.DeleteTelegramRecipientUseCase
 import ag.sokolov.smsrelay.domain.use_case.get_telegram_bot.GetTelegramBotUseCase
 import ag.sokolov.smsrelay.domain.use_case.get_telegram_recipient.GetTelegramRecipientUseCase
+import ag.sokolov.smsrelay.domain.use_case.is_online.IsOnlineUseCase
 import ag.sokolov.smsrelay.ui.settings.action.SettingsAction
 import ag.sokolov.smsrelay.ui.settings.state.BotState
 import ag.sokolov.smsrelay.ui.settings.state.RecipientState
@@ -18,7 +20,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
@@ -28,11 +29,13 @@ import javax.inject.Inject
 class SettingsViewModel
 @Inject
 constructor(
+    private val isOnlineUseCase: IsOnlineUseCase,
     private val getTelegramBotUseCase: GetTelegramBotUseCase,
     private val getTelegramRecipientUseCase: GetTelegramRecipientUseCase,
     private val addTelegramBotUseCase: AddTelegramBotUseCase,
     private val deleteTelegramBotUseCase: DeleteTelegramBotUseCase,
-    private val addTelegramRecipientUseCase: AddTelegramRecipientUseCase
+    private val addTelegramRecipientUseCase: AddTelegramRecipientUseCase,
+    private val deleteTelegramRecipientUseCase: DeleteTelegramRecipientUseCase
 ) : ViewModel() {
 
     var state by mutableStateOf(SettingsState())
@@ -46,42 +49,61 @@ constructor(
         when (action) {
             is SettingsAction.AddTelegramBot -> addBot(action.botApiToken)
             is SettingsAction.RemoveTelegramBot -> removeBot()
-            is SettingsAction.AddRecipient -> viewModelScope.launch { addTelegramRecipientUseCase() }
-            is SettingsAction.RemoveRecipient -> Unit
+            is SettingsAction.AddRecipient -> addRecipient()
+            is SettingsAction.RemoveRecipient -> removeRecipient()
         }
     }
 
-    private fun addBot(botApiToken: String) {
+    private fun addBot(botApiToken: String) =
         viewModelScope.launch { addTelegramBotUseCase(botApiToken) }
-    }
 
-    private fun removeBot() {
-        viewModelScope.launch { deleteTelegramBotUseCase() }
-    }
+    private fun removeBot() = viewModelScope.launch { deleteTelegramBotUseCase() }
+
+    private fun addRecipient() = viewModelScope.launch { addTelegramRecipientUseCase() }
+
+    private fun removeRecipient() = viewModelScope.launch { deleteTelegramRecipientUseCase() }
 
     private fun observeConfiguration() {
         viewModelScope.launch {
-            combine(getTelegramBotUseCase(), getTelegramRecipientUseCase()) {
+            combine(isOnlineUseCase(), getTelegramBotUseCase(), getTelegramRecipientUseCase()) {
+                    isOnline,
                     telegramBotResponse,
                     telegramRecipientResponse ->
-                    telegramBotResponse to telegramRecipientResponse
+                    Triple(isOnline, telegramBotResponse, telegramRecipientResponse)
                 }
-                .collect { (telegramBotResponse, telegramRecipientResponse) ->
-                    updateState(telegramBotResponse, telegramRecipientResponse)
+                .collect { (isOnline, telegramBotResponse, telegramRecipientResponse) ->
+                    updateState(isOnline, telegramBotResponse, telegramRecipientResponse)
                 }
         }
     }
 
     private fun updateState(
+        isOnline: Boolean,
         telegramBotResponse: Response<TelegramBot?, DomainError>,
         telegramRecipientResponse: Response<TelegramUser?, DomainError>
     ) {
         state =
             state.copy(
-                isLoading = false,
+                isLoading = isLoading(isOnline, telegramBotResponse, telegramRecipientResponse),
                 botState = getBotState(telegramBotResponse),
                 recipientState = getRecipientState(telegramRecipientResponse))
     }
+
+    private fun isLoading(
+        isOnline: Boolean,
+        telegramBotResponse: Response<TelegramBot?, DomainError>,
+        telegramRecipientResponse: Response<TelegramUser?, DomainError>
+    ): Boolean =
+        if (isOnline) {
+            listOf(telegramBotResponse, telegramRecipientResponse).any {
+                isNetworkUnavailableError(it)
+            }
+        } else {
+            true
+        }
+
+    private fun isNetworkUnavailableError(response: Response<Any?, DomainError>): Boolean =
+        response is Response.Failure && response.error is DomainError.NetworkUnavailable
 
     private fun getBotState(telegramBotResponse: Response<TelegramBot?, DomainError>): BotState =
         when (telegramBotResponse) {
@@ -92,7 +114,8 @@ constructor(
                 } ?: BotState.NotConfigured
             is Response.Failure ->
                 when (telegramBotResponse.error) {
-                    is DomainError.NetworkUnavailable -> BotState.Error("Network unavailable")
+                    is DomainError.NetworkUnavailable -> BotState.Loading("Waiting for network...")
+                    is DomainError.NetworkError -> BotState.Error("Network error")
                     is DomainError.BotApiTokenInvalid -> BotState.Error("Bot API token invalid")
                     else -> BotState.Error("Unhandled error")
                 }
@@ -109,9 +132,12 @@ constructor(
                 } ?: RecipientState.NotConfigured
             is Response.Failure ->
                 when (telegramRecipientResponse.error) {
-                    is DomainError.NetworkUnavailable,
-                    DomainError.BotApiTokenInvalid ->
-                        RecipientState.BotError("Check bot settings")
+                    is DomainError.NetworkUnavailable ->
+                        RecipientState.Loading("Waiting for network...")
+                    is DomainError.NetworkError ->
+                        RecipientState.ExternalError("Check bot settings")
+                    is DomainError.BotApiTokenInvalid ->
+                        RecipientState.ExternalError("Check bot settings")
                     is DomainError.RecipientInvalid ->
                         RecipientState.RecipientError("Recipient blocked the bot")
                     else -> RecipientState.RecipientError("Unhandled error")

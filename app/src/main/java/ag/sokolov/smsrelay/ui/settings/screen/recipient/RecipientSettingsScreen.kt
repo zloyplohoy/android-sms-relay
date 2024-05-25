@@ -7,6 +7,7 @@ import ag.sokolov.smsrelay.ui.common.MenuItemWarningBlock
 import ag.sokolov.smsrelay.ui.settings.action.SettingsAction
 import ag.sokolov.smsrelay.ui.settings.state.RecipientState
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
+import android.view.Menu
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
@@ -16,7 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun RecipientSettingsScreen(
-    state: RecipientState = RecipientState.Loading,
+    state: RecipientState = RecipientState.Loading(),
     onAction: (SettingsAction) -> Unit,
     onBackClick: () -> Unit
 ) {
@@ -26,7 +27,7 @@ fun RecipientSettingsScreen(
             isLoading = state is RecipientState.Loading,
             onBackClick = { onBackClick() })
         when (state) {
-            is RecipientState.Loading -> Unit
+            is RecipientState.Loading -> MenuItem(title = state.message)
             is RecipientState.NotConfigured ->
                 MenuItem(
                     icon = Icons.Outlined.Add,
@@ -40,8 +41,8 @@ fun RecipientSettingsScreen(
                 MenuItem(title = "Error", description = state.errorMessage) {
                     MenuItemClearBlock(onClick = { onAction(SettingsAction.RemoveRecipient) })
                 }
-            is RecipientState.BotError ->
-                MenuItem(title = "Offline", description = state.errorMessage) {
+            is RecipientState.ExternalError ->
+                MenuItem(title = state.errorMessage) {
                     MenuItemWarningBlock()
                 }
         }
@@ -53,7 +54,7 @@ fun RecipientSettingsScreen(
 private fun PreviewRecipientSettingsScreen() {
     SMSRelayTheme {
         Surface {
-            RecipientSettingsScreen(state = RecipientState.Loading, onAction = {}, onBackClick = {})
+            RecipientSettingsScreen(state = RecipientState.Loading(), onAction = {}, onBackClick = {})
         }
     }
 }
@@ -116,7 +117,7 @@ private fun PreviewRecipientSettingsScreenBotError() {
     SMSRelayTheme {
         Surface {
             RecipientSettingsScreen(
-                state = RecipientState.BotError("Check bot settings"),
+                state = RecipientState.ExternalError("Check bot settings"),
                 onAction = {},
                 onBackClick = {})
         }

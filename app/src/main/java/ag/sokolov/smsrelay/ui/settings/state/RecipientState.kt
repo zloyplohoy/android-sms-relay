@@ -4,7 +4,7 @@ import androidx.compose.runtime.Stable
 
 @Stable
 sealed class RecipientState {
-    data object Loading : RecipientState()
+    data class Loading(val message: String = "Loading...") : RecipientState()
 
     data object NotConfigured : RecipientState()
 
@@ -12,5 +12,5 @@ sealed class RecipientState {
 
     data class RecipientError(val errorMessage: String) : RecipientState()
 
-    data class BotError(val errorMessage: String) : RecipientState()
+    data class ExternalError(val errorMessage: String) : RecipientState()
 }

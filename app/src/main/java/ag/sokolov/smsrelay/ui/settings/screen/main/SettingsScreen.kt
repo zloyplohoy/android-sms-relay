@@ -1,10 +1,10 @@
 package ag.sokolov.smsrelay.ui.settings.screen.main
 
 import ag.sokolov.smsrelay.ui.common.MenuHeader
+import ag.sokolov.smsrelay.ui.settings.SettingsNavRoutes
 import ag.sokolov.smsrelay.ui.settings.state.BotState
 import ag.sokolov.smsrelay.ui.settings.state.RecipientState
 import ag.sokolov.smsrelay.ui.settings.state.SettingsState
-import ag.sokolov.smsrelay.ui.settings.SettingsNavRoutes
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,16 +14,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun SettingsScreen(state: SettingsState = SettingsState(), navigate: (String) -> Unit = {}) {
+fun SettingsScreen(state: SettingsState = SettingsState(), navigate: (String) -> Unit = {}) =
     Column(modifier = Modifier.fillMaxWidth()) {
         MenuHeader(title = "Settings", isLoading = state.isLoading)
         TelegramBotMenuItem(
-            botState = state.botState, onClick = { navigate(SettingsNavRoutes.BOT) })
+            botState = state.botState,
+            onClick = if (!state.isLoading) ({ navigate(SettingsNavRoutes.BOT) }) else null)
         TelegramRecipientMenuItem(
             recipientState = state.recipientState,
-            onClick = { navigate(SettingsNavRoutes.RECIPIENT) })
+            onClick = if (!state.isLoading) ({ navigate(SettingsNavRoutes.RECIPIENT) }) else null)
     }
-}
 
 @Preview
 @Composable
@@ -43,8 +43,7 @@ private fun PreviewSettingsScreenConfigured() {
                         botState =
                             BotState.Configured(
                                 botName = "Awesome SMS bot", botUsername = "awesome_sms_bot"),
-                        recipientState = RecipientState.Configured(fullName = "Aleksei Sokolov"))
-            )
+                        recipientState = RecipientState.Configured(fullName = "Aleksei Sokolov")))
         }
     }
 }

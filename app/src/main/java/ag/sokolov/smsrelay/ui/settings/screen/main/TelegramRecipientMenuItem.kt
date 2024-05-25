@@ -11,10 +11,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun TelegramRecipientMenuItem(recipientState: RecipientState, onClick: () -> Unit) {
+fun TelegramRecipientMenuItem(recipientState: RecipientState, onClick: (() -> Unit)? = null) =
     when (recipientState) {
         is RecipientState.Loading ->
-            TelegramRecipientMenuItemContent(onClick = onClick, description = "Loading...")
+            TelegramRecipientMenuItemContent(description = recipientState.message)
         is RecipientState.NotConfigured ->
             TelegramRecipientMenuItemContent(onClick = onClick, description = "Not configured")
         is RecipientState.Configured ->
@@ -25,15 +25,13 @@ fun TelegramRecipientMenuItem(recipientState: RecipientState, onClick: () -> Uni
                 onClick = onClick, description = recipientState.errorMessage) {
                     MenuItemWarningBlock()
                 }
-        is RecipientState.BotError ->
-            TelegramRecipientMenuItemContent(
-                onClick = onClick, description = recipientState.errorMessage)
+        is RecipientState.ExternalError ->
+            TelegramRecipientMenuItemContent(description = recipientState.errorMessage)
     }
-}
 
 @Composable
 fun TelegramRecipientMenuItemContent(
-    onClick: () -> Unit = {},
+    onClick: (() -> Unit)? = null,
     description: String?,
     content: @Composable (() -> Unit)? = null
 ) {
@@ -50,7 +48,9 @@ fun TelegramRecipientMenuItemContent(
 @Composable
 private fun TelegramRecipientMenuItemLoading() {
     MaterialTheme {
-        Surface { TelegramRecipientMenuItem(recipientState = RecipientState.Loading, onClick = {}) }
+        Surface {
+            TelegramRecipientMenuItem(recipientState = RecipientState.Loading(), onClick = {})
+        }
     }
 }
 
@@ -95,7 +95,7 @@ private fun TelegramRecipientMenuItemBotError() {
     MaterialTheme {
         Surface {
             TelegramRecipientMenuItem(
-                recipientState = RecipientState.BotError(errorMessage = "Check bot settings"),
+                recipientState = RecipientState.ExternalError(errorMessage = "Check bot settings"),
                 onClick = {})
         }
     }
