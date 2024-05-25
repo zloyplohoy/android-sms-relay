@@ -2,9 +2,8 @@ package ag.sokolov.smsrelay.ui.settings.main
 
 import ag.sokolov.smsrelay.ui.common.MenuHeader
 import ag.sokolov.smsrelay.ui.common.MenuItem
-import ag.sokolov.smsrelay.ui.common.MenuItem2
-import ag.sokolov.smsrelay.ui.common.MenuItemWarningBlock
 import ag.sokolov.smsrelay.ui.settings.BotState
+import ag.sokolov.smsrelay.ui.settings.RecipientState
 import ag.sokolov.smsrelay.ui.settings.SettingsState
 import ag.sokolov.smsrelay.ui.settings.navigation.SettingsNavRoutes
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
@@ -12,9 +11,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.List
-import androidx.compose.material.icons.automirrored.outlined.Send
-import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -24,50 +20,17 @@ import androidx.compose.ui.tooling.preview.Preview
 fun SettingsScreen(state: SettingsState = SettingsState(), navigate: (String) -> Unit = {}) {
     Column(modifier = Modifier.fillMaxWidth()) {
         MenuHeader(title = "Settings", isLoading = state.isLoading)
-        TelegramBotMenuItemWrapper(
+        TelegramBotMenuItem(
             botState = state.botState, onClick = { navigate(SettingsNavRoutes.BOT) })
-        MenuItem(
-            icon = Icons.Outlined.Person,
-            title = "Recipient",
-            description = state.recipientStatusDescription,
-            onClick = { navigate(SettingsNavRoutes.RECIPIENT) },
-            extraIcon = if (state.showRecipientWarning) Icons.Filled.Warning else null)
+        TelegramRecipientMenuItem(
+            recipientState = state.recipientState,
+            onClick = { navigate(SettingsNavRoutes.RECIPIENT) })
         MenuItem(
             icon = Icons.AutoMirrored.Outlined.List,
             title = "Permissions",
             description = state.permissionsConfiguration,
             onClick = { navigate(SettingsNavRoutes.PERMISSIONS) })
     }
-}
-
-@Composable
-fun TelegramBotMenuItemWrapper(botState: BotState, onClick: () -> Unit) {
-    when (botState) {
-        is BotState.Loading -> TelegramBotMenuItem(onClick = onClick, description = "Loading...")
-        is BotState.Configured ->
-            TelegramBotMenuItem(onClick = onClick, description = "@${botState.botUsername}")
-        is BotState.NotConfigured ->
-            TelegramBotMenuItem(onClick = onClick, description = "Not configured")
-        is BotState.Error ->
-            TelegramBotMenuItem(onClick = onClick, description = botState.errorMessage) {
-                MenuItemWarningBlock()
-            }
-    }
-}
-
-@Composable
-fun TelegramBotMenuItem(
-    onClick: () -> Unit = {},
-    description: String?,
-    content: @Composable (() -> Unit)? = null
-) {
-    MenuItem2(
-        icon = Icons.AutoMirrored.Outlined.Send,
-        title = "Telegram bot",
-        description = description,
-        onClick = onClick) {
-            content?.let { it() }
-        }
 }
 
 @Preview
@@ -86,8 +49,9 @@ private fun PreviewSettingsScreenFilled() {
                     SettingsState(
                         isLoading = false,
                         botState =
-                            BotState.Configured(botName = "", botUsername = "awesome_sms_bot"),
-                        recipientStatusDescription = "Aleksei Sokolov"))
+                            BotState.Configured(
+                                botName = "Awesome SMS bot", botUsername = "awesome_sms_bot"),
+                        recipientState = RecipientState.Configured(fullName = "Aleksei Sokolov")))
         }
     }
 }

@@ -70,54 +70,40 @@ constructor(
         state =
             state.copy(
                 isLoading = false,
-                recipientStatusDescription =
-                    getRecipientStatusDescription(telegramRecipientResponse),
-                showRecipientWarning = isRecipientWarningDisplayed(telegramRecipientResponse),
-                botState = getBotState(telegramBotResponse))
+                botState = getBotState(telegramBotResponse),
+                recipientState = getRecipientState(telegramRecipientResponse))
     }
-
-    private fun getRecipientStatusDescription(
-        telegramRecipientResponse: Response<TelegramUser?, DomainError>
-    ): String =
-        when (telegramRecipientResponse) {
-            is Response.Success ->
-                telegramRecipientResponse.data?.let {telegramUser ->
-                    telegramUser.lastName?.let {
-                        "${telegramUser.firstName} ${telegramUser.lastName}"
-                    } ?: telegramUser.firstName
-                } ?: "Not configured"
-            is Response.Failure ->
-                when (telegramRecipientResponse.error) {
-                    is DomainError.BotApiTokenInvalid -> "Check bot settings"
-                    is DomainError.NetworkUnavailable -> "Network unavailable"
-                    is DomainError.RecipientInvalid -> "Validation required"
-                    else -> "Unhandled error"
-                }
-        }
-
-    private fun isRecipientWarningDisplayed(
-        telegramRecipientResponse: Response<TelegramUser?, DomainError>
-    ): Boolean =
-        (telegramRecipientResponse is Response.Failure &&
-            telegramRecipientResponse.error::class in
-                setOf(
-                    DomainError.NetworkUnavailable::class,
-                    DomainError.RecipientInvalid::class,
-                    DomainError.UnhandledError::class))
 
     private fun getBotState(telegramBotResponse: Response<TelegramBot?, DomainError>): BotState =
         when (telegramBotResponse) {
             is Response.Success ->
-                telegramBotResponse.data?.let {telegramBot ->
+                telegramBotResponse.data?.let { telegramBot ->
                     BotState.Configured(
-                        botName = telegramBot.name,
-                        botUsername = telegramBot.username)
+                        botName = telegramBot.name, botUsername = telegramBot.username)
                 } ?: BotState.NotConfigured
-
             is Response.Failure ->
                 when (telegramBotResponse.error) {
                     is DomainError.BotApiTokenInvalid -> BotState.Error("Bot API token invalid")
                     else -> BotState.Error("Unhandled error")
+                }
+        }
+
+    private fun getRecipientState(
+        telegramRecipientResponse: Response<TelegramUser?, DomainError>
+    ): RecipientState =
+        when (telegramRecipientResponse) {
+            is Response.Success ->
+                telegramRecipientResponse.data?.let { telegramRecipient ->
+                    RecipientState.Configured(
+                        fullName = "Aleksei", username = telegramRecipient.username)
+                } ?: RecipientState.NotConfigured
+            is Response.Failure ->
+                when (telegramRecipientResponse.error) {
+                    is DomainError.BotApiTokenInvalid ->
+                        RecipientState.BotError("Check Telegram bot settings")
+                    is DomainError.RecipientInvalid ->
+                        RecipientState.RecipientError("Recipient blocked the bot")
+                    else -> RecipientState.RecipientError("Unhandled error")
                 }
         }
 }
