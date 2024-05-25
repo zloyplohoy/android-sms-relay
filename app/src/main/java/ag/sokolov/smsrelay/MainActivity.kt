@@ -1,8 +1,8 @@
 package ag.sokolov.smsrelay
 
-import ag.sokolov.smsrelay.ui.settings.common.SettingsViewModel
-import ag.sokolov.smsrelay.ui.settings.navigation.SettingsNavRoutes
-import ag.sokolov.smsrelay.ui.settings.navigation.settingsNavGraph
+import ag.sokolov.smsrelay.ui.settings.SettingsViewModel
+import ag.sokolov.smsrelay.ui.settings.SettingsNavRoutes
+import ag.sokolov.smsrelay.ui.settings.settingsNavGraph
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
 import android.os.Bundle
 import androidx.activity.ComponentActivity

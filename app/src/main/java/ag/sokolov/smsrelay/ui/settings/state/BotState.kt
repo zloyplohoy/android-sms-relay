@@ -1,4 +1,4 @@
-package ag.sokolov.smsrelay.ui.settings.common
+package ag.sokolov.smsrelay.ui.settings.state
 
 import androidx.compose.runtime.Stable
 

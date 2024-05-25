@@ -1,4 +1,4 @@
-package ag.sokolov.smsrelay.ui.settings.recipient
+package ag.sokolov.smsrelay.ui.settings.screen.recipient
 
 import ag.sokolov.smsrelay.domain.model.DomainError
 import ag.sokolov.smsrelay.domain.model.Response
@@ -59,23 +59,22 @@ constructor(
     private fun getRecipientConfiguredScreenState(telegramRecipient: TelegramUser?) =
         telegramRecipient?.let {
             RecipientSettingsScreenState.Configured(
-                firstName = it.firstName, lastName = it.lastName, username = it.username)
+                firstName = it.firstName, lastName = it.lastName, username = it.username
+            )
         }
             ?: if (isTelegramInstalledUseCase()) {
                 RecipientSettingsScreenState.NotConfigured
             } else {
                 RecipientSettingsScreenState.RecipientError(
-                    errorMessage = "Telegram must be installed")
+                    errorMessage = "Telegram must be installed"
+                )
             }
 
     private fun getRecipientErrorScreenState(exception: DomainError) =
         when (exception) {
-            is DomainError.BotApiTokenInvalid ->
-                RecipientSettingsScreenState.GenericError("Check Telegram bot settings")
-            is DomainError.NetworkUnavailable ->
-                RecipientSettingsScreenState.GenericError("Network unavailable")
-            is DomainError.RecipientInvalid ->
-                RecipientSettingsScreenState.RecipientError("Click to re-register recipient")
+            is DomainError.BotApiTokenInvalid -> RecipientSettingsScreenState.GenericError("Check Telegram bot settings")
+            is DomainError.NetworkUnavailable -> RecipientSettingsScreenState.GenericError("Network unavailable")
+            is DomainError.RecipientInvalid -> RecipientSettingsScreenState.RecipientError("Click to re-register recipient")
             else -> RecipientSettingsScreenState.RecipientError("Unhandled exception")
         }
 }

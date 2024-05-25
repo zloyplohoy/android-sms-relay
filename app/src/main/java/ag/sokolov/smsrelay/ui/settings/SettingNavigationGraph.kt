@@ -1,9 +1,8 @@
-package ag.sokolov.smsrelay.ui.settings.navigation
+package ag.sokolov.smsrelay.ui.settings
 
-import ag.sokolov.smsrelay.ui.settings.common.SettingsViewModel
-import ag.sokolov.smsrelay.ui.settings.bot.BotSettingsScreen
-import ag.sokolov.smsrelay.ui.settings.main.SettingsScreen
-import ag.sokolov.smsrelay.ui.settings.recipient.RecipientSettingsScreen
+import ag.sokolov.smsrelay.ui.settings.screen.bot.BotSettingsScreen
+import ag.sokolov.smsrelay.ui.settings.screen.main.SettingsScreen
+import ag.sokolov.smsrelay.ui.settings.screen.recipient.RecipientSettingsScreen
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController

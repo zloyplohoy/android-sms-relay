@@ -1,4 +1,4 @@
-package ag.sokolov.smsrelay.ui.settings.common
+package ag.sokolov.smsrelay.ui.settings
 
 import ag.sokolov.smsrelay.domain.model.DomainError
 import ag.sokolov.smsrelay.domain.model.Response
@@ -8,6 +8,10 @@ import ag.sokolov.smsrelay.domain.use_case.add_telegram_bot.AddTelegramBotUseCas
 import ag.sokolov.smsrelay.domain.use_case.delete_telegram_bot.DeleteTelegramBotUseCase
 import ag.sokolov.smsrelay.domain.use_case.get_telegram_bot.GetTelegramBotUseCase
 import ag.sokolov.smsrelay.domain.use_case.get_telegram_recipient.GetTelegramRecipientUseCase
+import ag.sokolov.smsrelay.ui.settings.state.BotState
+import ag.sokolov.smsrelay.ui.settings.state.RecipientState
+import ag.sokolov.smsrelay.ui.settings.action.SettingsAction
+import ag.sokolov.smsrelay.ui.settings.state.SettingsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue

@@ -1,4 +1,4 @@
-package ag.sokolov.smsrelay.ui.settings.recipient
+package ag.sokolov.smsrelay.ui.settings.screen.recipient
 
 sealed class RecipientSettingsAction {
     data object AddRecipient : RecipientSettingsAction()

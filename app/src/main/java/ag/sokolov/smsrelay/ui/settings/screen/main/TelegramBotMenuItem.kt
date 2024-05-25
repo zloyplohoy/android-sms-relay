@@ -1,8 +1,8 @@
-package ag.sokolov.smsrelay.ui.settings.main
+package ag.sokolov.smsrelay.ui.settings.screen.main
 
 import ag.sokolov.smsrelay.ui.common.MenuItem
 import ag.sokolov.smsrelay.ui.common.MenuItemWarningBlock
-import ag.sokolov.smsrelay.ui.settings.common.BotState
+import ag.sokolov.smsrelay.ui.settings.state.BotState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Send
 import androidx.compose.material3.MaterialTheme
