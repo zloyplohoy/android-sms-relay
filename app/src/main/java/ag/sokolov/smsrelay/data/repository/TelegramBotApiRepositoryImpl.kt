@@ -47,8 +47,11 @@ constructor(
         } catch (e: HttpException) {
             Response.Failure(
                 when (e.code()) {
+                    // TODO: Validate token on input instead of handling 404
+                    // When token is too short, 404 is returned instead of 401
                     400 -> DomainError.RecipientInvalid
-                    401 -> DomainError.BotApiTokenInvalid
+                    401,
+                    404 -> DomainError.BotApiTokenInvalid
                     else -> DomainError.UnhandledError
                 })
         }
