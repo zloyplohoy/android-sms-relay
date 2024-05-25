@@ -95,7 +95,7 @@ private fun PreviewBotSettingsScreenError() {
     SMSRelayTheme {
         Surface {
             BotSettingsScreen(
-                state = BotState.Error("Well, that escalated quickly"),
+                state = BotState.Error("API token invalid"),
                 onAction = {},
                 onBackClick = {})
         }
