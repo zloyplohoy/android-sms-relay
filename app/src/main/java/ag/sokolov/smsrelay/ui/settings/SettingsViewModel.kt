@@ -39,6 +39,8 @@ constructor(
         when (action) {
             is SettingsAction.AddTelegramBot -> addBot(action.botApiToken)
             is SettingsAction.RemoveTelegramBot -> removeBot()
+            is SettingsAction.AddRecipient -> Unit
+            is SettingsAction.RemoveRecipient -> Unit
         }
     }
 

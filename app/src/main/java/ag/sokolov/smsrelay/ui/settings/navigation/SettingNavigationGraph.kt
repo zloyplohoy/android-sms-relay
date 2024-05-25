@@ -1,14 +1,10 @@
 package ag.sokolov.smsrelay.ui.settings.navigation
 
+import ag.sokolov.smsrelay.ui.settings.SettingsViewModel
 import ag.sokolov.smsrelay.ui.settings.bot.BotSettingsScreen
 import ag.sokolov.smsrelay.ui.settings.main.SettingsScreen
-import ag.sokolov.smsrelay.ui.settings.SettingsViewModel
 import ag.sokolov.smsrelay.ui.settings.recipient.RecipientSettingsScreen
-import ag.sokolov.smsrelay.ui.settings.recipient.RecipientSettingsViewModel
 import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -22,7 +18,10 @@ object SettingsNavRoutes {
     const val PERMISSIONS = "$GRAPH_ROOT/permissions"
 }
 
-fun NavGraphBuilder.settingsNavGraph(navHostController: NavHostController, settingsViewModel: SettingsViewModel) {
+fun NavGraphBuilder.settingsNavGraph(
+    navHostController: NavHostController,
+    settingsViewModel: SettingsViewModel
+) {
     navigation(route = SettingsNavRoutes.GRAPH_ROOT, startDestination = SettingsNavRoutes.MAIN) {
         composable(
             route = SettingsNavRoutes.MAIN,
@@ -59,11 +58,9 @@ fun NavGraphBuilder.settingsNavGraph(navHostController: NavHostController, setti
             popExitTransition = {
                 slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
             }) {
-                val viewModel: RecipientSettingsViewModel = hiltViewModel()
-
                 RecipientSettingsScreen(
-                    state = viewModel.state,
-                    onAction = viewModel::onAction,
+                    state = settingsViewModel.state.recipientState,
+                    onAction = settingsViewModel::onAction,
                     onBackClick = navHostController::popBackStack)
             }
     }
