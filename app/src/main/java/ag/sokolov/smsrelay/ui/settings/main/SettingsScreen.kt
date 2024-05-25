@@ -41,7 +41,7 @@ private fun PreviewSettingsScreenLoading() {
 
 @Preview
 @Composable
-private fun PreviewSettingsScreenFilled() {
+private fun PreviewSettingsScreenConfigured() {
     SMSRelayTheme {
         Surface {
             SettingsScreen(
