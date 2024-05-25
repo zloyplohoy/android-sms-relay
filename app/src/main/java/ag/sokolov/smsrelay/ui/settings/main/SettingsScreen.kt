@@ -1,7 +1,6 @@
 package ag.sokolov.smsrelay.ui.settings.main
 
 import ag.sokolov.smsrelay.ui.common.MenuHeader
-import ag.sokolov.smsrelay.ui.common.MenuItem
 import ag.sokolov.smsrelay.ui.settings.BotState
 import ag.sokolov.smsrelay.ui.settings.RecipientState
 import ag.sokolov.smsrelay.ui.settings.SettingsState
@@ -9,8 +8,6 @@ import ag.sokolov.smsrelay.ui.settings.navigation.SettingsNavRoutes
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.List
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -25,11 +22,6 @@ fun SettingsScreen(state: SettingsState = SettingsState(), navigate: (String) ->
         TelegramRecipientMenuItem(
             recipientState = state.recipientState,
             onClick = { navigate(SettingsNavRoutes.RECIPIENT) })
-        MenuItem(
-            icon = Icons.AutoMirrored.Outlined.List,
-            title = "Permissions",
-            description = state.permissionsConfiguration,
-            onClick = { navigate(SettingsNavRoutes.PERMISSIONS) })
     }
 }
 
