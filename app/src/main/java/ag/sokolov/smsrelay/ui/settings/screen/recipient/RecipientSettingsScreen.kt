@@ -3,8 +3,9 @@ package ag.sokolov.smsrelay.ui.settings.screen.recipient
 import ag.sokolov.smsrelay.ui.common.MenuHeader
 import ag.sokolov.smsrelay.ui.common.MenuItem
 import ag.sokolov.smsrelay.ui.common.MenuItemClearBlock
-import ag.sokolov.smsrelay.ui.settings.state.RecipientState
+import ag.sokolov.smsrelay.ui.common.MenuItemWarningBlock
 import ag.sokolov.smsrelay.ui.settings.action.SettingsAction
+import ag.sokolov.smsrelay.ui.settings.state.RecipientState
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
@@ -40,7 +41,9 @@ fun RecipientSettingsScreen(
                     MenuItemClearBlock(onClick = { onAction(SettingsAction.RemoveRecipient) })
                 }
             is RecipientState.BotError ->
-                MenuItem(title = "Error", description = "Check bot settings")
+                MenuItem(title = "Offline", description = "Check bot settings") {
+                    MenuItemWarningBlock()
+                }
         }
     }
 }
