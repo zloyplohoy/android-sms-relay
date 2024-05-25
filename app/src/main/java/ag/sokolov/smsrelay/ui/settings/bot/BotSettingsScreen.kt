@@ -3,8 +3,8 @@ package ag.sokolov.smsrelay.ui.settings.bot
 import ag.sokolov.smsrelay.ui.common.MenuHeader
 import ag.sokolov.smsrelay.ui.common.MenuItem2
 import ag.sokolov.smsrelay.ui.common.MenuItemClearBlock
-import ag.sokolov.smsrelay.ui.settings.BotState
-import ag.sokolov.smsrelay.ui.settings.SettingsAction
+import ag.sokolov.smsrelay.ui.settings.common.BotState
+import ag.sokolov.smsrelay.ui.settings.common.SettingsAction
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth

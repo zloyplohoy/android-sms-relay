@@ -1,4 +1,4 @@
-package ag.sokolov.smsrelay.ui.settings
+package ag.sokolov.smsrelay.ui.settings.common
 
 sealed class SettingsAction {
     data class AddTelegramBot(val botApiToken: String) : SettingsAction()

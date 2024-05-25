@@ -1,9 +1,9 @@
 package ag.sokolov.smsrelay.ui.settings.main
 
 import ag.sokolov.smsrelay.ui.common.MenuHeader
-import ag.sokolov.smsrelay.ui.settings.BotState
-import ag.sokolov.smsrelay.ui.settings.RecipientState
-import ag.sokolov.smsrelay.ui.settings.SettingsState
+import ag.sokolov.smsrelay.ui.settings.common.BotState
+import ag.sokolov.smsrelay.ui.settings.common.RecipientState
+import ag.sokolov.smsrelay.ui.settings.common.SettingsState
 import ag.sokolov.smsrelay.ui.settings.navigation.SettingsNavRoutes
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
 import androidx.compose.foundation.layout.Column
@@ -43,7 +43,8 @@ private fun PreviewSettingsScreenConfigured() {
                         botState =
                             BotState.Configured(
                                 botName = "Awesome SMS bot", botUsername = "awesome_sms_bot"),
-                        recipientState = RecipientState.Configured(fullName = "Aleksei Sokolov")))
+                        recipientState = RecipientState.Configured(fullName = "Aleksei Sokolov"))
+            )
         }
     }
 }

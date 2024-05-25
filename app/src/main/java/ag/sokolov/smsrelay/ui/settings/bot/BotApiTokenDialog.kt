@@ -1,6 +1,6 @@
 package ag.sokolov.smsrelay.ui.settings.bot
 
-import ag.sokolov.smsrelay.ui.settings.SettingsAction
+import ag.sokolov.smsrelay.ui.settings.common.SettingsAction
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement

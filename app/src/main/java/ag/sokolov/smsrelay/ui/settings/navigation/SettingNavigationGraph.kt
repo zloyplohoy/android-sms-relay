@@ -1,6 +1,6 @@
 package ag.sokolov.smsrelay.ui.settings.navigation
 
-import ag.sokolov.smsrelay.ui.settings.SettingsViewModel
+import ag.sokolov.smsrelay.ui.settings.common.SettingsViewModel
 import ag.sokolov.smsrelay.ui.settings.bot.BotSettingsScreen
 import ag.sokolov.smsrelay.ui.settings.main.SettingsScreen
 import ag.sokolov.smsrelay.ui.settings.recipient.RecipientSettingsScreen

@@ -1,4 +1,4 @@
-package ag.sokolov.smsrelay.ui.settings
+package ag.sokolov.smsrelay.ui.settings.common
 
 import ag.sokolov.smsrelay.domain.model.DomainError
 import ag.sokolov.smsrelay.domain.model.Response
@@ -81,7 +81,8 @@ constructor(
             is Response.Success ->
                 telegramBotResponse.data?.let { telegramBot ->
                     BotState.Configured(
-                        botName = telegramBot.name, botUsername = telegramBot.username)
+                        botName = telegramBot.name, botUsername = telegramBot.username
+                    )
                 } ?: BotState.NotConfigured
             is Response.Failure ->
                 when (telegramBotResponse.error) {
@@ -97,14 +98,13 @@ constructor(
             is Response.Success ->
                 telegramRecipientResponse.data?.let { telegramRecipient ->
                     RecipientState.Configured(
-                        fullName = "Aleksei", username = telegramRecipient.username)
+                        fullName = "Aleksei", username = telegramRecipient.username
+                    )
                 } ?: RecipientState.NotConfigured
             is Response.Failure ->
                 when (telegramRecipientResponse.error) {
-                    is DomainError.BotApiTokenInvalid ->
-                        RecipientState.BotError("Check Telegram bot settings")
-                    is DomainError.RecipientInvalid ->
-                        RecipientState.RecipientError("Recipient blocked the bot")
+                    is DomainError.BotApiTokenInvalid -> RecipientState.BotError("Check Telegram bot settings")
+                    is DomainError.RecipientInvalid -> RecipientState.RecipientError("Recipient blocked the bot")
                     else -> RecipientState.RecipientError("Unhandled error")
                 }
         }
