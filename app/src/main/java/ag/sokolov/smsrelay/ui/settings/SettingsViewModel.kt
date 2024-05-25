@@ -136,6 +136,8 @@ constructor(
                         RecipientState.Loading("Waiting for network...")
                     is DomainError.NetworkError ->
                         RecipientState.ExternalError("Check bot settings")
+                    is DomainError.BotApiTokenMissing ->
+                        RecipientState.ExternalError("Bot configuration required")
                     is DomainError.BotApiTokenInvalid ->
                         RecipientState.ExternalError("Check bot settings")
                     is DomainError.RecipientInvalid ->

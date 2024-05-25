@@ -24,8 +24,13 @@ constructor(
             configurationRepository.getTelegramRecipientId()) { isOnline, botApiToken, recipientId
                 ->
                 if (isOnline) {
-                    if (botApiToken == null || recipientId == null) {
-                        Response.Success(null)
+                    if (botApiToken == null) {
+                        Response.Failure(DomainError.BotApiTokenMissing)
+                    } else if (recipientId == null) {
+                        when(val result = telegramBotApiRepository.getTelegramBot(botApiToken)){
+                            is Response.Success -> Response.Success(null)
+                            is Response.Failure -> Response.Failure(result.error)
+                        }
                     } else {
                         telegramBotApiRepository.getTelegramRecipient(botApiToken, recipientId)
                     }
