@@ -96,7 +96,7 @@ fun Warning(color: Color? = null) {
                 modifier =
                     Modifier.width(1.dp)
                         .height(32.dp)
-                        .background(MaterialTheme.colorScheme.onBackground))
+                        .background(color ?: MaterialTheme.colorScheme.onSurface))
             Icon(
                 imageVector = Icons.Outlined.Warning,
                 contentDescription = "",
