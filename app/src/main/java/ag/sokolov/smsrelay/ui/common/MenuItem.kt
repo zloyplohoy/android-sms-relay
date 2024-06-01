@@ -37,7 +37,9 @@ fun MenuItem(
     onClick: (() -> Unit)? = null,
     showWarning: Boolean = false,
 ) {
-    val enabledAwareOnClick: (() -> Unit)? = if (isEnabled) onClick else null
+    val enabledAwareClickableModifier: Modifier =
+        if (isEnabled) onClick?.let { Modifier.clickable(onClick = it) } ?: Modifier else Modifier
+
     val enabledAwareColor: Color =
         if (isEnabled) MaterialTheme.colorScheme.onSurface
         else MaterialTheme.colorScheme.onSurfaceVariant
@@ -48,7 +50,7 @@ fun MenuItem(
         modifier =
             Modifier.fillMaxWidth()
                 .height(80.dp)
-                .then(enabledAwareOnClick?.let { Modifier.clickable(onClick = it) } ?: Modifier)
+                .then(enabledAwareClickableModifier)
                 .padding(start = 32.dp, end = 16.dp, top = 16.dp, bottom = 16.dp)) {
             icon?.let { icon ->
                 Icon(
