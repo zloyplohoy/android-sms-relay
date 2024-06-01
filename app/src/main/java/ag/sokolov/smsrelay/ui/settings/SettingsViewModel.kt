@@ -47,24 +47,6 @@ constructor(
         observeConfiguration()
     }
 
-    fun onAction(action: SettingsAction) {
-        when (action) {
-            is SettingsAction.AddTelegramBot -> addBot(action.botApiToken)
-            is SettingsAction.RemoveTelegramBot -> removeBot()
-            is SettingsAction.AddRecipient -> addRecipient()
-            is SettingsAction.RemoveRecipient -> removeRecipient()
-        }
-    }
-
-    private fun addBot(botApiToken: String) =
-        viewModelScope.launch { addTelegramBotUseCase(botApiToken) }
-
-    private fun removeBot() = viewModelScope.launch { deleteTelegramBotUseCase() }
-
-    private fun addRecipient() = viewModelScope.launch { addTelegramRecipientUseCase() }
-
-    private fun removeRecipient() = viewModelScope.launch { deleteTelegramRecipientUseCase() }
-
     private fun observeConfiguration() {
         viewModelScope.launch {
             combine(isOnlineUseCase(), getTelegramBotUseCase(), getTelegramRecipientUseCase()) {
@@ -147,4 +129,22 @@ constructor(
                     else -> RecipientState.RecipientError("Unhandled error")
                 }
         }
+
+    fun onAction(action: SettingsAction) {
+        when (action) {
+            is SettingsAction.AddTelegramBot -> addBot(action.botApiToken)
+            is SettingsAction.RemoveTelegramBot -> removeBot()
+            is SettingsAction.AddRecipient -> addRecipient()
+            is SettingsAction.RemoveRecipient -> removeRecipient()
+        }
+    }
+
+    private fun addBot(botApiToken: String) =
+        viewModelScope.launch { addTelegramBotUseCase(botApiToken) }
+
+    private fun removeBot() = viewModelScope.launch { deleteTelegramBotUseCase() }
+
+    private fun addRecipient() = viewModelScope.launch { addTelegramRecipientUseCase() }
+
+    private fun removeRecipient() = viewModelScope.launch { deleteTelegramRecipientUseCase() }
 }
