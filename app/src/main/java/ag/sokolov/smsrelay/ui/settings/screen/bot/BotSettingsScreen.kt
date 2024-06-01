@@ -3,8 +3,8 @@ package ag.sokolov.smsrelay.ui.settings.screen.bot
 import ag.sokolov.smsrelay.ui.common.MenuHeader
 import ag.sokolov.smsrelay.ui.common.MenuItem
 import ag.sokolov.smsrelay.ui.common.MenuItemClearBlock
-import ag.sokolov.smsrelay.ui.settings.state.BotState
 import ag.sokolov.smsrelay.ui.settings.action.SettingsAction
+import ag.sokolov.smsrelay.ui.settings.state.BotState
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -95,9 +95,7 @@ private fun PreviewBotSettingsScreenError() {
     SMSRelayTheme {
         Surface {
             BotSettingsScreen(
-                state = BotState.Error("API token invalid"),
-                onAction = {},
-                onBackClick = {})
+                state = BotState.Error("API token invalid"), onAction = {}, onBackClick = {})
         }
     }
 }
