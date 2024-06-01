@@ -61,7 +61,7 @@ fun MenuItem(
                 description?.let { Description(text = it, color = enabledAwareColor) }
             }
             if (showWarning) {
-                Warning()
+                Warning(enabledAwareColor)
             }
         }
 }
@@ -88,7 +88,7 @@ fun Description(text: String, color: Color? = null) {
 }
 
 @Composable
-fun Warning() {
+fun Warning(color: Color? = null) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -100,7 +100,8 @@ fun Warning() {
             Icon(
                 imageVector = Icons.Outlined.Warning,
                 contentDescription = "",
-                modifier = Modifier.padding(horizontal = 12.dp))
+                modifier = Modifier.padding(horizontal = 12.dp),
+                tint = color ?: MaterialTheme.colorScheme.onSurface)
         }
 }
 
