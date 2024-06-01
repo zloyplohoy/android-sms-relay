@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -25,49 +26,67 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun MenuItem(
+    isEnabled: Boolean = true,
     icon: ImageVector? = null,
     title: String,
     description: String? = null,
     onClick: (() -> Unit)? = null,
     content: @Composable (() -> Unit)? = null
 ) {
+    val enabledAwareOnClick: (() -> Unit)? = if (isEnabled) onClick else null
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         modifier =
             Modifier.fillMaxWidth()
                 .height(80.dp)
-                .then(onClick?.let { Modifier.clickable(onClick = it) } ?: Modifier)
+                .then(enabledAwareOnClick?.let { Modifier.clickable(onClick = it) } ?: Modifier)
                 .padding(start = 32.dp, end = 16.dp, top = 16.dp, bottom = 16.dp)) {
             icon?.let { icon ->
                 Icon(
                     imageVector = icon,
                     contentDescription = "Setting icon",
-                )
+                    tint = getEnabledAwareColor(isEnabled = isEnabled))
             }
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = title,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.titleLarge)
+                    style = MaterialTheme.typography.titleLarge,
+                    color = getEnabledAwareColor(isEnabled = isEnabled))
                 description?.let {
                     Text(
                         text = it,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.Light)
+                        fontWeight = FontWeight.Light,
+                        color = getEnabledAwareColor(isEnabled = isEnabled))
                 }
             }
             content?.let { it() }
         }
 }
 
+@Composable
+private fun getEnabledAwareColor(isEnabled: Boolean): Color =
+    if (isEnabled) MaterialTheme.colorScheme.onSurface
+    else MaterialTheme.colorScheme.onSurfaceVariant
+
 @Preview
 @Composable
 private fun PreviewMenuItem2Add() {
     MaterialTheme { Surface { MenuItem(icon = Icons.Filled.Add, title = "Add a new item") } }
+}
+
+@Preview
+@Composable
+private fun PreviewMenuItem2AddDisabled() {
+    MaterialTheme {
+        Surface { MenuItem(icon = Icons.Filled.Add, title = "Add a new item", isEnabled = false) }
+    }
 }
 
 @Preview
@@ -78,7 +97,22 @@ private fun PreviewMenuItem2Filled() {
             MenuItem(
                 icon = Icons.Outlined.Email,
                 title = "This is an email",
-                description = "It unsurprisingly resembles an envelope")
+                description = "It unsurprisingly resembles an envelope",
+                onClick = {})
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewMenuItem2FilledDisabled() {
+    MaterialTheme {
+        Surface {
+            MenuItem(
+                icon = Icons.Outlined.Email,
+                title = "This is an email",
+                description = "It unsurprisingly resembles an envelope",
+                isEnabled = false)
         }
     }
 }
