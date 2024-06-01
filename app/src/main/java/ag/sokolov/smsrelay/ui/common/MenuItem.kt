@@ -42,11 +42,11 @@ fun MenuItem(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp),
-        modifier =
-            Modifier.fillMaxWidth()
-                .height(80.dp)
-                .then(enabledAwareOnClick?.let { Modifier.clickable(onClick = it) } ?: Modifier)
-                .padding(start = 32.dp, end = 16.dp, top = 16.dp, bottom = 16.dp)) {
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(80.dp)
+            .then(enabledAwareOnClick?.let { Modifier.clickable(onClick = it) } ?: Modifier)
+            .padding(start = 32.dp, end = 16.dp, top = 16.dp, bottom = 16.dp)) {
             icon?.let { icon ->
                 Icon(
                     imageVector = icon,
@@ -54,38 +54,53 @@ fun MenuItem(
                     tint = getEnabledAwareColor(isEnabled = isEnabled))
             }
             Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = title,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.titleLarge,
-                    color = getEnabledAwareColor(isEnabled = isEnabled))
+                Title(text = title, color = getEnabledAwareColor(isEnabled = isEnabled))
                 description?.let {
-                    Text(
-                        text = it,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.Light,
-                        color = getEnabledAwareColor(isEnabled = isEnabled))
+                    Description(text = it, color = getEnabledAwareColor(isEnabled = isEnabled))
                 }
             }
             if (showWarning) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Spacer(
-                            modifier =
-                                Modifier.width(1.dp)
-                                    .height(32.dp)
-                                    .background(MaterialTheme.colorScheme.onBackground))
-                        Icon(
-                            imageVector = Icons.Outlined.Warning,
-                            contentDescription = "",
-                            modifier = Modifier.padding(horizontal = 12.dp))
-                    }
+                Warning()
             }
         }
+}
+
+@Composable
+private fun Title(text: String, color: Color?) {
+    Text(
+        text = text,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+        style = MaterialTheme.typography.titleLarge,
+        color = color ?: MaterialTheme.colorScheme.onSurface)
+}
+
+@Composable
+fun Description(text: String, color: Color?) {
+    Text(
+        text = text,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+        style = MaterialTheme.typography.labelLarge,
+        fontWeight = FontWeight.Light,
+        color = color ?: MaterialTheme.colorScheme.onSurface)
+}
+
+@Composable
+fun Warning() {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Spacer(
+            modifier = Modifier
+                .width(1.dp)
+                .height(32.dp)
+                .background(MaterialTheme.colorScheme.onBackground))
+        Icon(
+            imageVector = Icons.Outlined.Warning,
+            contentDescription = "",
+            modifier = Modifier.padding(horizontal = 12.dp))
+    }
 }
 
 @Composable
