@@ -1,15 +1,19 @@
 package ag.sokolov.smsrelay.ui.common
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.Email
+import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -31,7 +35,7 @@ fun MenuItem(
     title: String,
     description: String? = null,
     onClick: (() -> Unit)? = null,
-    content: @Composable (() -> Unit)? = null
+    showWarning: Boolean = false,
 ) {
     val enabledAwareOnClick: (() -> Unit)? = if (isEnabled) onClick else null
 
@@ -66,7 +70,21 @@ fun MenuItem(
                         color = getEnabledAwareColor(isEnabled = isEnabled))
                 }
             }
-            content?.let { it() }
+            if (showWarning) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Spacer(
+                            modifier =
+                                Modifier.width(1.dp)
+                                    .height(32.dp)
+                                    .background(MaterialTheme.colorScheme.onBackground))
+                        Icon(
+                            imageVector = Icons.Outlined.Warning,
+                            contentDescription = "",
+                            modifier = Modifier.padding(horizontal = 12.dp))
+                    }
+            }
         }
 }
 

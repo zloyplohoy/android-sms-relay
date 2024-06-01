@@ -1,7 +1,6 @@
 package ag.sokolov.smsrelay.ui.settings.screen.main
 
 import ag.sokolov.smsrelay.ui.common.MenuItem
-import ag.sokolov.smsrelay.ui.common.MenuItemWarningBlock
 import ag.sokolov.smsrelay.ui.settings.state.BotState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Send
@@ -20,24 +19,22 @@ fun TelegramBotMenuItem(botState: BotState, onClick: (() -> Unit)?) =
         is BotState.NotConfigured ->
             TelegramBotMenuItemContent(onClick = onClick, description = "Not configured")
         is BotState.Error ->
-            TelegramBotMenuItemContent(onClick = onClick, description = botState.errorMessage) {
-                MenuItemWarningBlock()
-            }
+            TelegramBotMenuItemContent(
+                onClick = onClick, description = botState.errorMessage, showWarning = true)
     }
 
 @Composable
 fun TelegramBotMenuItemContent(
     onClick: (() -> Unit)? = {},
     description: String?,
-    content: @Composable (() -> Unit)? = null
+    showWarning: Boolean = false
 ) {
     MenuItem(
         icon = Icons.AutoMirrored.Outlined.Send,
         title = "Telegram bot",
         description = description,
-        onClick = onClick) {
-            content?.let { it() }
-        }
+        onClick = onClick,
+        showWarning = showWarning)
 }
 
 @Preview

@@ -1,7 +1,6 @@
 package ag.sokolov.smsrelay.ui.settings.screen.main
 
 import ag.sokolov.smsrelay.ui.common.MenuItem
-import ag.sokolov.smsrelay.ui.common.MenuItemWarningBlock
 import ag.sokolov.smsrelay.ui.settings.state.RecipientState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Person
@@ -22,9 +21,7 @@ fun TelegramRecipientMenuItem(recipientState: RecipientState, onClick: (() -> Un
                 onClick = onClick, description = recipientState.fullName)
         is RecipientState.RecipientError ->
             TelegramRecipientMenuItemContent(
-                onClick = onClick, description = recipientState.errorMessage) {
-                    MenuItemWarningBlock()
-                }
+                onClick = onClick, description = recipientState.errorMessage, showWarning = true)
         is RecipientState.ExternalError ->
             TelegramRecipientMenuItemContent(description = recipientState.errorMessage)
     }
@@ -33,15 +30,14 @@ fun TelegramRecipientMenuItem(recipientState: RecipientState, onClick: (() -> Un
 fun TelegramRecipientMenuItemContent(
     onClick: (() -> Unit)? = null,
     description: String?,
-    content: @Composable (() -> Unit)? = null
+    showWarning: Boolean = false
 ) {
     MenuItem(
         icon = Icons.Outlined.Person,
         title = "Recipient",
         description = description,
-        onClick = onClick) {
-            content?.let { it() }
-        }
+        onClick = onClick,
+        showWarning = showWarning)
 }
 
 @Preview

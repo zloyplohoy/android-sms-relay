@@ -2,12 +2,9 @@ package ag.sokolov.smsrelay.ui.settings.screen.recipient
 
 import ag.sokolov.smsrelay.ui.common.MenuHeader
 import ag.sokolov.smsrelay.ui.common.MenuItem
-import ag.sokolov.smsrelay.ui.common.MenuItemClearBlock
-import ag.sokolov.smsrelay.ui.common.MenuItemWarningBlock
 import ag.sokolov.smsrelay.ui.settings.action.SettingsAction
 import ag.sokolov.smsrelay.ui.settings.state.RecipientState
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
-import android.view.Menu
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
@@ -34,17 +31,11 @@ fun RecipientSettingsScreen(
                     title = "Add recipient",
                     onClick = { onAction(SettingsAction.AddRecipient) })
             is RecipientState.Configured ->
-                MenuItem(title = state.fullName, description = state.username?.let { "@$it" }) {
-                    MenuItemClearBlock(onClick = { onAction(SettingsAction.RemoveRecipient) })
-                }
+                MenuItem(title = state.fullName, description = state.username?.let { "@$it" })
             is RecipientState.RecipientError ->
-                MenuItem(title = "Error", description = state.errorMessage) {
-                    MenuItemClearBlock(onClick = { onAction(SettingsAction.RemoveRecipient) })
-                }
+                MenuItem(title = "Error", description = state.errorMessage)
             is RecipientState.ExternalError ->
-                MenuItem(title = state.errorMessage) {
-                    MenuItemWarningBlock()
-                }
+                MenuItem(title = state.errorMessage, showWarning = true)
         }
     }
 }
@@ -54,7 +45,8 @@ fun RecipientSettingsScreen(
 private fun PreviewRecipientSettingsScreen() {
     SMSRelayTheme {
         Surface {
-            RecipientSettingsScreen(state = RecipientState.Loading(), onAction = {}, onBackClick = {})
+            RecipientSettingsScreen(
+                state = RecipientState.Loading(), onAction = {}, onBackClick = {})
         }
     }
 }

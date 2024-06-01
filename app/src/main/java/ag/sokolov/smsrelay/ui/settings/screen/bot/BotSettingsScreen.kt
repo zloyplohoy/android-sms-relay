@@ -2,12 +2,10 @@ package ag.sokolov.smsrelay.ui.settings.screen.bot
 
 import ag.sokolov.smsrelay.ui.common.MenuHeader
 import ag.sokolov.smsrelay.ui.common.MenuItem
-import ag.sokolov.smsrelay.ui.common.MenuItemClearBlock
 import ag.sokolov.smsrelay.ui.settings.action.SettingsAction
 import ag.sokolov.smsrelay.ui.settings.state.BotState
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -41,7 +39,7 @@ fun BotSettingsScreen(
                 isLoading = state is BotState.Loading,
                 onBackClick = { onBackClick() })
         }) {
-            Column(modifier = Modifier.padding(it).fillMaxWidth()) {
+            Column(modifier = Modifier.padding(it)) {
                 when (state) {
                     is BotState.Loading -> MenuItem(title = state.message)
                     is BotState.NotConfigured ->
@@ -50,15 +48,8 @@ fun BotSettingsScreen(
                             title = "Add a bot",
                             onClick = { toggleTokenDialog() })
                     is BotState.Configured ->
-                        MenuItem(title = state.botName, description = "@${state.botUsername}") {
-                            MenuItemClearBlock(
-                                onClick = { onAction(SettingsAction.RemoveTelegramBot) })
-                        }
-                    is BotState.Error ->
-                        MenuItem(title = "Error", description = state.errorMessage) {
-                            MenuItemClearBlock(
-                                onClick = { onAction(SettingsAction.RemoveTelegramBot) })
-                        }
+                        MenuItem(title = state.botName, description = "@${state.botUsername}")
+                    is BotState.Error -> MenuItem(title = "Error", description = state.errorMessage)
                 }
             }
             if (showTokenDialog) {
