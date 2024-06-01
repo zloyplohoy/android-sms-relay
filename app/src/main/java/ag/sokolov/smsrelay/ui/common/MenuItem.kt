@@ -107,21 +107,13 @@ fun Warning(color: Color? = null) {
 
 @Preview
 @Composable
-private fun PreviewMenuItem2Add() {
+private fun PreviewMenuItemAdd() {
     MaterialTheme { Surface { MenuItem(icon = Icons.Filled.Add, title = "Add a new item") } }
 }
 
 @Preview
 @Composable
-private fun PreviewMenuItem2AddDisabled() {
-    MaterialTheme {
-        Surface { MenuItem(icon = Icons.Filled.Add, title = "Add a new item", isEnabled = false) }
-    }
-}
-
-@Preview
-@Composable
-private fun PreviewMenuItem2Filled() {
+private fun PreviewMenuItemFilled() {
     MaterialTheme {
         Surface {
             MenuItem(
@@ -135,13 +127,28 @@ private fun PreviewMenuItem2Filled() {
 
 @Preview
 @Composable
-private fun PreviewMenuItem2FilledDisabled() {
+private fun PreviewMenuItemFilledWarning() {
     MaterialTheme {
         Surface {
             MenuItem(
                 icon = Icons.Outlined.Email,
                 title = "This is an email",
                 description = "It unsurprisingly resembles an envelope",
+                showWarning = true)
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewMenuItemFilledWarningDisabled() {
+    MaterialTheme {
+        Surface {
+            MenuItem(
+                icon = Icons.Outlined.Email,
+                title = "This is an email",
+                description = "It unsurprisingly resembles an envelope",
+                showWarning = true,
                 isEnabled = false)
         }
     }
