@@ -28,6 +28,7 @@ constructor(
                         Response.Failure(DomainError.BotApiTokenMissing)
                     } else if (recipientId == null) {
                         when(val result = telegramBotApiRepository.getTelegramBot(botApiToken)){
+                            is Response.Loading -> Response.Loading
                             is Response.Success -> Response.Success(null)
                             is Response.Failure -> Response.Failure(result.error)
                         }

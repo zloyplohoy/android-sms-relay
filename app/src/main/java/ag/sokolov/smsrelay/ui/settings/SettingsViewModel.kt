@@ -80,6 +80,7 @@ constructor(
 
     private fun getBotState(telegramBotResponse: Response<TelegramBot?, DomainError>): BotState =
         when (telegramBotResponse) {
+            is Response.Loading -> BotState.Loading
             is Response.Success -> getBotStateFromData(telegramBotResponse.data)
             is Response.Failure -> getBotStateFromError(telegramBotResponse.error)
         }
@@ -100,6 +101,7 @@ constructor(
         telegramRecipientResponse: Response<TelegramUser?, DomainError>
     ): RecipientState =
         when (telegramRecipientResponse) {
+            is Response.Loading -> RecipientState.Loading()
             is Response.Success ->
                 telegramRecipientResponse.data?.let { telegramRecipient ->
                     RecipientState.Configured(
