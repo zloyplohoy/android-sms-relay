@@ -2,16 +2,30 @@ package ag.sokolov.smsrelay.domain.use_case.add_telegram_recipient
 
 import ag.sokolov.smsrelay.domain.repository.ConfigurationRepository
 import ag.sokolov.smsrelay.domain.repository.TelegramBotApiRepository
+import ag.sokolov.smsrelay.domain.service.add_recipient.AddRecipientService
+import android.content.Context
+import android.content.Intent
+import android.os.Build
+import android.util.Log
+import androidx.annotation.RequiresApi
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 class AddTelegramRecipientUseCase
 @Inject
 constructor(
+    @ApplicationContext private val appContext: Context,
     private val configurationRepository: ConfigurationRepository,
     private val telegramBotApiRepository: TelegramBotApiRepository
 ) {
-    suspend operator fun invoke(): Result<Unit> =
-        configurationRepository.setTelegramRecipientId(1237182748)
+    @RequiresApi(Build.VERSION_CODES.O)
+    suspend operator fun invoke(): Result<Unit> {
+        val serviceIntent = Intent(appContext, AddRecipientService::class.java)
+        Log.d("TAG", "invoke: Starting service")
+        appContext.startForegroundService(serviceIntent)
+        return Result.success(Unit)
+    }
+//        configurationRepository.setTelegramRecipientId(56670355)
     //        runCatching {
     //            // TODO:
     //            // 3. Save recipient chat ID

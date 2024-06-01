@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <queries>
         <package android:name="org.telegram.messenger" />
@@ -30,6 +31,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service
+            android:name=".domain.service.add_recipient.AddRecipientService"
+            android:exported="true"
+            android:foregroundServiceType="shortService" />
     </application>
 
 </manifest>
