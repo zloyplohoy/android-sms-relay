@@ -4,7 +4,7 @@ import androidx.compose.runtime.Stable
 
 @Stable
 sealed class BotState {
-    data class Loading(val message: String = "Loading...") : BotState()
+    data object Loading : BotState()
 
     data object NotConfigured : BotState()
 

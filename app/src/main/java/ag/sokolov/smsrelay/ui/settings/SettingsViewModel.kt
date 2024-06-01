@@ -114,7 +114,7 @@ constructor(
                 } ?: BotState.NotConfigured
             is Response.Failure ->
                 when (telegramBotResponse.error) {
-                    is DomainError.NetworkUnavailable -> BotState.Loading("Waiting for network...")
+                    is DomainError.NetworkUnavailable -> BotState.Loading
                     is DomainError.NetworkError -> BotState.Error("Network error")
                     is DomainError.BotApiTokenInvalid -> BotState.Error("Bot API token invalid")
                     else -> BotState.Error("Unhandled error")

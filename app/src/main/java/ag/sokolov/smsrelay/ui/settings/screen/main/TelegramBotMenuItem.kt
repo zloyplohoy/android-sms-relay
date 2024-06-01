@@ -13,7 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 fun TelegramBotMenuItem(botState: BotState, onClick: (() -> Unit)?) =
     when (botState) {
         is BotState.Loading ->
-            TelegramBotMenuItemContent(onClick = onClick, description = botState.message)
+            TelegramBotMenuItemContent(onClick = onClick, description = "Loading...")
         is BotState.Configured ->
             TelegramBotMenuItemContent(onClick = onClick, description = botState.botName)
         is BotState.NotConfigured ->
@@ -40,7 +40,7 @@ fun TelegramBotMenuItemContent(
 @Preview
 @Composable
 private fun TelegramBotMenuItemLoading() {
-    MaterialTheme { Surface { TelegramBotMenuItem(botState = BotState.Loading(), onClick = {}) } }
+    MaterialTheme { Surface { TelegramBotMenuItem(botState = BotState.Loading, onClick = {}) } }
 }
 
 @Preview
