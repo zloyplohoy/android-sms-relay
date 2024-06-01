@@ -15,15 +15,13 @@ import ag.sokolov.smsrelay.ui.settings.action.SettingsAction
 import ag.sokolov.smsrelay.ui.settings.state.BotState
 import ag.sokolov.smsrelay.ui.settings.state.RecipientState
 import ag.sokolov.smsrelay.ui.settings.state.SettingsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -40,37 +38,28 @@ constructor(
     private val deleteTelegramRecipientUseCase: DeleteTelegramRecipientUseCase
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(SettingsState())
+    private val _state =
+        combine(isOnlineUseCase(), getTelegramBotUseCase(), getTelegramRecipientUseCase()) {
+                isOnline,
+                telegramBotResponse,
+                telegramRecipientResponse ->
+                getSettingsState(isOnline, telegramBotResponse, telegramRecipientResponse)
+            }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = SettingsState())
     val state: StateFlow<SettingsState> = _state
 
-    init {
-        observeConfiguration()
-    }
-
-    private fun observeConfiguration() {
-        viewModelScope.launch {
-            combine(isOnlineUseCase(), getTelegramBotUseCase(), getTelegramRecipientUseCase()) {
-                    isOnline,
-                    telegramBotResponse,
-                    telegramRecipientResponse ->
-                    Triple(isOnline, telegramBotResponse, telegramRecipientResponse)
-                }
-                .collect { (isOnline, telegramBotResponse, telegramRecipientResponse) ->
-                    updateState(isOnline, telegramBotResponse, telegramRecipientResponse)
-                }
-        }
-    }
-
-    private fun updateState(
+    private fun getSettingsState(
         isOnline: Boolean,
         telegramBotResponse: Response<TelegramBot?, DomainError>,
         telegramRecipientResponse: Response<TelegramUser?, DomainError>
-    ) {
-        _state.value =
-            _state.value.copy(
-                isLoading = isLoading(isOnline, telegramBotResponse, telegramRecipientResponse),
-                botState = getBotState(telegramBotResponse),
-                recipientState = getRecipientState(telegramRecipientResponse))
+    ): SettingsState {
+        return SettingsState(
+            isLoading = isLoading(isOnline, telegramBotResponse, telegramRecipientResponse),
+            botState = getBotState(telegramBotResponse),
+            recipientState = getRecipientState(telegramRecipientResponse))
     }
 
     private fun isLoading(
