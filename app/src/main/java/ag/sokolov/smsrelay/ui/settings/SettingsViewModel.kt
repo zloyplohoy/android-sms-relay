@@ -21,6 +21,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -38,8 +40,8 @@ constructor(
     private val deleteTelegramRecipientUseCase: DeleteTelegramRecipientUseCase
 ) : ViewModel() {
 
-    var state by mutableStateOf(SettingsState())
-        private set
+    private val _state = MutableStateFlow(SettingsState())
+    val state: StateFlow<SettingsState> = _state
 
     init {
         observeConfiguration()
@@ -82,8 +84,8 @@ constructor(
         telegramBotResponse: Response<TelegramBot?, DomainError>,
         telegramRecipientResponse: Response<TelegramUser?, DomainError>
     ) {
-        state =
-            state.copy(
+        _state.value =
+            _state.value.copy(
                 isLoading = isLoading(isOnline, telegramBotResponse, telegramRecipientResponse),
                 botState = getBotState(telegramBotResponse),
                 recipientState = getRecipientState(telegramRecipientResponse))

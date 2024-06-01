@@ -4,6 +4,7 @@ import ag.sokolov.smsrelay.ui.settings.screen.bot.BotSettingsScreen
 import ag.sokolov.smsrelay.ui.settings.screen.main.SettingsScreen
 import ag.sokolov.smsrelay.ui.settings.screen.recipient.RecipientSettingsScreen
 import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.runtime.collectAsState
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -31,7 +32,7 @@ fun NavGraphBuilder.settingsNavGraph(
                 slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Right)
             }) {
                 SettingsScreen(
-                    state = settingsViewModel.state,
+                    state = settingsViewModel.state.collectAsState().value,
                     navigate = navHostController::navigate,
                 )
             }
@@ -44,7 +45,7 @@ fun NavGraphBuilder.settingsNavGraph(
                 slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
             }) {
                 BotSettingsScreen(
-                    state = settingsViewModel.state.botState,
+                    state = settingsViewModel.state.collectAsState().value.botState,
                     onAction = settingsViewModel::onAction,
                     onBackClick = navHostController::popBackStack)
             }
@@ -58,7 +59,7 @@ fun NavGraphBuilder.settingsNavGraph(
                 slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
             }) {
                 RecipientSettingsScreen(
-                    state = settingsViewModel.state.recipientState,
+                    state = settingsViewModel.state.collectAsState().value.recipientState,
                     onAction = settingsViewModel::onAction,
                     onBackClick = navHostController::popBackStack)
             }
