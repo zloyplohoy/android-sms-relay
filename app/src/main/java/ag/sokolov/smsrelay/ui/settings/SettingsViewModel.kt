@@ -80,18 +80,20 @@ constructor(
 
     private fun getBotState(telegramBotResponse: Response<TelegramBot?, DomainError>): BotState =
         when (telegramBotResponse) {
-            is Response.Success ->
-                telegramBotResponse.data?.let { telegramBot ->
-                    BotState.Configured(
-                        botName = telegramBot.name, botUsername = telegramBot.username)
-                } ?: BotState.NotConfigured
-            is Response.Failure ->
-                when (telegramBotResponse.error) {
-                    is DomainError.NetworkUnavailable -> BotState.Loading
-                    is DomainError.NetworkError -> BotState.Error("Network error")
-                    is DomainError.BotApiTokenInvalid -> BotState.Error("Bot API token invalid")
-                    else -> BotState.Error("Unhandled error")
-                }
+            is Response.Success -> getBotStateFromData(telegramBotResponse.data)
+            is Response.Failure -> getBotStateFromError(telegramBotResponse.error)
+        }
+
+    private fun getBotStateFromData(telegramBot: TelegramBot? = null): BotState =
+        telegramBot?.let { BotState.Configured(botName = it.name, botUsername = it.username) }
+            ?: BotState.NotConfigured
+
+    private fun getBotStateFromError(error: DomainError): BotState =
+        when (error) {
+            is DomainError.NetworkUnavailable -> BotState.Loading
+            is DomainError.NetworkError -> BotState.Error("Network error")
+            is DomainError.BotApiTokenInvalid -> BotState.Error("Bot API token invalid")
+            else -> BotState.Error("Unhandled error")
         }
 
     private fun getRecipientState(
