@@ -38,13 +38,13 @@ fun TelegramBotMenuItemContent(
 
 @Preview
 @Composable
-private fun TelegramBotMenuItemLoading() {
+private fun PreviewTelegramBotMenuItemLoading() {
     MaterialTheme { Surface { TelegramBotMenuItem(botState = BotState.Loading, onClick = {}) } }
 }
 
 @Preview
 @Composable
-private fun TelegramBotMenuItemNotConfigured() {
+private fun PrevieTelegramBotMenuItemNotConfigured() {
     MaterialTheme {
         Surface { TelegramBotMenuItem(botState = BotState.NotConfigured, onClick = {}) }
     }
@@ -52,7 +52,7 @@ private fun TelegramBotMenuItemNotConfigured() {
 
 @Preview
 @Composable
-private fun TelegramBotMenuItemConfigured() {
+private fun PreviewTelegramBotMenuItemConfigured() {
     MaterialTheme {
         Surface {
             TelegramBotMenuItem(
@@ -66,7 +66,7 @@ private fun TelegramBotMenuItemConfigured() {
 
 @Preview
 @Composable
-private fun TelegramBotMenuItemMenuItemError() {
+private fun PreviewTelegramBotMenuItemMenuItemError() {
     MaterialTheme {
         Surface {
             TelegramBotMenuItem(
