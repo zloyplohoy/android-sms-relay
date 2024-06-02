@@ -19,10 +19,15 @@ fun SettingsScreen(state: SettingsState = SettingsState(), navigate: (String) ->
         ScreenTopBar(title = "Settings")
         TelegramBotMenuItem(
             botState = state.botState,
-            onClick = if (!state.isLoading) ({ navigate(SettingsNavRoutes.BOT) }) else null)
+            onClick =
+                if (state.botState !is BotState.Loading) ({ navigate(SettingsNavRoutes.BOT) })
+                else null)
         TelegramRecipientMenuItem(
             recipientState = state.recipientState,
-            onClick = if (!state.isLoading) ({ navigate(SettingsNavRoutes.RECIPIENT) }) else null)
+            onClick =
+                if (state.recipientState !is RecipientState.Loading)
+                    ({ navigate(SettingsNavRoutes.RECIPIENT) })
+                else null)
     }
 
 @Preview
@@ -39,7 +44,6 @@ private fun PreviewSettingsScreenConfigured() {
             SettingsScreen(
                 state =
                     SettingsState(
-                        isLoading = false,
                         botState =
                             BotState.Configured(
                                 botName = "Awesome SMS bot", botUsername = "awesome_sms_bot"),
