@@ -1,5 +1,8 @@
 package ag.sokolov.smsrelay.ui.common
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -62,7 +65,7 @@ fun MenuItem(
                 Title(text = title, color = enabledAwareColor)
                 description?.let { Description(text = it, color = enabledAwareColor) }
             }
-            if (showWarning) {
+            AnimatedVisibility(visible = showWarning, enter = fadeIn(), exit = fadeOut()) {
                 Warning(enabledAwareColor)
             }
         }
