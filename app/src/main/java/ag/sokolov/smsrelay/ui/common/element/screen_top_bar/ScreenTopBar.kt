@@ -1,4 +1,4 @@
-package ag.sokolov.smsrelay.ui.common
+package ag.sokolov.smsrelay.ui.common.element.screen_top_bar
 
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
 import androidx.compose.foundation.layout.padding

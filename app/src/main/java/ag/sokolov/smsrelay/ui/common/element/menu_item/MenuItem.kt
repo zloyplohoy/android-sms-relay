@@ -1,4 +1,4 @@
-package ag.sokolov.smsrelay.ui.common
+package ag.sokolov.smsrelay.ui.common.element.menu_item
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn

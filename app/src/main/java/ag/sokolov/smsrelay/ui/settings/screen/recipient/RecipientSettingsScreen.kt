@@ -1,7 +1,7 @@
 package ag.sokolov.smsrelay.ui.settings.screen.recipient
 
-import ag.sokolov.smsrelay.ui.common.MenuItem
-import ag.sokolov.smsrelay.ui.common.ScreenTopBar
+import ag.sokolov.smsrelay.ui.common.element.menu_item.MenuItem
+import ag.sokolov.smsrelay.ui.common.element.screen_top_bar.ScreenTopBar
 import ag.sokolov.smsrelay.ui.settings.action.SettingsAction
 import ag.sokolov.smsrelay.ui.settings.state.RecipientState
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme

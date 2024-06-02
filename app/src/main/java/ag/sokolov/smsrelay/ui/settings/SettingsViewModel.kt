@@ -10,9 +10,9 @@ import ag.sokolov.smsrelay.domain.use_case.delete_telegram_bot.DeleteTelegramBot
 import ag.sokolov.smsrelay.domain.use_case.delete_telegram_recipient.DeleteTelegramRecipientUseCase
 import ag.sokolov.smsrelay.domain.use_case.get_telegram_bot.GetTelegramBotUseCase
 import ag.sokolov.smsrelay.domain.use_case.get_telegram_recipient.GetTelegramRecipientUseCase
+import ag.sokolov.smsrelay.ui.common.element.menu_item.MenuItemState
 import ag.sokolov.smsrelay.ui.settings.action.SettingsAction
 import ag.sokolov.smsrelay.ui.settings.state.BotState
-import ag.sokolov.smsrelay.ui.settings.state.MenuItemState
 import ag.sokolov.smsrelay.ui.settings.state.RecipientState
 import ag.sokolov.smsrelay.ui.settings.state.SettingsState
 import androidx.lifecycle.ViewModel

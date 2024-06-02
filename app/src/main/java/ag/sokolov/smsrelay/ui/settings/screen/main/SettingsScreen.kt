@@ -1,8 +1,8 @@
 package ag.sokolov.smsrelay.ui.settings.screen.main
 
-import ag.sokolov.smsrelay.ui.common.ScreenTopBar
+import ag.sokolov.smsrelay.ui.common.element.menu_item.MenuItemState
+import ag.sokolov.smsrelay.ui.common.element.screen_top_bar.ScreenTopBar
 import ag.sokolov.smsrelay.ui.settings.navigation.SettingsNav
-import ag.sokolov.smsrelay.ui.settings.state.MenuItemState
 import ag.sokolov.smsrelay.ui.settings.state.SettingsState
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
 import androidx.compose.foundation.layout.Column
