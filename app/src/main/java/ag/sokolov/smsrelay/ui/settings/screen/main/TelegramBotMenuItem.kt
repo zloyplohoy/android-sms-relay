@@ -11,17 +11,16 @@ import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun TelegramBotMenuItem(botState: BotState, onClick: (() -> Unit)?) =
-    when (botState) {
-        is BotState.Loading ->
-            TelegramBotMenuItemContent(onClick = onClick, description = "Loading...")
-        is BotState.Configured ->
-            TelegramBotMenuItemContent(onClick = onClick, description = botState.botName)
-        is BotState.NotConfigured ->
-            TelegramBotMenuItemContent(onClick = onClick, description = "Not configured")
-        is BotState.Error ->
-            TelegramBotMenuItemContent(
-                onClick = onClick, description = botState.errorMessage, showWarning = true)
-    }
+    TelegramBotMenuItemContent(
+        onClick = onClick,
+        description =
+            when (botState) {
+                is BotState.Loading -> "Loading..."
+                is BotState.NotConfigured -> "Not configured"
+                is BotState.Configured -> botState.botName
+                is BotState.Error -> botState.errorMessage
+            },
+        showWarning = botState is BotState.Error)
 
 @Composable
 fun TelegramBotMenuItemContent(
