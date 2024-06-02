@@ -7,10 +7,8 @@ import ag.sokolov.smsrelay.ui.settings.state.BotState
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,31 +31,29 @@ fun BotSettingsScreen(
         showTokenDialog = !showTokenDialog
     }
 
-    Scaffold(topBar = { ScreenTopBar(title = "Telegram bot", onBackClick = { onBackClick() }) }) {
-        Column(modifier = Modifier.padding(it)) {
-            when (state) {
-                is BotState.Loading -> MenuItem(title = "Loading")
-                is BotState.NotConfigured ->
-                    MenuItem(
-                        icon = Icons.Filled.Add,
-                        title = "Add a bot",
-                        onClick = { toggleTokenDialog() })
-                is BotState.Configured ->
-                    MenuItem(title = state.botName, description = "@${state.botUsername}")
-                is BotState.Error -> MenuItem(title = "Error", description = state.errorMessage)
-            }
-        }
-        if (showTokenDialog) {
-            BotApiTokenDialog(toggleDialog = ::toggleTokenDialog, onAction = onAction)
+    Column {
+        ScreenTopBar(title = "Telegram bot", onBackClick = { onBackClick() })
+        when (state) {
+            is BotState.Loading -> MenuItem(title = "Loading")
+            is BotState.NotConfigured ->
+                MenuItem(
+                    icon = Icons.Filled.Add, title = "Add a bot", onClick = { toggleTokenDialog() })
+            is BotState.Configured ->
+                MenuItem(title = state.botName, description = "@${state.botUsername}")
+            is BotState.Error -> MenuItem(title = "Error", description = state.errorMessage)
         }
     }
+
+    if (showTokenDialog) BotApiTokenDialog(toggleDialog = ::toggleTokenDialog, onAction = onAction)
 }
 
 @Preview
 @Composable
 private fun PreviewBotSettingsScreenLoading() {
     SMSRelayTheme {
-        Surface(modifier = Modifier.fillMaxSize()) { BotSettingsScreen(state = BotState.Loading, onAction = {}, onBackClick = {}) }
+        Surface(modifier = Modifier.fillMaxSize()) {
+            BotSettingsScreen(state = BotState.Loading, onAction = {}, onBackClick = {})
+        }
     }
 }
 
