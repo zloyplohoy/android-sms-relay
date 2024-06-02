@@ -15,7 +15,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun SettingsScreen(state: SettingsState = SettingsState(), navigate: (Any) -> Unit = {}) =
+fun SettingsScreen(state: SettingsState = SettingsState(), navigate: (Any) -> Unit = {}) {
+    SettingsScreenContent(state, navigate)
+}
+
+@Composable
+fun SettingsScreenContent(state: SettingsState = SettingsState(), navigate: (Any) -> Unit = {}) =
     Column(modifier = Modifier.fillMaxWidth()) {
         ScreenTopBar(title = "Settings")
         TelegramBotMenuItem(
