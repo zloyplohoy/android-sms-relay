@@ -53,13 +53,9 @@ constructor(
         telegramRecipientResponse: Response<TelegramUser?, DomainError>
     ): SettingsState {
         return SettingsState(
-            isLoading = isLoading(telegramBotResponse, telegramRecipientResponse),
             botState = getBotState(telegramBotResponse),
             recipientState = getRecipientState(telegramRecipientResponse))
     }
-
-    private fun isLoading(vararg responses: Response<*, *>): Boolean =
-        responses.any { it is Response.Loading }
 
     private fun getBotState(telegramBotResponse: Response<TelegramBot?, DomainError>): BotState =
         when (telegramBotResponse) {

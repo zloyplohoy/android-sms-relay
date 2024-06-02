@@ -16,7 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 @Composable
 fun SettingsScreen(state: SettingsState = SettingsState(), navigate: (String) -> Unit = {}) =
     Column(modifier = Modifier.fillMaxWidth()) {
-        MenuHeader(title = "Settings", isLoading = state.isLoading)
+        MenuHeader(title = "Settings")
         TelegramBotMenuItem(
             botState = state.botState,
             onClick = if (!state.isLoading) ({ navigate(SettingsNavRoutes.BOT) }) else null)

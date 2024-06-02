@@ -32,30 +32,24 @@ fun BotSettingsScreen(
         showTokenDialog = !showTokenDialog
     }
 
-    Scaffold(
-        topBar = {
-            MenuHeader(
-                title = "Telegram bot",
-                isLoading = state is BotState.Loading,
-                onBackClick = { onBackClick() })
-        }) {
-            Column(modifier = Modifier.padding(it)) {
-                when (state) {
-                    is BotState.Loading -> MenuItem(title = "Loading")
-                    is BotState.NotConfigured ->
-                        MenuItem(
-                            icon = Icons.Filled.Add,
-                            title = "Add a bot",
-                            onClick = { toggleTokenDialog() })
-                    is BotState.Configured ->
-                        MenuItem(title = state.botName, description = "@${state.botUsername}")
-                    is BotState.Error -> MenuItem(title = "Error", description = state.errorMessage)
-                }
-            }
-            if (showTokenDialog) {
-                BotApiTokenDialog(toggleDialog = ::toggleTokenDialog, onAction = onAction)
+    Scaffold(topBar = { MenuHeader(title = "Telegram bot", onBackClick = { onBackClick() }) }) {
+        Column(modifier = Modifier.padding(it)) {
+            when (state) {
+                is BotState.Loading -> MenuItem(title = "Loading")
+                is BotState.NotConfigured ->
+                    MenuItem(
+                        icon = Icons.Filled.Add,
+                        title = "Add a bot",
+                        onClick = { toggleTokenDialog() })
+                is BotState.Configured ->
+                    MenuItem(title = state.botName, description = "@${state.botUsername}")
+                is BotState.Error -> MenuItem(title = "Error", description = state.errorMessage)
             }
         }
+        if (showTokenDialog) {
+            BotApiTokenDialog(toggleDialog = ::toggleTokenDialog, onAction = onAction)
+        }
+    }
 }
 
 @Preview

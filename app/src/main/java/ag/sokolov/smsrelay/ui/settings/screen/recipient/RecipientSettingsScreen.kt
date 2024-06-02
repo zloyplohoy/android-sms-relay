@@ -19,10 +19,7 @@ fun RecipientSettingsScreen(
     onBackClick: () -> Unit
 ) {
     Column {
-        MenuHeader(
-            title = "Recipient",
-            isLoading = state is RecipientState.Loading,
-            onBackClick = { onBackClick() })
+        MenuHeader(title = "Recipient", onBackClick = { onBackClick() })
         when (state) {
             is RecipientState.Loading -> MenuItem(title = state.message)
             is RecipientState.NotConfigured ->
