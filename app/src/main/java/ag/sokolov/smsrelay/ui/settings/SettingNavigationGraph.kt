@@ -22,46 +22,45 @@ fun NavGraphBuilder.settingsNavGraph(
     navHostController: NavHostController,
     settingsViewModel: SettingsViewModel
 ) {
-    navigation(route = SettingsNavRoutes.GRAPH_ROOT, startDestination = SettingsNavRoutes.MAIN) {
-        composable(
-            route = SettingsNavRoutes.MAIN,
-            exitTransition = {
-                slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Left)
-            },
-            popEnterTransition = {
-                slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Right)
-            }) {
+    navigation(
+        route = SettingsNavRoutes.GRAPH_ROOT,
+        startDestination = SettingsNavRoutes.MAIN,
+        enterTransition = {
+            slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left)
+        },
+        popEnterTransition = {
+            slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Right)
+        },
+        exitTransition = {
+            slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Left)
+        },
+        popExitTransition = {
+            slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
+        }) {
+            composable(
+                route = SettingsNavRoutes.MAIN,
+            ) {
                 SettingsScreen(
                     state = settingsViewModel.state.collectAsState().value,
                     navigate = navHostController::navigate,
                 )
             }
-        composable(
-            route = SettingsNavRoutes.BOT,
-            enterTransition = {
-                slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left)
-            },
-            popExitTransition = {
-                slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
-            }) {
+            composable(
+                route = SettingsNavRoutes.BOT,
+            ) {
                 BotSettingsScreen(
                     state = settingsViewModel.state.collectAsState().value.botState,
                     onAction = settingsViewModel::onAction,
                     onBackClick = navHostController::popBackStack)
             }
 
-        composable(
-            route = SettingsNavRoutes.RECIPIENT,
-            enterTransition = {
-                slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left)
-            },
-            popExitTransition = {
-                slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
-            }) {
+            composable(
+                route = SettingsNavRoutes.RECIPIENT,
+            ) {
                 RecipientSettingsScreen(
                     state = settingsViewModel.state.collectAsState().value.recipientState,
                     onAction = settingsViewModel::onAction,
                     onBackClick = navHostController::popBackStack)
             }
-    }
+        }
 }
