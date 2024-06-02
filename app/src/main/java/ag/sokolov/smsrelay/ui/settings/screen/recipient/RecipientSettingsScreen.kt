@@ -6,10 +6,12 @@ import ag.sokolov.smsrelay.ui.settings.action.SettingsAction
 import ag.sokolov.smsrelay.ui.settings.state.RecipientState
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -41,7 +43,7 @@ fun RecipientSettingsScreen(
 @Composable
 private fun PreviewRecipientSettingsScreen() {
     SMSRelayTheme {
-        Surface {
+        Surface(modifier = Modifier.fillMaxSize()) {
             RecipientSettingsScreen(
                 state = RecipientState.Loading(), onAction = {}, onBackClick = {})
         }
@@ -52,7 +54,7 @@ private fun PreviewRecipientSettingsScreen() {
 @Composable
 private fun PreviewRecipientSettingsScreenNotConfigured() {
     SMSRelayTheme {
-        Surface {
+        Surface(modifier = Modifier.fillMaxSize()) {
             RecipientSettingsScreen(
                 state = RecipientState.NotConfigured, onAction = {}, onBackClick = {})
         }
@@ -63,7 +65,7 @@ private fun PreviewRecipientSettingsScreenNotConfigured() {
 @Composable
 private fun PreviewRecipientSettingsScreenConfigured() {
     SMSRelayTheme {
-        Surface {
+        Surface(modifier = Modifier.fillMaxSize()) {
             RecipientSettingsScreen(
                 state = RecipientState.Configured(fullName = "Aleksei Sokolov"),
                 onAction = {},
@@ -76,7 +78,7 @@ private fun PreviewRecipientSettingsScreenConfigured() {
 @Composable
 private fun PreviewRecipientSettingsScreenConfiguredWithUsername() {
     SMSRelayTheme {
-        Surface {
+        Surface(modifier = Modifier.fillMaxSize()) {
             RecipientSettingsScreen(
                 state =
                     RecipientState.Configured(

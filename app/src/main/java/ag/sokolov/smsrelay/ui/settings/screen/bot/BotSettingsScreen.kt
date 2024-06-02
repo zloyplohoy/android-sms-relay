@@ -6,6 +6,7 @@ import ag.sokolov.smsrelay.ui.settings.action.SettingsAction
 import ag.sokolov.smsrelay.ui.settings.state.BotState
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -56,7 +57,7 @@ fun BotSettingsScreen(
 @Composable
 private fun PreviewBotSettingsScreenLoading() {
     SMSRelayTheme {
-        Surface { BotSettingsScreen(state = BotState.Loading, onAction = {}, onBackClick = {}) }
+        Surface(modifier = Modifier.fillMaxSize()) { BotSettingsScreen(state = BotState.Loading, onAction = {}, onBackClick = {}) }
     }
 }
 
@@ -64,7 +65,7 @@ private fun PreviewBotSettingsScreenLoading() {
 @Composable
 private fun PreviewBotSettingsScreenNotConfigured() {
     SMSRelayTheme {
-        Surface {
+        Surface(modifier = Modifier.fillMaxSize()) {
             BotSettingsScreen(state = BotState.NotConfigured, onAction = {}, onBackClick = {})
         }
     }
@@ -74,7 +75,7 @@ private fun PreviewBotSettingsScreenNotConfigured() {
 @Composable
 private fun PreviewBotSettingsScreenConfigured() {
     SMSRelayTheme {
-        Surface {
+        Surface(modifier = Modifier.fillMaxSize()) {
             BotSettingsScreen(
                 state =
                     BotState.Configured(botName = "My awesome bot", botUsername = "my_awesome_bot"),
@@ -88,7 +89,7 @@ private fun PreviewBotSettingsScreenConfigured() {
 @Composable
 private fun PreviewBotSettingsScreenError() {
     SMSRelayTheme {
-        Surface {
+        Surface(modifier = Modifier.fillMaxSize()) {
             BotSettingsScreen(
                 state = BotState.Error("API token invalid"), onAction = {}, onBackClick = {})
         }

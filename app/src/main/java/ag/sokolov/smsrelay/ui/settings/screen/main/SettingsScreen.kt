@@ -7,6 +7,7 @@ import ag.sokolov.smsrelay.ui.settings.state.RecipientState
 import ag.sokolov.smsrelay.ui.settings.state.SettingsState
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -33,14 +34,14 @@ fun SettingsScreen(state: SettingsState = SettingsState(), navigate: (String) ->
 @Preview
 @Composable
 private fun PreviewSettingsScreenLoading() {
-    SMSRelayTheme { Surface { SettingsScreen() } }
+    SMSRelayTheme { Surface(modifier = Modifier.fillMaxSize()) { SettingsScreen() } }
 }
 
 @Preview
 @Composable
 private fun PreviewSettingsScreenConfigured() {
     SMSRelayTheme {
-        Surface {
+        Surface(modifier = Modifier.fillMaxSize()) {
             SettingsScreen(
                 state =
                     SettingsState(
