@@ -1,7 +1,7 @@
 package ag.sokolov.smsrelay.ui.settings.screen.recipient
 
-import ag.sokolov.smsrelay.ui.common.MenuHeader
 import ag.sokolov.smsrelay.ui.common.MenuItem
+import ag.sokolov.smsrelay.ui.common.ScreenTopBar
 import ag.sokolov.smsrelay.ui.settings.action.SettingsAction
 import ag.sokolov.smsrelay.ui.settings.state.RecipientState
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
@@ -19,7 +19,7 @@ fun RecipientSettingsScreen(
     onBackClick: () -> Unit
 ) {
     Column {
-        MenuHeader(title = "Recipient", onBackClick = { onBackClick() })
+        ScreenTopBar(title = "Recipient", onBackClick = { onBackClick() })
         when (state) {
             is RecipientState.Loading -> MenuItem(title = state.message)
             is RecipientState.NotConfigured ->

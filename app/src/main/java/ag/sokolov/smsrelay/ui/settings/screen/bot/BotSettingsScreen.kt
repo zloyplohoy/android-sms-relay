@@ -1,7 +1,7 @@
 package ag.sokolov.smsrelay.ui.settings.screen.bot
 
-import ag.sokolov.smsrelay.ui.common.MenuHeader
 import ag.sokolov.smsrelay.ui.common.MenuItem
+import ag.sokolov.smsrelay.ui.common.ScreenTopBar
 import ag.sokolov.smsrelay.ui.settings.action.SettingsAction
 import ag.sokolov.smsrelay.ui.settings.state.BotState
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
@@ -32,7 +32,7 @@ fun BotSettingsScreen(
         showTokenDialog = !showTokenDialog
     }
 
-    Scaffold(topBar = { MenuHeader(title = "Telegram bot", onBackClick = { onBackClick() }) }) {
+    Scaffold(topBar = { ScreenTopBar(title = "Telegram bot", onBackClick = { onBackClick() }) }) {
         Column(modifier = Modifier.padding(it)) {
             when (state) {
                 is BotState.Loading -> MenuItem(title = "Loading")

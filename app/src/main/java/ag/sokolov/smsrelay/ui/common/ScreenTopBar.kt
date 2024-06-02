@@ -18,33 +18,33 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MenuHeader(title: String, onBackClick: (() -> Unit)? = null) {
+fun ScreenTopBar(title: String, onBackClick: (() -> Unit)? = null) {
     LargeTopAppBar(
         modifier = Modifier.padding(horizontal = 16.dp),
-        navigationIcon = { onBackClick?.let { MenuHeaderBackButton(onClick = it) } },
-        title = { MenuHeaderTitle(title) })
+        navigationIcon = { onBackClick?.let { ScreenTopBarBackButton(onClick = it) } },
+        title = { ScreenTopBarTitle(title) })
 }
 
 @Composable
-fun MenuHeaderBackButton(onClick: () -> Unit) {
+fun ScreenTopBarBackButton(onClick: () -> Unit) {
     IconButton(onClick = onClick) {
         Icon(imageVector = Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = "Back")
     }
 }
 
 @Composable
-fun MenuHeaderTitle(title: String) {
+fun ScreenTopBarTitle(title: String) {
     Text(text = title, style = MaterialTheme.typography.displaySmall)
 }
 
 @Preview
 @Composable
-private fun PreviewMenuHeader() {
-    SMSRelayTheme { Surface { MenuHeader(title = "Settings") } }
+private fun PreviewScreenTopBar() {
+    SMSRelayTheme { Surface { ScreenTopBar(title = "Settings") } }
 }
 
 @Preview
 @Composable
-private fun PreviewMenuHeaderWithBackButton() {
-    SMSRelayTheme { Surface { MenuHeader(title = "Settings", onBackClick = {}) } }
+private fun PreviewScreenTopBarWithBackButton() {
+    SMSRelayTheme { Surface { ScreenTopBar(title = "Settings", onBackClick = {}) } }
 }
