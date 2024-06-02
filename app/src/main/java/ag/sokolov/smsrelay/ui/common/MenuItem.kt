@@ -58,7 +58,7 @@ fun MenuItem(
             icon?.let { icon ->
                 Icon(
                     imageVector = icon,
-                    contentDescription = "Setting icon",
+                    contentDescription = "$title icon",
                     tint = enabledAwareColor)
             }
             Column(modifier = Modifier.weight(1f)) {
@@ -104,7 +104,7 @@ fun Warning(color: Color? = null) {
                         .background(color ?: MaterialTheme.colorScheme.onSurface))
             Icon(
                 imageVector = Icons.Outlined.Warning,
-                contentDescription = "",
+                contentDescription = "Warning icon",
                 modifier = Modifier.padding(horizontal = 12.dp),
                 tint = color ?: MaterialTheme.colorScheme.onSurface)
         }
