@@ -11,6 +11,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 
 // TODO: Review
 class AndroidSystemRepositoryImpl
@@ -45,7 +46,7 @@ constructor(@ApplicationContext private val context: Context) : AndroidSystemRep
         connectivityManager.registerNetworkCallback(request, networkCallback)
 
         awaitClose { connectivityManager.unregisterNetworkCallback(networkCallback) }
-    }
+    }.distinctUntilChanged()
 
     private fun isOnline(connectivityManager: ConnectivityManager): Boolean =
         connectivityManager.activeNetwork?.let {
