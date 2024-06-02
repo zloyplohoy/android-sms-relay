@@ -10,7 +10,6 @@ import ag.sokolov.smsrelay.domain.use_case.delete_telegram_bot.DeleteTelegramBot
 import ag.sokolov.smsrelay.domain.use_case.delete_telegram_recipient.DeleteTelegramRecipientUseCase
 import ag.sokolov.smsrelay.domain.use_case.get_telegram_bot.GetTelegramBotUseCase
 import ag.sokolov.smsrelay.domain.use_case.get_telegram_recipient.GetTelegramRecipientUseCase
-import ag.sokolov.smsrelay.domain.use_case.is_online.IsOnlineUseCase
 import ag.sokolov.smsrelay.ui.settings.action.SettingsAction
 import ag.sokolov.smsrelay.ui.settings.state.BotState
 import ag.sokolov.smsrelay.ui.settings.state.RecipientState
@@ -18,18 +17,17 @@ import ag.sokolov.smsrelay.ui.settings.state.SettingsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel
 @Inject
 constructor(
-    private val isOnlineUseCase: IsOnlineUseCase,
     private val getTelegramBotUseCase: GetTelegramBotUseCase,
     private val getTelegramRecipientUseCase: GetTelegramRecipientUseCase,
     private val addTelegramBotUseCase: AddTelegramBotUseCase,
@@ -39,11 +37,10 @@ constructor(
 ) : ViewModel() {
 
     private val _state =
-        combine(isOnlineUseCase(), getTelegramBotUseCase(), getTelegramRecipientUseCase()) {
-                isOnline,
+        combine(getTelegramBotUseCase(), getTelegramRecipientUseCase()) {
                 telegramBotResponse,
                 telegramRecipientResponse ->
-                getSettingsState(isOnline, telegramBotResponse, telegramRecipientResponse)
+                getSettingsState(telegramBotResponse, telegramRecipientResponse)
             }
             .stateIn(
                 scope = viewModelScope,
@@ -52,31 +49,17 @@ constructor(
     val state: StateFlow<SettingsState> = _state
 
     private fun getSettingsState(
-        isOnline: Boolean,
         telegramBotResponse: Response<TelegramBot?, DomainError>,
         telegramRecipientResponse: Response<TelegramUser?, DomainError>
     ): SettingsState {
         return SettingsState(
-            isLoading = isLoading(isOnline, telegramBotResponse, telegramRecipientResponse),
+            isLoading = isLoading(telegramBotResponse, telegramRecipientResponse),
             botState = getBotState(telegramBotResponse),
             recipientState = getRecipientState(telegramRecipientResponse))
     }
 
-    private fun isLoading(
-        isOnline: Boolean,
-        telegramBotResponse: Response<TelegramBot?, DomainError>,
-        telegramRecipientResponse: Response<TelegramUser?, DomainError>
-    ): Boolean =
-        if (isOnline) {
-            listOf(telegramBotResponse, telegramRecipientResponse).any {
-                isNetworkUnavailableError(it)
-            }
-        } else {
-            true
-        }
-
-    private fun isNetworkUnavailableError(response: Response<Any?, DomainError>): Boolean =
-        response is Response.Failure && response.error is DomainError.NetworkUnavailable
+    private fun isLoading(vararg responses: Response<*, *>): Boolean =
+        responses.any { it is Response.Loading }
 
     private fun getBotState(telegramBotResponse: Response<TelegramBot?, DomainError>): BotState =
         when (telegramBotResponse) {
