@@ -1,8 +1,8 @@
 package ag.sokolov.smsrelay.ui
 
-import ag.sokolov.smsrelay.ui.settings.SettingsNavRoutes
 import ag.sokolov.smsrelay.ui.settings.SettingsViewModel
-import ag.sokolov.smsrelay.ui.settings.settingsNavGraph
+import ag.sokolov.smsrelay.ui.settings.navigation.SettingsNav
+import ag.sokolov.smsrelay.ui.settings.navigation.settingsNavGraph
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -25,7 +25,7 @@ fun MainScreen() {
             Scaffold { innerPadding ->
                 NavHost(
                     navController = navController,
-                    startDestination = SettingsNavRoutes.GRAPH_ROOT,
+                    startDestination = SettingsNav.Root,
                     modifier = Modifier.padding(innerPadding)) {
                         settingsNavGraph(navController, settingsViewModel)
                     }

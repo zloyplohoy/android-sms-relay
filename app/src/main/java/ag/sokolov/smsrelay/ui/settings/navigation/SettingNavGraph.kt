@@ -1,5 +1,6 @@
-package ag.sokolov.smsrelay.ui.settings
+package ag.sokolov.smsrelay.ui.settings.navigation
 
+import ag.sokolov.smsrelay.ui.settings.SettingsViewModel
 import ag.sokolov.smsrelay.ui.settings.screen.bot.BotSettingsScreen
 import ag.sokolov.smsrelay.ui.settings.screen.main.SettingsScreen
 import ag.sokolov.smsrelay.ui.settings.screen.recipient.RecipientSettingsScreen
@@ -9,22 +10,24 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import kotlinx.serialization.Serializable
 
-object SettingsNavRoutes {
-    const val GRAPH_ROOT = "settings"
-    const val MAIN = "$GRAPH_ROOT/main"
-    const val BOT = "$GRAPH_ROOT/bot"
-    const val RECIPIENT = "$GRAPH_ROOT/recipient"
-    const val PERMISSIONS = "$GRAPH_ROOT/permissions"
+object SettingsNav {
+    @Serializable object Root
+
+    @Serializable object Main
+
+    @Serializable object Bot
+
+    @Serializable object Recipient
 }
 
 fun NavGraphBuilder.settingsNavGraph(
     navHostController: NavHostController,
     settingsViewModel: SettingsViewModel
 ) {
-    navigation(
-        route = SettingsNavRoutes.GRAPH_ROOT,
-        startDestination = SettingsNavRoutes.MAIN,
+    return navigation<SettingsNav.Root>(
+        startDestination = SettingsNav.Main,
         enterTransition = {
             slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left)
         },
@@ -37,26 +40,21 @@ fun NavGraphBuilder.settingsNavGraph(
         popExitTransition = {
             slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
         }) {
-            composable(
-                route = SettingsNavRoutes.MAIN,
-            ) {
+            composable<SettingsNav.Main> {
                 SettingsScreen(
                     state = settingsViewModel.state.collectAsState().value,
                     navigate = navHostController::navigate,
                 )
             }
-            composable(
-                route = SettingsNavRoutes.BOT,
-            ) {
+
+            composable<SettingsNav.Bot> {
                 BotSettingsScreen(
                     state = settingsViewModel.state.collectAsState().value.botState,
                     onAction = settingsViewModel::onAction,
                     onBackClick = navHostController::popBackStack)
             }
 
-            composable(
-                route = SettingsNavRoutes.RECIPIENT,
-            ) {
+            composable<SettingsNav.Recipient> {
                 RecipientSettingsScreen(
                     state = settingsViewModel.state.collectAsState().value.recipientState,
                     onAction = settingsViewModel::onAction,

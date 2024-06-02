@@ -1,7 +1,7 @@
 package ag.sokolov.smsrelay.ui.settings.screen.main
 
 import ag.sokolov.smsrelay.ui.common.ScreenTopBar
-import ag.sokolov.smsrelay.ui.settings.SettingsNavRoutes
+import ag.sokolov.smsrelay.ui.settings.navigation.SettingsNav
 import ag.sokolov.smsrelay.ui.settings.state.BotState
 import ag.sokolov.smsrelay.ui.settings.state.RecipientState
 import ag.sokolov.smsrelay.ui.settings.state.SettingsState
@@ -15,19 +15,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun SettingsScreen(state: SettingsState = SettingsState(), navigate: (String) -> Unit = {}) =
+fun SettingsScreen(state: SettingsState = SettingsState(), navigate: (Any) -> Unit = {}) =
     Column(modifier = Modifier.fillMaxWidth()) {
         ScreenTopBar(title = "Settings")
         TelegramBotMenuItem(
             botState = state.botState,
             onClick =
-                if (state.botState !is BotState.Loading) ({ navigate(SettingsNavRoutes.BOT) })
-                else null)
+                if (state.botState !is BotState.Loading) ({ navigate(SettingsNav.Bot) }) else null)
         TelegramRecipientMenuItem(
             recipientState = state.recipientState,
             onClick =
                 if (state.recipientState !is RecipientState.Loading)
-                    ({ navigate(SettingsNavRoutes.RECIPIENT) })
+                    ({ navigate(SettingsNav.Recipient) })
                 else null)
     }
 
