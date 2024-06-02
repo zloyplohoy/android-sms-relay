@@ -2,8 +2,7 @@ package ag.sokolov.smsrelay.ui.settings.screen.main
 
 import ag.sokolov.smsrelay.ui.common.ScreenTopBar
 import ag.sokolov.smsrelay.ui.settings.navigation.SettingsNav
-import ag.sokolov.smsrelay.ui.settings.state.BotState
-import ag.sokolov.smsrelay.ui.settings.state.RecipientState
+import ag.sokolov.smsrelay.ui.settings.state.MenuItemState
 import ag.sokolov.smsrelay.ui.settings.state.SettingsState
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
 import androidx.compose.foundation.layout.Column
@@ -13,32 +12,39 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.flow.StateFlow
 
 @Composable
-fun SettingsScreen(state: SettingsState = SettingsState(), navigate: (Any) -> Unit = {}) {
-    SettingsScreenContent(state, navigate)
+fun SettingsScreen(stateFlow: StateFlow<SettingsState>, navigate: (Any) -> Unit = {}) {
+    val state = stateFlow.collectAsStateWithLifecycle()
+    val botMenuItemState = state.value.botMenuItemState
+    val recipientMenuItemState = state.value.recipientMenuItemState
+    SettingsScreenContent(botMenuItemState = botMenuItemState, recipientMenuItemState, navigate)
 }
 
 @Composable
-fun SettingsScreenContent(state: SettingsState = SettingsState(), navigate: (Any) -> Unit = {}) =
+fun SettingsScreenContent(
+    botMenuItemState: MenuItemState,
+    recipientMenuItemState: MenuItemState,
+    navigate: (Any) -> Unit = {}
+) =
     Column(modifier = Modifier.fillMaxWidth()) {
         ScreenTopBar(title = "Settings")
-        TelegramBotMenuItem(
-            botState = state.botState,
-            onClick =
-                if (state.botState !is BotState.Loading) ({ navigate(SettingsNav.Bot) }) else null)
+        TelegramBotMenuItem(state = botMenuItemState, onClick = { navigate(SettingsNav.Bot) })
         TelegramRecipientMenuItem(
-            recipientState = state.recipientState,
-            onClick =
-                if (state.recipientState !is RecipientState.Loading)
-                    ({ navigate(SettingsNav.Recipient) })
-                else null)
+            state = recipientMenuItemState, onClick = { navigate(SettingsNav.Recipient) })
     }
 
 @Preview
 @Composable
 private fun PreviewSettingsScreenLoading() {
-    SMSRelayTheme { Surface(modifier = Modifier.fillMaxSize()) { SettingsScreen() } }
+    SMSRelayTheme {
+        Surface(modifier = Modifier.fillMaxSize()) {
+            SettingsScreenContent(
+                botMenuItemState = MenuItemState(), recipientMenuItemState = MenuItemState())
+        }
+    }
 }
 
 @Preview
@@ -46,13 +52,9 @@ private fun PreviewSettingsScreenLoading() {
 private fun PreviewSettingsScreenConfigured() {
     SMSRelayTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
-            SettingsScreen(
-                state =
-                    SettingsState(
-                        botState =
-                            BotState.Configured(
-                                botName = "Awesome SMS bot", botUsername = "awesome_sms_bot"),
-                        recipientState = RecipientState.Configured(fullName = "Aleksei Sokolov")))
+            SettingsScreenContent(
+                botMenuItemState = MenuItemState(description = "Awesome SMS bot"),
+                recipientMenuItemState = MenuItemState(description = "Aleksei Sokolov"))
         }
     }
 }

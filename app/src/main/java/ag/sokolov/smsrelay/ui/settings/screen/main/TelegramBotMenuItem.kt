@@ -1,7 +1,7 @@
 package ag.sokolov.smsrelay.ui.settings.screen.main
 
 import ag.sokolov.smsrelay.ui.common.MenuItem
-import ag.sokolov.smsrelay.ui.settings.state.BotState
+import ag.sokolov.smsrelay.ui.settings.state.MenuItemState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Send
 import androidx.compose.material3.MaterialTheme
@@ -10,55 +10,38 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun TelegramBotMenuItem(botState: BotState, onClick: (() -> Unit)?) =
-    TelegramBotMenuItemContent(
-        onClick = onClick,
-        description =
-            when (botState) {
-                is BotState.Loading -> "Loading..."
-                is BotState.NotConfigured -> "Not configured"
-                is BotState.Configured -> botState.botName
-                is BotState.Error -> botState.errorMessage
-            },
-        showWarning = botState is BotState.Error)
-
-@Composable
-fun TelegramBotMenuItemContent(
-    onClick: (() -> Unit)? = {},
-    description: String?,
-    showWarning: Boolean = false
-) {
+fun TelegramBotMenuItem(state: MenuItemState, onClick: (() -> Unit)? = null) =
     MenuItem(
+        isEnabled = state.isEnabled,
         icon = Icons.AutoMirrored.Outlined.Send,
         title = "Telegram bot",
-        description = description,
+        description = state.description,
         onClick = onClick,
-        showWarning = showWarning)
-}
+        showWarning = state.showWarning)
 
 @Preview
 @Composable
 private fun PreviewTelegramBotMenuItemLoading() {
-    MaterialTheme { Surface { TelegramBotMenuItem(botState = BotState.Loading, onClick = {}) } }
+    MaterialTheme { Surface { TelegramBotMenuItem(state = MenuItemState(), onClick = {}) } }
 }
 
 @Preview
 @Composable
-private fun PrevieTelegramBotMenuItemNotConfigured() {
+private fun PreviewTelegramBotMenuItemNotConfigured() {
     MaterialTheme {
-        Surface { TelegramBotMenuItem(botState = BotState.NotConfigured, onClick = {}) }
+        Surface {
+            TelegramBotMenuItem(state = MenuItemState(description = "Not configured"), onClick = {})
+        }
     }
 }
 
 @Preview
 @Composable
-private fun PreviewTelegramBotMenuItemConfigured() {
+private fun PreviewTelegramBotMenuDisabled() {
     MaterialTheme {
         Surface {
             TelegramBotMenuItem(
-                botState =
-                    BotState.Configured(
-                        botName = "Awesome SMS bot", botUsername = "awesome_sms_bot"),
+                state = MenuItemState(isEnabled = false, description = "Currently offline"),
                 onClick = {})
         }
     }
@@ -70,7 +53,8 @@ private fun PreviewTelegramBotMenuItemMenuItemError() {
     MaterialTheme {
         Surface {
             TelegramBotMenuItem(
-                botState = BotState.Error(errorMessage = "API token invalid"), onClick = {})
+                state = MenuItemState(description = "API token invalid", showWarning = true),
+                onClick = {})
         }
     }
 }

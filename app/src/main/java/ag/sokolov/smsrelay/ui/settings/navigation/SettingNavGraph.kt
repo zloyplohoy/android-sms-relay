@@ -42,7 +42,7 @@ fun NavGraphBuilder.settingsNavGraph(
         }) {
             composable<SettingsNav.Main> {
                 SettingsScreen(
-                    state = settingsViewModel.state.collectAsState().value,
+                    stateFlow = settingsViewModel.state,
                     navigate = navHostController::navigate,
                 )
             }

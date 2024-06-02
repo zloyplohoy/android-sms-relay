@@ -5,5 +5,7 @@ import androidx.compose.runtime.Stable
 @Stable
 data class SettingsState(
     val botState: BotState = BotState.Loading,
-    val recipientState: RecipientState = RecipientState.Loading()
+    val recipientState: RecipientState = RecipientState.Loading(),
+    val botMenuItemState: MenuItemState = MenuItemState(),
+    val recipientMenuItemState: MenuItemState = MenuItemState()
 )

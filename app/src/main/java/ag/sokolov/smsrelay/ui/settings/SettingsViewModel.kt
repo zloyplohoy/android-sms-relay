@@ -12,12 +12,14 @@ import ag.sokolov.smsrelay.domain.use_case.get_telegram_bot.GetTelegramBotUseCas
 import ag.sokolov.smsrelay.domain.use_case.get_telegram_recipient.GetTelegramRecipientUseCase
 import ag.sokolov.smsrelay.ui.settings.action.SettingsAction
 import ag.sokolov.smsrelay.ui.settings.state.BotState
+import ag.sokolov.smsrelay.ui.settings.state.MenuItemState
 import ag.sokolov.smsrelay.ui.settings.state.RecipientState
 import ag.sokolov.smsrelay.ui.settings.state.SettingsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -28,25 +30,21 @@ import kotlinx.coroutines.launch
 class SettingsViewModel
 @Inject
 constructor(
-    private val getTelegramBotUseCase: GetTelegramBotUseCase,
-    private val getTelegramRecipientUseCase: GetTelegramRecipientUseCase,
+    getTelegramBotUseCase: GetTelegramBotUseCase,
+    getTelegramRecipientUseCase: GetTelegramRecipientUseCase,
     private val addTelegramBotUseCase: AddTelegramBotUseCase,
     private val deleteTelegramBotUseCase: DeleteTelegramBotUseCase,
     private val addTelegramRecipientUseCase: AddTelegramRecipientUseCase,
     private val deleteTelegramRecipientUseCase: DeleteTelegramRecipientUseCase
 ) : ViewModel() {
 
-    private val _state =
+    val state =
         combine(getTelegramBotUseCase(), getTelegramRecipientUseCase()) {
                 telegramBotResponse,
                 telegramRecipientResponse ->
                 getSettingsState(telegramBotResponse, telegramRecipientResponse)
             }
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5_000),
-                initialValue = SettingsState())
-    val state: StateFlow<SettingsState> = _state
+            .toViewModelScopeStateFlow(initialState = SettingsState())
 
     private fun getSettingsState(
         telegramBotResponse: Response<TelegramBot?, DomainError>,
@@ -54,7 +52,9 @@ constructor(
     ): SettingsState {
         return SettingsState(
             botState = getBotState(telegramBotResponse),
-            recipientState = getRecipientState(telegramRecipientResponse))
+            recipientState = getRecipientState(telegramRecipientResponse),
+            botMenuItemState = getBotMenuItemState(telegramBotResponse),
+            recipientMenuItemState = getRecipientMenuItemState(telegramRecipientResponse))
     }
 
     private fun getBotState(telegramBotResponse: Response<TelegramBot?, DomainError>): BotState =
@@ -119,4 +119,73 @@ constructor(
     private fun addRecipient() = viewModelScope.launch { addTelegramRecipientUseCase() }
 
     private fun removeRecipient() = viewModelScope.launch { deleteTelegramRecipientUseCase() }
+
+    private fun getBotMenuItemState(response: Response<TelegramBot?, DomainError>) =
+        when (response) {
+            is Response.Loading -> MenuItemState()
+            is Response.Success -> getBotMenuItemState(response.data)
+            is Response.Failure -> getBotMenuItemState(response.error)
+        }
+
+    private fun getBotMenuItemState(bot: TelegramBot?) =
+        MenuItemState(description = bot?.name ?: "Not  configured")
+
+    private fun getBotMenuItemState(error: DomainError) =
+        MenuItemState(
+            showWarning = true,
+            isEnabled = error !is DomainError.NetworkUnavailable,
+            description =
+                when (error) {
+                    is DomainError.NetworkUnavailable -> "Waiting for network..."
+                    is DomainError.BotApiTokenInvalid -> "API token invalid"
+                    is DomainError.NetworkError -> "Network error"
+                    else -> "Unhandled error"
+                })
+
+    private fun getRecipientMenuItemState(
+        response: Response<TelegramUser?, DomainError>
+    ): MenuItemState =
+        when (response) {
+            is Response.Loading -> MenuItemState()
+            is Response.Success -> getRecipientMenuItemState(response.data)
+            is Response.Failure -> getRecipientMenuItemState(response.error)
+        }
+
+    private fun getRecipientMenuItemState(recipient: TelegramUser?): MenuItemState =
+        MenuItemState(description = recipient?.let { getFullName(it) } ?: "Not configured")
+
+    private fun getFullName(telegramUser: TelegramUser): String =
+        telegramUser.lastName?.let { "${telegramUser.firstName} $it" } ?: telegramUser.firstName
+
+    private fun getRecipientMenuItemState(error: DomainError): MenuItemState =
+        MenuItemState(
+            showWarning =
+                when (error) {
+                    is DomainError.NetworkUnavailable,
+                    is DomainError.BotApiTokenMissing,
+                    is DomainError.BotApiTokenInvalid -> false
+                    else -> true
+                },
+            isEnabled =
+                when (error) {
+                    is DomainError.NetworkUnavailable,
+                    is DomainError.BotApiTokenMissing,
+                    is DomainError.BotApiTokenInvalid -> false
+                    else -> true
+                },
+            description =
+                when (error) {
+                    is DomainError.NetworkUnavailable,
+                    is DomainError.BotApiTokenInvalid -> "Check bot status"
+                    is DomainError.BotApiTokenMissing -> "Bot not configured"
+                    is DomainError.RecipientInvalid -> "Bot blocked by recipient"
+                    is DomainError.NetworkError -> "Network error"
+                    else -> "Unhandled error"
+                })
+
+    private fun <T> Flow<T>.toViewModelScopeStateFlow(initialState: T): StateFlow<T> =
+        this.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = initialState)
 }
