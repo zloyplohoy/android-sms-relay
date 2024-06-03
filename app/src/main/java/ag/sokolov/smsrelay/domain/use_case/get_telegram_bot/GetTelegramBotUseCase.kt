@@ -6,12 +6,12 @@ import ag.sokolov.smsrelay.domain.model.TelegramBot
 import ag.sokolov.smsrelay.domain.repository.AndroidSystemRepository
 import ag.sokolov.smsrelay.domain.repository.ConfigurationRepository
 import ag.sokolov.smsrelay.domain.repository.TelegramBotApiRepository
+import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
-import javax.inject.Inject
 
 class GetTelegramBotUseCase
 @Inject
@@ -29,14 +29,14 @@ constructor(
                 }
             .flatMapLatest { (isOnline, telegramBotApiToken) ->
                 flow {
-                    if (isOnline) {
-                        emit(Response.Loading)
-                        telegramBotApiToken?.let {
+                    telegramBotApiToken?.let {
+                        if (isOnline) {
+                            emit(Response.Loading)
                             emit(telegramBotApiRepository.getTelegramBot(it))
-                        } ?: emit(Response.Success(null))
-                    } else {
-                        emit(Response.Failure(DomainError.NetworkUnavailable))
-                    }
+                        } else {
+                            emit(Response.Failure(DomainError.NetworkUnavailable))
+                        }
+                    } ?: emit(Response.Success(null))
                 }
             }
 }
