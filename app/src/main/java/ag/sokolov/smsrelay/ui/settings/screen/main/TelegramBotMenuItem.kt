@@ -10,14 +10,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun TelegramBotMenuItem(state: MenuItemState, onClick: (() -> Unit)? = null) =
+fun TelegramBotMenuItem(
+    state: MenuItemState,
+    onClick: (() -> Unit)? = null
+) =
     MenuItem(
         isEnabled = state.isEnabled,
         icon = Icons.AutoMirrored.Outlined.Send,
         title = "Telegram bot",
         description = state.description,
         onClick = onClick,
-        showWarning = state.showWarning)
+        showWarning = state.showWarning
+    )
 
 @Preview
 @Composable
@@ -40,9 +44,9 @@ private fun PreviewTelegramBotMenuItemNotConfigured() {
 private fun PreviewTelegramBotMenuDisabled() {
     MaterialTheme {
         Surface {
-            TelegramBotMenuItem(
-                state = MenuItemState(isEnabled = false, description = "Currently offline"),
-                onClick = {})
+            TelegramBotMenuItem(state = MenuItemState(
+                isEnabled = false, description = "Currently offline"
+            ), onClick = {})
         }
     }
 }
@@ -52,9 +56,9 @@ private fun PreviewTelegramBotMenuDisabled() {
 private fun PreviewTelegramBotMenuItemMenuItemError() {
     MaterialTheme {
         Surface {
-            TelegramBotMenuItem(
-                state = MenuItemState(description = "API token invalid", showWarning = true),
-                onClick = {})
+            TelegramBotMenuItem(state = MenuItemState(
+                description = "API token invalid", showWarning = true
+            ), onClick = {})
         }
     }
 }

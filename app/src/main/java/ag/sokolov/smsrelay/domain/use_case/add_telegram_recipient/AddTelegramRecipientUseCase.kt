@@ -12,8 +12,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 class AddTelegramRecipientUseCase
-@Inject
-constructor(
+@Inject constructor(
     @ApplicationContext private val appContext: Context,
     private val configurationRepository: ConfigurationRepository,
     private val telegramBotApiRepository: TelegramBotApiRepository

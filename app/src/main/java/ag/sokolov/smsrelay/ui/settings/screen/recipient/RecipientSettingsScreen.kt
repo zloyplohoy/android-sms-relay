@@ -24,17 +24,17 @@ fun RecipientSettingsScreen(
         ScreenTopBar(title = "Recipient", onBackClick = { onBackClick() })
         when (state) {
             is RecipientState.Loading -> MenuItem(title = state.message)
-            is RecipientState.NotConfigured ->
-                MenuItem(
-                    icon = Icons.Outlined.Add,
-                    title = "Add recipient",
-                    onClick = { onAction(SettingsAction.AddRecipient) })
-            is RecipientState.Configured ->
-                MenuItem(title = state.fullName, description = state.username?.let { "@$it" })
-            is RecipientState.RecipientError ->
-                MenuItem(title = "Error", description = state.errorMessage)
-            is RecipientState.ExternalError ->
-                MenuItem(title = state.errorMessage, showWarning = true)
+            is RecipientState.NotConfigured -> MenuItem(icon = Icons.Outlined.Add,
+                title = "Add recipient",
+                onClick = { onAction(SettingsAction.AddRecipient) })
+            is RecipientState.Configured -> MenuItem(title = state.fullName,
+                description = state.username?.let { "@$it" })
+            is RecipientState.RecipientError -> MenuItem(
+                title = "Error", description = state.errorMessage
+            )
+            is RecipientState.ExternalError -> MenuItem(
+                title = state.errorMessage, showWarning = true
+            )
         }
     }
 }
@@ -44,8 +44,9 @@ fun RecipientSettingsScreen(
 private fun PreviewRecipientSettingsScreen() {
     SMSRelayTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
-            RecipientSettingsScreen(
-                state = RecipientState.Loading(), onAction = {}, onBackClick = {})
+            RecipientSettingsScreen(state = RecipientState.Loading(),
+                onAction = {},
+                onBackClick = {})
         }
     }
 }
@@ -55,8 +56,9 @@ private fun PreviewRecipientSettingsScreen() {
 private fun PreviewRecipientSettingsScreenNotConfigured() {
     SMSRelayTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
-            RecipientSettingsScreen(
-                state = RecipientState.NotConfigured, onAction = {}, onBackClick = {})
+            RecipientSettingsScreen(state = RecipientState.NotConfigured,
+                onAction = {},
+                onBackClick = {})
         }
     }
 }
@@ -66,8 +68,7 @@ private fun PreviewRecipientSettingsScreenNotConfigured() {
 private fun PreviewRecipientSettingsScreenConfigured() {
     SMSRelayTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
-            RecipientSettingsScreen(
-                state = RecipientState.Configured(fullName = "Aleksei Sokolov"),
+            RecipientSettingsScreen(state = RecipientState.Configured(fullName = "Aleksei Sokolov"),
                 onAction = {},
                 onBackClick = {})
         }
@@ -79,12 +80,9 @@ private fun PreviewRecipientSettingsScreenConfigured() {
 private fun PreviewRecipientSettingsScreenConfiguredWithUsername() {
     SMSRelayTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
-            RecipientSettingsScreen(
-                state =
-                    RecipientState.Configured(
-                        fullName = "Aleksei Sokolov", username = "sokolov_ag"),
-                onAction = {},
-                onBackClick = {})
+            RecipientSettingsScreen(state = RecipientState.Configured(
+                fullName = "Aleksei Sokolov", username = "sokolov_ag"
+            ), onAction = {}, onBackClick = {})
         }
     }
 }
@@ -94,8 +92,7 @@ private fun PreviewRecipientSettingsScreenConfiguredWithUsername() {
 private fun PreviewRecipientSettingsScreenRecipientError() {
     SMSRelayTheme {
         Surface {
-            RecipientSettingsScreen(
-                state = RecipientState.RecipientError("Recipient blocked the bot"),
+            RecipientSettingsScreen(state = RecipientState.RecipientError("Recipient blocked the bot"),
                 onAction = {},
                 onBackClick = {})
         }
@@ -107,8 +104,7 @@ private fun PreviewRecipientSettingsScreenRecipientError() {
 private fun PreviewRecipientSettingsScreenBotError() {
     SMSRelayTheme {
         Surface {
-            RecipientSettingsScreen(
-                state = RecipientState.ExternalError("Check bot settings"),
+            RecipientSettingsScreen(state = RecipientState.ExternalError("Check bot settings"),
                 onAction = {},
                 onBackClick = {})
         }

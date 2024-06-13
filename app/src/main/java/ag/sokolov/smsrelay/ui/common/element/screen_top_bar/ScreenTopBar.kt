@@ -18,9 +18,11 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScreenTopBar(title: String, onBackClick: (() -> Unit)? = null) {
-    LargeTopAppBar(
-        modifier = Modifier.padding(horizontal = 16.dp),
+fun ScreenTopBar(
+    title: String,
+    onBackClick: (() -> Unit)? = null
+) {
+    LargeTopAppBar(modifier = Modifier.padding(horizontal = 16.dp),
         navigationIcon = { onBackClick?.let { ScreenTopBarBackButton(onClick = it) } },
         title = { ScreenTopBarTitle(title) })
 }

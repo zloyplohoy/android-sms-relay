@@ -6,8 +6,7 @@ import ag.sokolov.smsrelay.domain.repository.ConfigurationRepository
 import javax.inject.Inject
 
 class AddTelegramBotUseCase
-@Inject
-constructor(private val configurationRepository: ConfigurationRepository) {
+@Inject constructor(private val configurationRepository: ConfigurationRepository) {
     suspend operator fun invoke(botApiToken: String): Response<Unit, DomainError> =
         configurationRepository.setTelegramBotApiToken(botApiToken)
 }

@@ -8,7 +8,10 @@ import ag.sokolov.smsrelay.data.sources.remote.api.telegram_bot.dto.TelegramUser
 interface TelegramBotApiService {
     suspend fun getMe(token: String): TelegramBotApiResponseDto<TelegramUserDto>
 
-    suspend fun getChat(token: String, chatId: Long): TelegramBotApiResponseDto<TelegramUserDto>
+    suspend fun getChat(
+        token: String,
+        chatId: Long
+    ): TelegramBotApiResponseDto<TelegramUserDto>
 
     suspend fun getUpdates(
         token: String,

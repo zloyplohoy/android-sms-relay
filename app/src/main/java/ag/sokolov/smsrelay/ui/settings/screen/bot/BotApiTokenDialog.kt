@@ -25,11 +25,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 
 @Composable
-fun BotApiTokenDialog(toggleDialog: () -> Unit, onAction: (SettingsAction) -> Unit) {
+fun BotApiTokenDialog(
+    toggleDialog: () -> Unit,
+    onAction: (SettingsAction) -> Unit
+) {
     var tokenTextFieldValue by rememberSaveable { mutableStateOf("") }
 
     Dialog(onDismissRequest = { toggleDialog() }) {
-        Card(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
             Text(
                 text = "API token",
                 style = MaterialTheme.typography.titleMedium,
@@ -39,28 +46,33 @@ fun BotApiTokenDialog(toggleDialog: () -> Unit, onAction: (SettingsAction) -> Un
                 value = tokenTextFieldValue,
                 onValueChange = { value: String -> tokenTextFieldValue = value },
                 singleLine = true,
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-                visualTransformation = VisualTransformation.None)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                visualTransformation = VisualTransformation.None
+            )
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                Text(
-                    text = "CANCEL",
+                Text(text = "CANCEL",
                     style = MaterialTheme.typography.labelMedium,
-                    modifier = Modifier.clickable { toggleDialog() }.padding(16.dp))
-                Text(
-                    text = "SAVE TOKEN",
+                    modifier = Modifier
+                        .clickable { toggleDialog() }
+                        .padding(16.dp))
+                Text(text = "SAVE TOKEN",
                     style = MaterialTheme.typography.labelMedium,
-                    modifier =
-                        Modifier.clickable {
-                                toggleDialog()
-                                if (tokenTextFieldValue == "") {
-                                    onAction(SettingsAction.RemoveTelegramBot)
-                                } else {
-                                    onAction(
-                                        SettingsAction.AddTelegramBot(
-                                            botApiToken = tokenTextFieldValue))
-                                }
+                    modifier = Modifier
+                        .clickable {
+                            toggleDialog()
+                            if (tokenTextFieldValue == "") {
+                                onAction(SettingsAction.RemoveTelegramBot)
+                            } else {
+                                onAction(
+                                    SettingsAction.AddTelegramBot(
+                                        botApiToken = tokenTextFieldValue
+                                    )
+                                )
                             }
-                            .padding(16.dp))
+                        }
+                        .padding(16.dp))
             }
         }
     }

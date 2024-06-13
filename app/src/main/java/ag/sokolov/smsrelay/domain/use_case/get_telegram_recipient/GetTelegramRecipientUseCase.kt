@@ -6,13 +6,12 @@ import ag.sokolov.smsrelay.domain.model.TelegramUser
 import ag.sokolov.smsrelay.domain.repository.AndroidSystemRepository
 import ag.sokolov.smsrelay.domain.repository.ConfigurationRepository
 import ag.sokolov.smsrelay.domain.repository.TelegramBotApiRepository
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import javax.inject.Inject
 
 class GetTelegramRecipientUseCase
-@Inject
-constructor(
+@Inject constructor(
     private val androidSystemRepository: AndroidSystemRepository,
     private val configurationRepository: ConfigurationRepository,
     private val telegramBotApiRepository: TelegramBotApiRepository
@@ -21,22 +20,22 @@ constructor(
         combine(
             androidSystemRepository.getConnectionStatus(),
             configurationRepository.getTelegramBotApiToken(),
-            configurationRepository.getTelegramRecipientId()) { isOnline, botApiToken, recipientId
-                ->
-                if (isOnline) {
-                    if (botApiToken == null) {
-                        Response.Failure(DomainError.BotApiTokenMissing)
-                    } else if (recipientId == null) {
-                        when(val result = telegramBotApiRepository.getTelegramBot(botApiToken)){
-                            is Response.Loading -> Response.Loading
-                            is Response.Success -> Response.Success(null)
-                            is Response.Failure -> Response.Failure(result.error)
-                        }
-                    } else {
-                        telegramBotApiRepository.getTelegramRecipient(botApiToken, recipientId)
+            configurationRepository.getTelegramRecipientId()
+        ) { isOnline, botApiToken, recipientId ->
+            if (isOnline) {
+                if (botApiToken == null) {
+                    Response.Failure(DomainError.BotApiTokenMissing)
+                } else if (recipientId == null) {
+                    when (val result = telegramBotApiRepository.getTelegramBot(botApiToken)) {
+                        is Response.Loading -> Response.Loading
+                        is Response.Success -> Response.Success(null)
+                        is Response.Failure -> Response.Failure(result.error)
                     }
                 } else {
-                    Response.Failure(DomainError.NetworkUnavailable)
+                    telegramBotApiRepository.getTelegramRecipient(botApiToken, recipientId)
                 }
+            } else {
+                Response.Failure(DomainError.NetworkUnavailable)
             }
+        }
 }

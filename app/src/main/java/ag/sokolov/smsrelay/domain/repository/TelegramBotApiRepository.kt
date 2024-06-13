@@ -22,5 +22,9 @@ interface TelegramBotApiRepository {
         longPollingTimeout: Duration
     ): Result<List<TelegramPrivateChatMessage>>
 
-    suspend fun sendMessage(botApiToken: String, text: String, chatId: Long): Result<Unit>
+    suspend fun sendMessage(
+        botApiToken: String,
+        text: String,
+        chatId: Long
+    ): Result<Unit>
 }

@@ -20,8 +20,7 @@ fun SystemPermissionsSettingsScreen(
 @Composable
 fun SystemPermissionsSettingsScreenContent() {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = Modifier.fillMaxWidth()
     ) {
 //        ScreenTitle(title = "Permissions")
     }

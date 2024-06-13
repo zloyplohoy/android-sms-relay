@@ -26,9 +26,10 @@ fun MainScreen() {
                 NavHost(
                     navController = navController,
                     startDestination = SettingsNav.Root,
-                    modifier = Modifier.padding(innerPadding)) {
-                        settingsNavGraph(navController, settingsViewModel)
-                    }
+                    modifier = Modifier.padding(innerPadding)
+                ) {
+                    settingsNavGraph(navController, settingsViewModel)
+                }
             }
         }
     }

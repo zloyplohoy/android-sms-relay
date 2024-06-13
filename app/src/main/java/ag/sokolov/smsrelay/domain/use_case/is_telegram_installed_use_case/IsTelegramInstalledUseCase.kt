@@ -11,7 +11,8 @@ class IsTelegramInstalledUseCase @Inject constructor(
     operator fun invoke(): Boolean =
         try {
             context.packageManager.getPackageInfo(
-                "org.telegram.messenger", PackageManager.GET_ACTIVITIES)
+                "org.telegram.messenger", PackageManager.GET_ACTIVITIES
+            )
             true
         } catch (e: PackageManager.NameNotFoundException) {
             false

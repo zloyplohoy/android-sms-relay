@@ -20,11 +20,11 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -46,16 +46,15 @@ abstract class MainModule {
     ): TelegramBotApiRepository
 
     companion object {
-        private val Context.dataStore by
-            preferencesDataStore(
-                name = "application_configuration",
-                corruptionHandler = ReplaceFileCorruptionHandler { emptyPreferences() })
+        private val Context.dataStore by preferencesDataStore(name = "application_configuration",
+            corruptionHandler = ReplaceFileCorruptionHandler { emptyPreferences() })
 
         @Provides
         @Singleton
         fun provideApplicationConfigurationPreferencesDataStore(
             @ApplicationContext appContext: Context
-        ): DataStore<Preferences> = appContext.dataStore
+        ): DataStore<Preferences> =
+            appContext.dataStore
 
         @Provides
         @Singleton
@@ -63,10 +62,8 @@ abstract class MainModule {
             val json = Json { ignoreUnknownKeys = true }
             val jsonMediaType = "application/json".toMediaType()
 
-            return Retrofit.Builder()
-                .baseUrl("https://api.telegram.org/")
-                .addConverterFactory(json.asConverterFactory(jsonMediaType))
-                .build()
+            return Retrofit.Builder().baseUrl("https://api.telegram.org/")
+                .addConverterFactory(json.asConverterFactory(jsonMediaType)).build()
                 .create(RetrofitTelegramBotApiService::class.java)
         }
     }

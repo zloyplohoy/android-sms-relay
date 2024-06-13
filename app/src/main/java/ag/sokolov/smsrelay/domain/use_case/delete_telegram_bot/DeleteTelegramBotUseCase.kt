@@ -4,7 +4,7 @@ import ag.sokolov.smsrelay.domain.repository.ConfigurationRepository
 import javax.inject.Inject
 
 class DeleteTelegramBotUseCase
-@Inject
-constructor(private val configurationRepository: ConfigurationRepository) {
-    suspend operator fun invoke() = configurationRepository.deleteTelegramApiTokenAndRecipientId()
+@Inject constructor(private val configurationRepository: ConfigurationRepository) {
+    suspend operator fun invoke() =
+        configurationRepository.deleteTelegramApiTokenAndRecipientId()
 }

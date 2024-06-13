@@ -35,11 +35,13 @@ fun BotSettingsScreen(
         ScreenTopBar(title = "Telegram bot", onBackClick = { onBackClick() })
         when (state) {
             is BotState.Loading -> MenuItem(title = "Loading")
-            is BotState.NotConfigured ->
-                MenuItem(
-                    icon = Icons.Filled.Add, title = "Add a bot", onClick = { toggleTokenDialog() })
-            is BotState.Configured ->
-                MenuItem(title = state.botName, description = "@${state.botUsername}")
+            is BotState.NotConfigured -> MenuItem(
+                icon = Icons.Filled.Add,
+                title = "Add a bot",
+                onClick = { toggleTokenDialog() })
+            is BotState.Configured -> MenuItem(
+                title = state.botName, description = "@${state.botUsername}"
+            )
             is BotState.Error -> MenuItem(title = "Error", description = state.errorMessage)
         }
     }
@@ -72,11 +74,9 @@ private fun PreviewBotSettingsScreenNotConfigured() {
 private fun PreviewBotSettingsScreenConfigured() {
     SMSRelayTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
-            BotSettingsScreen(
-                state =
-                    BotState.Configured(botName = "My awesome bot", botUsername = "my_awesome_bot"),
-                onAction = {},
-                onBackClick = {})
+            BotSettingsScreen(state = BotState.Configured(
+                botName = "My awesome bot", botUsername = "my_awesome_bot"
+            ), onAction = {}, onBackClick = {})
         }
     }
 }
@@ -86,8 +86,9 @@ private fun PreviewBotSettingsScreenConfigured() {
 private fun PreviewBotSettingsScreenError() {
     SMSRelayTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
-            BotSettingsScreen(
-                state = BotState.Error("API token invalid"), onAction = {}, onBackClick = {})
+            BotSettingsScreen(state = BotState.Error("API token invalid"),
+                onAction = {},
+                onBackClick = {})
         }
     }
 }

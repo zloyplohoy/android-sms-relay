@@ -10,14 +10,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun TelegramRecipientMenuItem(state: MenuItemState, onClick: (() -> Unit)? = null) =
+fun TelegramRecipientMenuItem(
+    state: MenuItemState,
+    onClick: (() -> Unit)? = null
+) =
     MenuItem(
         isEnabled = state.isEnabled,
         icon = Icons.Outlined.Person,
         title = "Recipient",
         description = state.description,
         onClick = onClick,
-        showWarning = state.showWarning)
+        showWarning = state.showWarning
+    )
 
 @Preview
 @Composable
@@ -31,7 +35,8 @@ private fun TelegramRecipientMenuItemNotConfigured() {
     MaterialTheme {
         Surface {
             TelegramRecipientMenuItem(
-                state = MenuItemState(description = "Not configured"), onClick = {})
+                state = MenuItemState(description = "Not configured"),
+                onClick = {})
         }
     }
 }
@@ -42,7 +47,8 @@ private fun TelegramRecipientMenuItemConfigured() {
     MaterialTheme {
         Surface {
             TelegramRecipientMenuItem(
-                state = MenuItemState(description = "Aleksei Sokolov"), onClick = {})
+                state = MenuItemState(description = "Aleksei Sokolov"),
+                onClick = {})
         }
     }
 }
@@ -52,9 +58,9 @@ private fun TelegramRecipientMenuItemConfigured() {
 private fun TelegramRecipientMenuItemDisabled() {
     MaterialTheme {
         Surface {
-            TelegramRecipientMenuItem(
-                state = MenuItemState(isEnabled = false, description = "Currently offline"),
-                onClick = {})
+            TelegramRecipientMenuItem(state = MenuItemState(
+                isEnabled = false, description = "Currently offline"
+            ), onClick = {})
         }
     }
 }
@@ -64,9 +70,9 @@ private fun TelegramRecipientMenuItemDisabled() {
 private fun TelegramRecipientMenuItemBotError() {
     MaterialTheme {
         Surface {
-            TelegramRecipientMenuItem(
-                state = MenuItemState(isEnabled = false, description = "API token invalid"),
-                onClick = {})
+            TelegramRecipientMenuItem(state = MenuItemState(
+                isEnabled = false, description = "API token invalid"
+            ), onClick = {})
         }
     }
 }
@@ -77,7 +83,8 @@ private fun TelegramRecipientMenuItemRecipientError() {
     MaterialTheme {
         Surface {
             TelegramRecipientMenuItem(
-                state = MenuItemState(description = "Bot blocked by recipient"), onClick = {})
+                state = MenuItemState(description = "Bot blocked by recipient"),
+                onClick = {})
         }
     }
 }

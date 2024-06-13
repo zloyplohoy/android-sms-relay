@@ -43,71 +43,81 @@ fun MenuItem(
     val enabledAwareClickableModifier: Modifier =
         if (isEnabled) onClick?.let { Modifier.clickable(onClick = it) } ?: Modifier else Modifier
 
-    val enabledAwareColor: Color =
-        if (isEnabled) MaterialTheme.colorScheme.onSurface
-        else MaterialTheme.colorScheme.onSurfaceVariant
+    val enabledAwareColor: Color = if (isEnabled) MaterialTheme.colorScheme.onSurface
+    else MaterialTheme.colorScheme.onSurfaceVariant
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp),
-        modifier =
-            Modifier.fillMaxWidth()
-                .height(80.dp)
-                .then(enabledAwareClickableModifier)
-                .padding(start = 32.dp, end = 16.dp, top = 16.dp, bottom = 16.dp)) {
-            icon?.let { icon ->
-                Icon(
-                    imageVector = icon,
-                    contentDescription = "$title icon",
-                    tint = enabledAwareColor)
-            }
-            Column(modifier = Modifier.weight(1f)) {
-                Title(text = title, color = enabledAwareColor)
-                description?.let { Description(text = it, color = enabledAwareColor) }
-            }
-            AnimatedVisibility(visible = showWarning, enter = fadeIn(), exit = fadeOut()) {
-                Warning(enabledAwareColor)
-            }
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(80.dp)
+            .then(enabledAwareClickableModifier)
+            .padding(start = 32.dp, end = 16.dp, top = 16.dp, bottom = 16.dp)
+    ) {
+        icon?.let { icon ->
+            Icon(
+                imageVector = icon, contentDescription = "$title icon", tint = enabledAwareColor
+            )
         }
+        Column(modifier = Modifier.weight(1f)) {
+            Title(text = title, color = enabledAwareColor)
+            description?.let { Description(text = it, color = enabledAwareColor) }
+        }
+        AnimatedVisibility(visible = showWarning, enter = fadeIn(), exit = fadeOut()) {
+            Warning(enabledAwareColor)
+        }
+    }
 }
 
 @Composable
-private fun Title(text: String, color: Color? = null) {
+private fun Title(
+    text: String,
+    color: Color? = null
+) {
     Text(
         text = text,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
         style = MaterialTheme.typography.titleLarge,
-        color = color ?: MaterialTheme.colorScheme.onSurface)
+        color = color ?: MaterialTheme.colorScheme.onSurface
+    )
 }
 
 @Composable
-fun Description(text: String, color: Color? = null) {
+fun Description(
+    text: String,
+    color: Color? = null
+) {
     Text(
         text = text,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
         style = MaterialTheme.typography.labelLarge,
         fontWeight = FontWeight.Light,
-        color = color ?: MaterialTheme.colorScheme.onSurface)
+        color = color ?: MaterialTheme.colorScheme.onSurface
+    )
 }
 
 @Composable
 fun Warning(color: Color? = null) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Spacer(
-                modifier =
-                    Modifier.width(1.dp)
-                        .height(32.dp)
-                        .background(color ?: MaterialTheme.colorScheme.onSurface))
-            Icon(
-                imageVector = Icons.Outlined.Warning,
-                contentDescription = "Warning icon",
-                modifier = Modifier.padding(horizontal = 12.dp),
-                tint = color ?: MaterialTheme.colorScheme.onSurface)
-        }
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Spacer(
+            modifier = Modifier
+                .width(1.dp)
+                .height(32.dp)
+                .background(color ?: MaterialTheme.colorScheme.onSurface)
+        )
+        Icon(
+            imageVector = Icons.Outlined.Warning,
+            contentDescription = "Warning icon",
+            modifier = Modifier.padding(horizontal = 12.dp),
+            tint = color ?: MaterialTheme.colorScheme.onSurface
+        )
+    }
 }
 
 @Preview
@@ -121,8 +131,7 @@ private fun PreviewMenuItemAdd() {
 private fun PreviewMenuItemFilled() {
     MaterialTheme {
         Surface {
-            MenuItem(
-                icon = Icons.Outlined.Email,
+            MenuItem(icon = Icons.Outlined.Email,
                 title = "This is an email",
                 description = "It unsurprisingly resembles an envelope",
                 onClick = {})
@@ -139,7 +148,8 @@ private fun PreviewMenuItemFilledWarning() {
                 icon = Icons.Outlined.Email,
                 title = "This is an email",
                 description = "It unsurprisingly resembles an envelope",
-                showWarning = true)
+                showWarning = true
+            )
         }
     }
 }
@@ -154,7 +164,8 @@ private fun PreviewMenuItemFilledWarningDisabled() {
                 title = "This is an email",
                 description = "It unsurprisingly resembles an envelope",
                 showWarning = true,
-                isEnabled = false)
+                isEnabled = false
+            )
         }
     }
 }

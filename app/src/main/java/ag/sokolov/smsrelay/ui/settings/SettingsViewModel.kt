@@ -18,18 +18,17 @@ import ag.sokolov.smsrelay.ui.settings.state.SettingsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel
-@Inject
-constructor(
+@Inject constructor(
     getTelegramBotUseCase: GetTelegramBotUseCase,
     getTelegramRecipientUseCase: GetTelegramRecipientUseCase,
     private val addTelegramBotUseCase: AddTelegramBotUseCase,
@@ -38,13 +37,11 @@ constructor(
     private val deleteTelegramRecipientUseCase: DeleteTelegramRecipientUseCase
 ) : ViewModel() {
 
-    val state =
-        combine(getTelegramBotUseCase(), getTelegramRecipientUseCase()) {
-                telegramBotResponse,
-                telegramRecipientResponse ->
-                getSettingsState(telegramBotResponse, telegramRecipientResponse)
-            }
-            .toViewModelScopeStateFlow(initialState = SettingsState())
+    val state = combine(
+        getTelegramBotUseCase(), getTelegramRecipientUseCase()
+    ) { telegramBotResponse, telegramRecipientResponse ->
+        getSettingsState(telegramBotResponse, telegramRecipientResponse)
+    }.toViewModelScopeStateFlow(initialState = SettingsState())
 
     private fun getSettingsState(
         telegramBotResponse: Response<TelegramBot?, DomainError>,
@@ -54,7 +51,8 @@ constructor(
             botState = getBotState(telegramBotResponse),
             recipientState = getRecipientState(telegramRecipientResponse),
             botMenuItemState = getBotMenuItemState(telegramBotResponse),
-            recipientMenuItemState = getRecipientMenuItemState(telegramRecipientResponse))
+            recipientMenuItemState = getRecipientMenuItemState(telegramRecipientResponse)
+        )
     }
 
     private fun getBotState(telegramBotResponse: Response<TelegramBot?, DomainError>): BotState =
@@ -81,25 +79,19 @@ constructor(
     ): RecipientState =
         when (telegramRecipientResponse) {
             is Response.Loading -> RecipientState.Loading()
-            is Response.Success ->
-                telegramRecipientResponse.data?.let { telegramRecipient ->
-                    RecipientState.Configured(
-                        fullName = "Aleksei", username = telegramRecipient.username)
-                } ?: RecipientState.NotConfigured
-            is Response.Failure ->
-                when (telegramRecipientResponse.error) {
-                    is DomainError.NetworkUnavailable ->
-                        RecipientState.Loading("Waiting for network...")
-                    is DomainError.NetworkError ->
-                        RecipientState.ExternalError("Check bot settings")
-                    is DomainError.BotApiTokenMissing ->
-                        RecipientState.ExternalError("Bot configuration required")
-                    is DomainError.BotApiTokenInvalid ->
-                        RecipientState.ExternalError("Check bot settings")
-                    is DomainError.RecipientInvalid ->
-                        RecipientState.RecipientError("Recipient blocked the bot")
-                    else -> RecipientState.RecipientError("Unhandled error")
-                }
+            is Response.Success -> telegramRecipientResponse.data?.let { telegramRecipient ->
+                RecipientState.Configured(
+                    fullName = "Aleksei", username = telegramRecipient.username
+                )
+            } ?: RecipientState.NotConfigured
+            is Response.Failure -> when (telegramRecipientResponse.error) {
+                is DomainError.NetworkUnavailable -> RecipientState.Loading("Waiting for network...")
+                is DomainError.NetworkError -> RecipientState.ExternalError("Check bot settings")
+                is DomainError.BotApiTokenMissing -> RecipientState.ExternalError("Bot configuration required")
+                is DomainError.BotApiTokenInvalid -> RecipientState.ExternalError("Check bot settings")
+                is DomainError.RecipientInvalid -> RecipientState.RecipientError("Recipient blocked the bot")
+                else -> RecipientState.RecipientError("Unhandled error")
+            }
         }
 
     fun onAction(action: SettingsAction) {
@@ -114,11 +106,14 @@ constructor(
     private fun addBot(botApiToken: String) =
         viewModelScope.launch { addTelegramBotUseCase(botApiToken) }
 
-    private fun removeBot() = viewModelScope.launch { deleteTelegramBotUseCase() }
+    private fun removeBot() =
+        viewModelScope.launch { deleteTelegramBotUseCase() }
 
-    private fun addRecipient() = viewModelScope.launch { addTelegramRecipientUseCase() }
+    private fun addRecipient() =
+        viewModelScope.launch { addTelegramRecipientUseCase() }
 
-    private fun removeRecipient() = viewModelScope.launch { deleteTelegramRecipientUseCase() }
+    private fun removeRecipient() =
+        viewModelScope.launch { deleteTelegramRecipientUseCase() }
 
     private fun getBotMenuItemState(response: Response<TelegramBot?, DomainError>) =
         when (response) {
@@ -134,13 +129,13 @@ constructor(
         MenuItemState(
             showWarning = true,
             isEnabled = error !is DomainError.NetworkUnavailable,
-            description =
-                when (error) {
-                    is DomainError.NetworkUnavailable -> "Waiting for network..."
-                    is DomainError.BotApiTokenInvalid -> "API token invalid"
-                    is DomainError.NetworkError -> "Network error"
-                    else -> "Unhandled error"
-                })
+            description = when (error) {
+                is DomainError.NetworkUnavailable -> "Waiting for network..."
+                is DomainError.BotApiTokenInvalid -> "API token invalid"
+                is DomainError.NetworkError -> "Network error"
+                else -> "Unhandled error"
+            }
+        )
 
     private fun getRecipientMenuItemState(
         response: Response<TelegramUser?, DomainError>
@@ -159,33 +154,25 @@ constructor(
 
     private fun getRecipientMenuItemState(error: DomainError): MenuItemState =
         MenuItemState(
-            showWarning =
-                when (error) {
-                    is DomainError.NetworkUnavailable,
-                    is DomainError.BotApiTokenMissing,
-                    is DomainError.BotApiTokenInvalid -> false
-                    else -> true
-                },
-            isEnabled =
-                when (error) {
-                    is DomainError.NetworkUnavailable,
-                    is DomainError.BotApiTokenMissing,
-                    is DomainError.BotApiTokenInvalid -> false
-                    else -> true
-                },
-            description =
-                when (error) {
-                    is DomainError.NetworkUnavailable,
-                    is DomainError.BotApiTokenInvalid -> "Check bot status"
-                    is DomainError.BotApiTokenMissing -> "Bot not configured"
-                    is DomainError.RecipientInvalid -> "Bot blocked by recipient"
-                    is DomainError.NetworkError -> "Network error"
-                    else -> "Unhandled error"
-                })
+            showWarning = when (error) {
+                is DomainError.NetworkUnavailable, is DomainError.BotApiTokenMissing, is DomainError.BotApiTokenInvalid -> false
+                else -> true
+            }, isEnabled = when (error) {
+                is DomainError.NetworkUnavailable, is DomainError.BotApiTokenMissing, is DomainError.BotApiTokenInvalid -> false
+                else -> true
+            }, description = when (error) {
+                is DomainError.NetworkUnavailable, is DomainError.BotApiTokenInvalid -> "Check bot status"
+                is DomainError.BotApiTokenMissing -> "Bot not configured"
+                is DomainError.RecipientInvalid -> "Bot blocked by recipient"
+                is DomainError.NetworkError -> "Network error"
+                else -> "Unhandled error"
+            }
+        )
 
     private fun <T> Flow<T>.toViewModelScopeStateFlow(initialState: T): StateFlow<T> =
         this.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = initialState)
+            initialValue = initialState
+        )
 }

@@ -8,14 +8,13 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
 class PreferencesDataStoreConfigurationRepository
-@Inject
-constructor(private val dataStore: DataStore<Preferences>) : ConfigurationRepository {
+@Inject constructor(private val dataStore: DataStore<Preferences>) : ConfigurationRepository {
 
     companion object {
         private val TELEGRAM_BOT_API_TOKEN = stringPreferencesKey("telegram_bot_api_token")
@@ -26,27 +25,29 @@ constructor(private val dataStore: DataStore<Preferences>) : ConfigurationReposi
         dataStore.data.map { it[TELEGRAM_BOT_API_TOKEN] }.distinctUntilChanged()
 
     override suspend fun setTelegramBotApiToken(botApiToken: String): Response<Unit, DomainError> =
-        runCatching { dataStore.edit { it[TELEGRAM_BOT_API_TOKEN] = botApiToken } }
-            .fold(
-                onSuccess = { Response.Success(Unit) },
-                onFailure = { Response.Failure(DomainError.UnhandledError) },
-            )
+        runCatching { dataStore.edit { it[TELEGRAM_BOT_API_TOKEN] = botApiToken } }.fold(
+            onSuccess = { Response.Success(Unit) },
+            onFailure = { Response.Failure(DomainError.UnhandledError) },
+        )
 
-    override suspend fun deleteTelegramApiTokenAndRecipientId(): Result<Unit> = runCatching {
-        dataStore.edit { telegramConfig ->
-            telegramConfig.remove(TELEGRAM_BOT_API_TOKEN)
-            telegramConfig.remove(TELEGRAM_RECIPIENT_ID)
+    override suspend fun deleteTelegramApiTokenAndRecipientId(): Result<Unit> =
+        runCatching {
+            dataStore.edit { telegramConfig ->
+                telegramConfig.remove(TELEGRAM_BOT_API_TOKEN)
+                telegramConfig.remove(TELEGRAM_RECIPIENT_ID)
+            }
         }
-    }
 
     override fun getTelegramRecipientId(): Flow<Long?> =
         dataStore.data.map { it[TELEGRAM_RECIPIENT_ID] }.distinctUntilChanged()
 
-    override suspend fun setTelegramRecipientId(recipientId: Long): Result<Unit> = runCatching {
-        dataStore.edit { it[TELEGRAM_RECIPIENT_ID] = recipientId }
-    }
+    override suspend fun setTelegramRecipientId(recipientId: Long): Result<Unit> =
+        runCatching {
+            dataStore.edit { it[TELEGRAM_RECIPIENT_ID] = recipientId }
+        }
 
-    override suspend fun deleteTelegramRecipientId(): Result<Unit> = runCatching {
-        dataStore.edit { it.remove(TELEGRAM_RECIPIENT_ID) }
-    }
+    override suspend fun deleteTelegramRecipientId(): Result<Unit> =
+        runCatching {
+            dataStore.edit { it.remove(TELEGRAM_RECIPIENT_ID) }
+        }
 }

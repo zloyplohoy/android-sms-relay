@@ -6,16 +6,15 @@ import ag.sokolov.smsrelay.domain.model.TelegramBot
 import ag.sokolov.smsrelay.domain.repository.AndroidSystemRepository
 import ag.sokolov.smsrelay.domain.repository.ConfigurationRepository
 import ag.sokolov.smsrelay.domain.repository.TelegramBotApiRepository
-import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 
 class GetTelegramBotUseCase
-@Inject
-constructor(
+@Inject constructor(
     private val androidSystemRepository: AndroidSystemRepository,
     private val configurationRepository: ConfigurationRepository,
     private val telegramBotApiRepository: TelegramBotApiRepository
@@ -23,20 +22,20 @@ constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     operator fun invoke(): Flow<Response<TelegramBot?, DomainError>> =
         combine(
-                androidSystemRepository.getConnectionStatus(),
-                configurationRepository.getTelegramBotApiToken()) { isOnline, telegramBotApiToken ->
-                    Pair(isOnline, telegramBotApiToken)
-                }
-            .flatMapLatest { (isOnline, telegramBotApiToken) ->
-                flow {
-                    telegramBotApiToken?.let {
-                        if (isOnline) {
-                            emit(Response.Loading)
-                            emit(telegramBotApiRepository.getTelegramBot(it))
-                        } else {
-                            emit(Response.Failure(DomainError.NetworkUnavailable))
-                        }
-                    } ?: emit(Response.Success(null))
-                }
+            androidSystemRepository.getConnectionStatus(),
+            configurationRepository.getTelegramBotApiToken()
+        ) { isOnline, telegramBotApiToken ->
+            Pair(isOnline, telegramBotApiToken)
+        }.flatMapLatest { (isOnline, telegramBotApiToken) ->
+            flow {
+                telegramBotApiToken?.let {
+                    if (isOnline) {
+                        emit(Response.Loading)
+                        emit(telegramBotApiRepository.getTelegramBot(it))
+                    } else {
+                        emit(Response.Failure(DomainError.NetworkUnavailable))
+                    }
+                } ?: emit(Response.Success(null))
             }
+        }
 }

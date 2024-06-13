@@ -16,7 +16,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.flow.StateFlow
 
 @Composable
-fun SettingsScreen(stateFlow: StateFlow<SettingsState>, navigate: (Any) -> Unit = {}) {
+fun SettingsScreen(
+    stateFlow: StateFlow<SettingsState>,
+    navigate: (Any) -> Unit = {}
+) {
     val state = stateFlow.collectAsStateWithLifecycle()
     val botMenuItemState = state.value.botMenuItemState
     val recipientMenuItemState = state.value.recipientMenuItemState
@@ -33,7 +36,8 @@ fun SettingsScreenContent(
         ScreenTopBar(title = "Settings")
         TelegramBotMenuItem(state = botMenuItemState, onClick = { navigate(SettingsNav.Bot) })
         TelegramRecipientMenuItem(
-            state = recipientMenuItemState, onClick = { navigate(SettingsNav.Recipient) })
+            state = recipientMenuItemState,
+            onClick = { navigate(SettingsNav.Recipient) })
     }
 
 @Preview
@@ -42,7 +46,8 @@ private fun PreviewSettingsScreenLoading() {
     SMSRelayTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
             SettingsScreenContent(
-                botMenuItemState = MenuItemState(), recipientMenuItemState = MenuItemState())
+                botMenuItemState = MenuItemState(), recipientMenuItemState = MenuItemState()
+            )
         }
     }
 }
@@ -54,7 +59,8 @@ private fun PreviewSettingsScreenConfigured() {
         Surface(modifier = Modifier.fillMaxSize()) {
             SettingsScreenContent(
                 botMenuItemState = MenuItemState(description = "Awesome SMS bot"),
-                recipientMenuItemState = MenuItemState(description = "Aleksei Sokolov"))
+                recipientMenuItemState = MenuItemState(description = "Aleksei Sokolov")
+            )
         }
     }
 }
