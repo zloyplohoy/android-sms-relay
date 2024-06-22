@@ -1,5 +1,7 @@
 package ag.sokolov.smsrelay.ui.setup.screen.bot
 
+import ag.sokolov.smsrelay.R
+import ag.sokolov.smsrelay.ui.setup.SetupScreen
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,9 +30,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -83,13 +89,16 @@ internal fun BotSetupScreen(
 
 @Composable
 fun BotSetupHeader() {
-    Text(text = "Set up a Telegram bot", style = MaterialTheme.typography.headlineSmall)
+    Text(
+        text = stringResource(R.string.bot_setup_header),
+        style = MaterialTheme.typography.headlineSmall
+    )
 }
 
 @Composable
 fun BotSetupDescription() {
     Text(
-        text = "aldjsfklha skjdhf kjashdf ksadhk hsadkjh fkjasdh fakjsdf kjash kjhasdkj hkajsd hfgaksjd hkjsah kjdshf kjhafkjg kajf kjadfhs kjhaskj haksjh gkjask jghsdfk jgksah kahsk jhsakjg kjas kjhsdf kjhfg kjhakdfsjh ksajjka shkj akja hkas kj ahdsakjh g",
+        text = stringResource(R.string.bot_setup_description),
         style = MaterialTheme.typography.bodyMedium,
         textAlign = TextAlign.Justify,
     )
@@ -129,8 +138,8 @@ fun BotDetailsBlock(state: BotSetupState.Configured) {
             Modifier.size(36.dp)
         )
         Column {
-            Text(text = state.botName, style = MaterialTheme.typography.titleMedium)
-            Text(text = "@${state.botUsername}", style = MaterialTheme.typography.labelMedium)
+            BotTitle(text = state.botName)
+            BotDescription(text = "@${state.botUsername}")
         }
     }
 }
@@ -181,14 +190,45 @@ fun InfoIcon() {
     Icon(imageVector = Icons.Outlined.Info, contentDescription = "An error occurred")
 }
 
+@Composable
+private fun BotTitle(
+    text: String,
+    color: Color? = null
+) {
+    Text(
+        text = text,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+        style = MaterialTheme.typography.labelLarge,
+        color = color ?: MaterialTheme.colorScheme.onSurface
+    )
+}
+
+@Composable
+fun BotDescription(
+    text: String,
+    color: Color? = null
+) {
+    Text(
+        text = text,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+        style = MaterialTheme.typography.labelSmall,
+        fontWeight = FontWeight.Light,
+        color = color ?: MaterialTheme.colorScheme.onSurface
+    )
+}
+
 @Preview
 @Composable
 fun PreviewBotSetupScreenNotConfigured() {
     SMSRelayTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
-            BotSetupScreen(onContinue = {},
-                state = BotSetupState.NotConfigured,
-                onTokenValueChange = {})
+            SetupScreen(setupProgress = 0.33f) {
+                BotSetupScreen(onContinue = {},
+                    state = BotSetupState.NotConfigured,
+                    onTokenValueChange = {})
+            }
         }
     }
 }
@@ -198,7 +238,11 @@ fun PreviewBotSetupScreenNotConfigured() {
 fun PreviewBotSetupScreenLoading() {
     SMSRelayTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
-            BotSetupScreen(onContinue = {}, state = BotSetupState.Loading, onTokenValueChange = {})
+            SetupScreen(setupProgress = 0.33f) {
+                BotSetupScreen(onContinue = {},
+                    state = BotSetupState.Loading,
+                    onTokenValueChange = {})
+            }
         }
     }
 }
@@ -208,9 +252,11 @@ fun PreviewBotSetupScreenLoading() {
 fun PreviewBotSetupScreenConfigured() {
     SMSRelayTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
-            BotSetupScreen(onContinue = {}, state = BotSetupState.Configured(
-                botName = "Awesome Telegram bot", botUsername = "awesome_telegram_bot"
-            ), onTokenValueChange = {})
+            SetupScreen(setupProgress = 0.33f) {
+                BotSetupScreen(onContinue = {}, state = BotSetupState.Configured(
+                    botName = "Awesome Telegram bot", botUsername = "awesome_telegram_bot"
+                ), onTokenValueChange = {})
+            }
         }
     }
 }
@@ -220,9 +266,11 @@ fun PreviewBotSetupScreenConfigured() {
 fun PreviewBotSetupScreenError() {
     SMSRelayTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
-            BotSetupScreen(onContinue = {},
-                state = BotSetupState.NotConfigured,
-                onTokenValueChange = {})
+            SetupScreen(setupProgress = 0.33f) {
+                BotSetupScreen(onContinue = {},
+                    state = BotSetupState.NotConfigured,
+                    onTokenValueChange = {})
+            }
         }
     }
 }

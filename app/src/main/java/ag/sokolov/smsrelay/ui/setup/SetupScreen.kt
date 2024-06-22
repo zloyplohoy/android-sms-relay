@@ -42,11 +42,6 @@ fun NavGraphBuilder.setupScreen(navController: NavController) =
 fun SetupScreen(
     navController: NavController
 ) {
-    SetupScreen(onFinished = navController::finishSetup)
-}
-
-@Composable
-internal fun SetupScreen(onFinished: () -> Unit) {
     val setupNavController = rememberNavController()
     val currentSetupRoute: String? =
         setupNavController.currentBackStackEntryAsState().value?.destination?.route
@@ -58,13 +53,25 @@ internal fun SetupScreen(onFinished: () -> Unit) {
         animationSpec = tween(easing = FastOutSlowInEasing),
     )
 
+    SetupScreen(setupProgress = setupProgressAnimated) {
+        SetupNavHost(
+            setupNavController = setupNavController, onFinished = navController::finishSetup
+        )
+    }
+}
+
+@Composable
+fun SetupScreen(
+    setupProgress: Float,
+    content: @Composable (() -> Unit) = {}
+) {
     Column(
         Modifier
             .fillMaxSize()
             .padding(top = 48.dp)
     ) {
-        SetupProgressIndicator(progress = setupProgressAnimated)
-        SetupNavHost(setupNavController = setupNavController, onFinished = onFinished)
+        SetupProgressIndicator(progress = setupProgress)
+        content()
     }
 }
 
@@ -120,7 +127,7 @@ fun getSetupProgress(currentSetupRoute: String?): Float {
 fun PreviewSetupScreen() {
     SMSRelayTheme {
         Surface(Modifier.fillMaxSize()) {
-            SetupScreen(onFinished = {})
+            SetupScreen(setupProgress = 0.5f)
         }
     }
 }

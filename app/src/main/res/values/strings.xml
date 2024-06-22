@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">SMS Relay</string>
+    <string name="bot_setup_description">aldjsfklha skjdhf kjashdf ksadhk hsadkjh fkjasdh fakjsdf kjash kjhasdkj hkajsd hfgaksjd hkjsah kjdshf kjhafkjg kajf kjadfhs kjhaskj haksjh gkjask jghsdfk jgksah kahsk jhsakjg kjas kjhsdf kjhfg kjhakdfsjh ksajjka shkj akja hkas kj ahdsakjh g</string>
+    <string name="bot_setup_header">Set up a Telegram bot</string>
 </resources>
