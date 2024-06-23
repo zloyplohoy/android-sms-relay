@@ -4,6 +4,7 @@ import ag.sokolov.smsrelay.domain.model.DomainError
 import ag.sokolov.smsrelay.domain.model.Response
 import ag.sokolov.smsrelay.domain.model.TelegramBot
 import ag.sokolov.smsrelay.domain.use_case.add_telegram_bot.AddTelegramBotUseCase
+import ag.sokolov.smsrelay.domain.use_case.delete_telegram_bot.DeleteTelegramBotUseCase
 import ag.sokolov.smsrelay.domain.use_case.get_telegram_bot_2.GetTelegramBot2UseCase
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,7 +18,8 @@ import javax.inject.Inject
 @HiltViewModel
 class BotSetupViewModel @Inject constructor(
     getTelegramBotUseCase: GetTelegramBot2UseCase,
-    private val addTelegramBotUseCase: AddTelegramBotUseCase
+    private val addTelegramBotUseCase: AddTelegramBotUseCase,
+    private val deleteTelegramBotUseCase: DeleteTelegramBotUseCase
 ) : ViewModel() {
     val state = getTelegramBotUseCase().map { telegramBotResponse ->
         getBotSetupState(telegramBotResponse)
@@ -34,6 +36,11 @@ class BotSetupViewModel @Inject constructor(
             if (telegramApiTokenRegex.matches(token)) {
                 addTelegramBotUseCase(token)
             }
+        }
+
+    fun onTokenReset() =
+        viewModelScope.launch {
+            deleteTelegramBotUseCase()
         }
 
     private fun getBotSetupState(telegramBotResponse: Response<TelegramBot?, DomainError>): BotSetupState =

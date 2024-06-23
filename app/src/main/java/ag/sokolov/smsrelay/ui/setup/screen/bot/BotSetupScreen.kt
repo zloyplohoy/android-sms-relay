@@ -1,10 +1,16 @@
 package ag.sokolov.smsrelay.ui.setup.screen.bot
 
 import ag.sokolov.smsrelay.R
-import ag.sokolov.smsrelay.ui.setup.common.element.monogram.Monogram
-import ag.sokolov.smsrelay.ui.setup.common.element.ordered_list.orderedList
 import ag.sokolov.smsrelay.ui.setup.SetupScreen
+import ag.sokolov.smsrelay.ui.setup.common.element.contact_list_item.ContactListItem
+import ag.sokolov.smsrelay.ui.setup.common.element.ordered_list.orderedList
+import ag.sokolov.smsrelay.ui.setup.common.element.setup_step_section.SetupStepSection
+import ag.sokolov.smsrelay.ui.setup.common.element.setup_step_title.SetupStepTitle
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,29 +20,31 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Clear
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -50,48 +58,50 @@ fun BotSetupScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     BotSetupScreen(
-        onContinue = onContinue, state = state, onTokenValueChange = viewModel::onTokenValueChange
+        state = state,
+        onContinue = onContinue,
+        onTokenValueChange = viewModel::onTokenValueChange,
+        onTokenReset = viewModel::onTokenReset
     )
 }
 
 @Composable
 internal fun BotSetupScreen(
-    onContinue: () -> Unit,
     state: BotSetupState,
-    onTokenValueChange: (value: String) -> Unit
+    onContinue: () -> Unit,
+    onTokenValueChange: (value: String) -> Unit,
+    onTokenReset: () -> Unit
 ) {
     Column(
+        verticalArrangement = Arrangement.spacedBy(32.dp),
         modifier = Modifier
             .fillMaxSize()
             .padding(32.dp)
             .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
-        BotSetupHeader()
-        BotSetupDescription()
-        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            BotConfigurationBlockHeader()
-            BotConfigurationBlock(state = state, onTokenValueChange = onTokenValueChange)
+        SetupStepTitle(stringResource(R.string.bot_setup_step_title))
+        SetupStepSection(name = "Bot setup instructions") {
+            Column(verticalArrangement = Arrangement.spacedBy(24.dp)) {
+                BotSetupDescription()
+                TokenInputBlock(
+                    state = state, onValueChange = onTokenValueChange, onReset = onTokenReset
+                )
+            }
         }
-        Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-        )
+        AnimatedVisibility(
+            visible = state is BotSetupState.Configured, enter = fadeIn(), exit = fadeOut()
+        ) {
+            SetupStepSection(name = "Bot configuration") {
+                BotDetails(state = state)
+            }
+        }
+        Spacer(modifier = Modifier.weight(1f))
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
             Button(enabled = state is BotSetupState.Configured, onClick = onContinue) {
                 Text(text = "Next")
             }
         }
     }
-}
-
-@Composable
-fun BotSetupHeader() {
-    Text(
-        text = stringResource(R.string.bot_setup_header),
-        style = MaterialTheme.typography.headlineSmall
-    )
 }
 
 @Composable
@@ -108,78 +118,70 @@ fun BotSetupDescription() {
     )
     Text(
         text = orderedList(items = setupSteps.map { stringResource(id = it) }),
-        style = MaterialTheme.typography.bodyMedium
+        style = MaterialTheme.typography.bodyMedium,
+        modifier = Modifier.padding(start = 8.dp)
     )
 }
 
 @Composable
-fun BotConfigurationBlockHeader() {
-    Text(style = MaterialTheme.typography.labelMedium, text = "Bot configuration")
-}
-
-@Composable
-fun BotConfigurationBlock(
+fun TokenInputBlock(
     state: BotSetupState,
-    onTokenValueChange: (value: String) -> Unit
-) {
-    if (state is BotSetupState.Configured) {
-        BotDetailsBlock(state)
-    } else {
-        TokenTextField(
-            isEnabled = state !is BotSetupState.Loading,
-            errorText = if (state is BotSetupState.Error) state.errorMessage else null,
-            isLoading = state is BotSetupState.Loading,
-            onValueChange = onTokenValueChange
-        )
-    }
-}
-
-@Composable
-fun BotDetailsBlock(state: BotSetupState.Configured) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        Monogram(fromString = state.botName, textStyle = MaterialTheme.typography.headlineSmall)
-        Column {
-            BotTitle(text = state.botName)
-            BotDescription(text = "@${state.botUsername}")
-        }
-    }
-}
-
-@Composable
-fun TokenTextField(
-    isEnabled: Boolean,
-    errorText: String?,
-    isLoading: Boolean,
-    onValueChange: (value: String) -> Unit
+    onValueChange: (value: String) -> Unit,
+    onReset: () -> Unit
 ) {
     var token by rememberSaveable { mutableStateOf("") }
-    val isError = errorText != null
 
-    OutlinedTextField(modifier = Modifier.fillMaxWidth(),
-        singleLine = true,
-        enabled = isEnabled,
-        value = token,
-        onValueChange = {
-            token = it
-            onValueChange(token)
-        },
-        placeholder = { Text("Paste bot API token here") },
-        trailingIcon = when {
-            isLoading -> {
-                { InlineCircularProgressIndicator() }
-            }
-            isError -> {
-                { InfoIcon() }
-            }
-            else -> null
-        },
-        isError = isError,
-        supportingText = { if (isError) Text(text = errorText!!) },
-        visualTransformation = PasswordVisualTransformation()
-    )
+    val isInputEnabled = state is BotSetupState.NotConfigured || state is BotSetupState.Error
+    val isInputError = state is BotSetupState.Error
+    val isTokenValueImitated = state is BotSetupState.Configured
+    val isLoading = state is BotSetupState.Loading
+    val isResetButtonEnabled = state !is BotSetupState.Loading
+
+    Row(verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+        OutlinedTextField(value = if (isTokenValueImitated) stringResource(R.string.sample_telegram_bot_api_token) else token,
+            onValueChange = { value ->
+                token = value
+                onValueChange(value)
+            },
+            enabled = isInputEnabled,
+            singleLine = true,
+            placeholder = { Text(text = stringResource(R.string.bot_api_token_input_placeholder)) },
+            trailingIcon = when {
+                isLoading -> {
+                    { InlineCircularProgressIndicator() }
+                }
+                isInputError -> {
+                    { ErrorIcon() }
+                }
+                else -> null
+            },
+            isError = isInputError,
+            supportingText = { (state as? BotSetupState.Error)?.errorMessage },
+            visualTransformation = PasswordVisualTransformation(),
+            textStyle = MaterialTheme.typography.bodySmall,
+            modifier = Modifier.weight(1f),
+            shape = RoundedCornerShape(percent = 50)
+        )
+        OutlinedIconButton(
+            onClick = {
+                if (isInputEnabled) {
+                    token = ""
+                } else {
+                    token = ""
+                    onReset()
+                }
+            },
+            border = BorderStroke(1.dp, OutlinedTextFieldDefaults.colors().unfocusedIndicatorColor),
+            modifier = Modifier.size(OutlinedTextFieldDefaults.MinHeight),
+            enabled = isResetButtonEnabled,
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.Clear,
+                contentDescription = "Reset token",
+                tint = OutlinedTextFieldDefaults.colors().unfocusedPlaceholderColor
+            )
+        }
+    }
 }
 
 @Composable
@@ -190,37 +192,21 @@ fun InlineCircularProgressIndicator() {
 }
 
 @Composable
-fun InfoIcon() {
+fun ErrorIcon() {
     Icon(imageVector = Icons.Outlined.Info, contentDescription = "An error occurred")
 }
 
 @Composable
-private fun BotTitle(
-    text: String,
-    color: Color? = null
-) {
-    Text(
-        text = text,
-        maxLines = 1,
-        overflow = TextOverflow.Ellipsis,
-        style = MaterialTheme.typography.labelLarge,
-        color = color ?: MaterialTheme.colorScheme.onSurface
-    )
-}
+fun BotDetails(state: BotSetupState) {
+    var latestConfiguredState by remember { mutableStateOf<BotSetupState.Configured?>(null) }
 
-@Composable
-fun BotDescription(
-    text: String,
-    color: Color? = null
-) {
-    Text(
-        text = text,
-        maxLines = 1,
-        overflow = TextOverflow.Ellipsis,
-        style = MaterialTheme.typography.labelSmall,
-        fontWeight = FontWeight.Light,
-        color = color ?: MaterialTheme.colorScheme.onSurface
-    )
+    if (state is BotSetupState.Configured) latestConfiguredState = state
+
+    latestConfiguredState?.let { configuredState ->
+        ContactListItem(
+            title = configuredState.botName, description = "@${configuredState.botUsername}"
+        )
+    }
 }
 
 @Preview
@@ -229,9 +215,10 @@ fun PreviewBotSetupScreenNotConfigured() {
     SMSRelayTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
             SetupScreen(setupProgress = 0.33f) {
-                BotSetupScreen(onContinue = {},
-                    state = BotSetupState.NotConfigured,
-                    onTokenValueChange = {})
+                BotSetupScreen(state = BotSetupState.NotConfigured,
+                    onContinue = {},
+                    onTokenValueChange = {},
+                    onTokenReset = {})
             }
         }
     }
@@ -243,9 +230,10 @@ fun PreviewBotSetupScreenLoading() {
     SMSRelayTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
             SetupScreen(setupProgress = 0.33f) {
-                BotSetupScreen(onContinue = {},
-                    state = BotSetupState.Loading,
-                    onTokenValueChange = {})
+                BotSetupScreen(state = BotSetupState.Loading,
+                    onContinue = {},
+                    onTokenValueChange = {},
+                    onTokenReset = {})
             }
         }
     }
@@ -257,9 +245,9 @@ fun PreviewBotSetupScreenConfigured() {
     SMSRelayTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
             SetupScreen(setupProgress = 0.33f) {
-                BotSetupScreen(onContinue = {}, state = BotSetupState.Configured(
+                BotSetupScreen(state = BotSetupState.Configured(
                     botName = "Awesome Telegram bot", botUsername = "awesome_telegram_bot"
-                ), onTokenValueChange = {})
+                ), onContinue = {}, onTokenValueChange = {}, onTokenReset = {})
             }
         }
     }
@@ -271,9 +259,10 @@ fun PreviewBotSetupScreenError() {
     SMSRelayTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
             SetupScreen(setupProgress = 0.33f) {
-                BotSetupScreen(onContinue = {},
-                    state = BotSetupState.NotConfigured,
-                    onTokenValueChange = {})
+                BotSetupScreen(state = BotSetupState.NotConfigured,
+                    onContinue = {},
+                    onTokenValueChange = {},
+                    onTokenReset = {})
             }
         }
     }

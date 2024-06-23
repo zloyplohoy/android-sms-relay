@@ -15,12 +15,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -69,7 +69,7 @@ fun SetupScreen(
     Column(
         Modifier
             .fillMaxSize()
-            .padding(top = 48.dp)
+            .padding(top = 32.dp)
     ) {
         SetupProgressIndicator(progress = setupProgress)
         content()
@@ -85,9 +85,7 @@ fun SetupProgressIndicator(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 32.dp),
-        strokeCap = StrokeCap.Round,
-        trackColor = MaterialTheme.colorScheme.primaryContainer,
-        color = MaterialTheme.colorScheme.primary
+        strokeCap = StrokeCap.Round
     )
 }
 
@@ -130,7 +128,9 @@ fun getSetupProgress(currentSetupRoute: String?): Float {
 fun PreviewSetupScreen() {
     SMSRelayTheme {
         Surface(Modifier.fillMaxSize()) {
-            SetupScreen(setupProgress = 0.5f)
+            SetupScreen(setupProgress = 0.5f) {
+                Surface(Modifier.fillMaxSize(), color = Color.Red) {}
+            }
         }
     }
 }
