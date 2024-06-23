@@ -10,13 +10,13 @@ import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -45,7 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -96,9 +96,17 @@ internal fun BotSetupScreen(
             }
         }
         Spacer(modifier = Modifier.weight(1f))
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-            Button(enabled = state is BotSetupState.Configured, onClick = onContinue) {
-                Text(text = "Next")
+        AnimatedVisibility(
+            visible = state is BotSetupState.Configured, enter = fadeIn(), exit = fadeOut()
+        ) {
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                Button(
+                    enabled = state is BotSetupState.Configured,
+                    onClick = onContinue,
+                    modifier = Modifier.height(OutlinedTextFieldDefaults.MinHeight)
+                ) {
+                    Text(text = "Next", modifier = Modifier.padding(horizontal = 8.dp))
+                }
             }
         }
     }
@@ -131,32 +139,45 @@ fun TokenInputBlock(
 ) {
     var token by rememberSaveable { mutableStateOf("") }
 
-    val isInputEnabled = state is BotSetupState.NotConfigured || state is BotSetupState.Error
-    val isInputError = state is BotSetupState.Error
-    val isTokenValueImitated = state is BotSetupState.Configured
+    val isTokenInputEnabled = state is BotSetupState.NotConfigured || state is BotSetupState.Error
+    val tokenValue =
+        if (state is BotSetupState.Configured) stringResource(R.string.sample_telegram_bot_api_token) else token
+    val isTokenInputError = state is BotSetupState.Error
+    val tokenInputErrorMessage = (state as? BotSetupState.Error)?.errorMessage
     val isLoading = state is BotSetupState.Loading
     val isResetButtonEnabled = state !is BotSetupState.Loading
 
     Row(verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-        OutlinedTextField(value = if (isTokenValueImitated) stringResource(R.string.sample_telegram_bot_api_token) else token,
+        OutlinedTextField(value = tokenValue,
             onValueChange = { value ->
                 token = value
                 onValueChange(value)
             },
-            enabled = isInputEnabled,
+            enabled = isTokenInputEnabled,
             singleLine = true,
             placeholder = { Text(text = stringResource(R.string.bot_api_token_input_placeholder)) },
             trailingIcon = when {
                 isLoading -> {
-                    { InlineCircularProgressIndicator() }
+                    {
+                        CircularProgressIndicator(
+                            strokeCap = StrokeCap.Round,
+                            strokeWidth = 2.dp,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
                 }
-                isInputError -> {
-                    { ErrorIcon() }
+                isTokenInputError -> {
+                    {
+                        Icon(
+                            imageVector = Icons.Outlined.Info,
+                            contentDescription = "An error occurred"
+                        )
+                    }
                 }
                 else -> null
             },
-            isError = isInputError,
-            supportingText = { (state as? BotSetupState.Error)?.errorMessage },
+            isError = isTokenInputError,
+            supportingText = { tokenInputErrorMessage?.let { Text(text = it) } },
             visualTransformation = PasswordVisualTransformation(),
             textStyle = MaterialTheme.typography.bodySmall,
             modifier = Modifier.weight(1f),
@@ -164,36 +185,21 @@ fun TokenInputBlock(
         )
         OutlinedIconButton(
             onClick = {
-                if (isInputEnabled) {
+                if (isTokenInputEnabled) {
                     token = ""
                 } else {
                     token = ""
                     onReset()
                 }
             },
-            border = BorderStroke(1.dp, OutlinedTextFieldDefaults.colors().unfocusedIndicatorColor),
             modifier = Modifier.size(OutlinedTextFieldDefaults.MinHeight),
-            enabled = isResetButtonEnabled,
+            enabled = isResetButtonEnabled
         ) {
             Icon(
-                imageVector = Icons.Outlined.Clear,
-                contentDescription = "Reset token",
-                tint = OutlinedTextFieldDefaults.colors().unfocusedPlaceholderColor
+                imageVector = Icons.Outlined.Clear, contentDescription = "Reset token"
             )
         }
     }
-}
-
-@Composable
-fun InlineCircularProgressIndicator() {
-    CircularProgressIndicator(
-        modifier = Modifier.size(20.dp), strokeCap = StrokeCap.Round, strokeWidth = 2.dp
-    )
-}
-
-@Composable
-fun ErrorIcon() {
-    Icon(imageVector = Icons.Outlined.Info, contentDescription = "An error occurred")
 }
 
 @Composable
@@ -209,7 +215,7 @@ fun BotDetails(state: BotSetupState) {
     }
 }
 
-@Preview
+@PreviewLightDark
 @Composable
 fun PreviewBotSetupScreenNotConfigured() {
     SMSRelayTheme {
@@ -224,7 +230,7 @@ fun PreviewBotSetupScreenNotConfigured() {
     }
 }
 
-@Preview
+@PreviewLightDark
 @Composable
 fun PreviewBotSetupScreenLoading() {
     SMSRelayTheme {
@@ -239,7 +245,7 @@ fun PreviewBotSetupScreenLoading() {
     }
 }
 
-@Preview
+@PreviewLightDark
 @Composable
 fun PreviewBotSetupScreenConfigured() {
     SMSRelayTheme {
@@ -253,13 +259,13 @@ fun PreviewBotSetupScreenConfigured() {
     }
 }
 
-@Preview
+@PreviewLightDark
 @Composable
 fun PreviewBotSetupScreenError() {
     SMSRelayTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
             SetupScreen(setupProgress = 0.33f) {
-                BotSetupScreen(state = BotSetupState.NotConfigured,
+                BotSetupScreen(state = BotSetupState.Error(errorMessage = "Invalid token"),
                     onContinue = {},
                     onTokenValueChange = {},
                     onTokenReset = {})

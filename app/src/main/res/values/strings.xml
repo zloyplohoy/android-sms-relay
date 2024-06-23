@@ -10,5 +10,5 @@
     <string name="bot_setup_description_7">Copy the API token BotFather provides</string>
     <string name="bot_setup_description_8">Paste the API token into the text field below</string>
     <string name="sample_telegram_bot_api_token">0000000000:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</string>
-    <string name="bot_api_token_input_placeholder">Paste bot API token here</string>
+    <string name="bot_api_token_input_placeholder">Paste token here</string>
 </resources>

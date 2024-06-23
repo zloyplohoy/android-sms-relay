@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -51,7 +52,8 @@ fun Monogram(
     val firstLetter = if (fromString.isNotEmpty()) fromString[0].uppercaseChar().toString() else "?"
 
     Box(
-        modifier = modifier.size(48.dp), contentAlignment = Alignment.Center
+        modifier = modifier.size(OutlinedTextFieldDefaults.MinHeight),
+        contentAlignment = Alignment.Center
     ) {
         Canvas(modifier = Modifier.matchParentSize()) {
             drawCircle(circleColor)
