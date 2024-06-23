@@ -1,5 +1,12 @@
 <resources>
     <string name="app_name">SMS Relay</string>
-    <string name="bot_setup_description">aldjsfklha skjdhf kjashdf ksadhk hsadkjh fkjasdh fakjsdf kjash kjhasdkj hkajsd hfgaksjd hkjsah kjdshf kjhafkjg kajf kjadfhs kjhaskj haksjh gkjask jghsdfk jgksah kahsk jhsakjg kjas kjhsdf kjhfg kjhakdfsjh ksajjka shkj akja hkas kj ahdsakjh g</string>
-    <string name="bot_setup_header">Set up a Telegram bot</string>
+	<string name="bot_setup_header">Set up a Telegram bot</string>
+	<string name="bot_setup_description_1">Open Telegram on any device (app or web)</string>
+	<string name="bot_setup_description_2">Search for “BotFather” in the contacts list</string>
+	<string name="bot_setup_description_3">Select the official account with a verified badge</string>
+	<string name="bot_setup_description_4">Start a chat with BotFather by tapping “Start”</string>
+	<string name="bot_setup_description_5">Select “create a new bot” from the menu</string>
+	<string name="bot_setup_description_6">Follow BotFather’s prompts to configure a bot</string>
+	<string name="bot_setup_description_7">Copy the API token BotFather provides</string>
+	<string name="bot_setup_description_8">Paste the API token into the text field below</string>
 </resources>

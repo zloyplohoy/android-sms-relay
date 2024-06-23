@@ -1,6 +1,8 @@
 package ag.sokolov.smsrelay.ui.setup.screen.bot
 
 import ag.sokolov.smsrelay.R
+import ag.sokolov.smsrelay.ui.setup.common.element.monogram.Monogram
+import ag.sokolov.smsrelay.ui.setup.common.element.ordered_list.orderedList
 import ag.sokolov.smsrelay.ui.setup.SetupScreen
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -14,7 +16,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -35,7 +36,6 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -65,11 +65,11 @@ internal fun BotSetupScreen(
             .fillMaxSize()
             .padding(32.dp)
             .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(36.dp)
+        verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
         BotSetupHeader()
         BotSetupDescription()
-        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
             BotConfigurationBlockHeader()
             BotConfigurationBlock(state = state, onTokenValueChange = onTokenValueChange)
         }
@@ -84,7 +84,6 @@ internal fun BotSetupScreen(
             }
         }
     }
-
 }
 
 @Composable
@@ -97,10 +96,19 @@ fun BotSetupHeader() {
 
 @Composable
 fun BotSetupDescription() {
+    val setupSteps = listOf(
+        R.string.bot_setup_description_1,
+        R.string.bot_setup_description_2,
+        R.string.bot_setup_description_3,
+        R.string.bot_setup_description_4,
+        R.string.bot_setup_description_5,
+        R.string.bot_setup_description_6,
+        R.string.bot_setup_description_7,
+        R.string.bot_setup_description_8
+    )
     Text(
-        text = stringResource(R.string.bot_setup_description),
-        style = MaterialTheme.typography.bodyMedium,
-        textAlign = TextAlign.Justify,
+        text = orderedList(items = setupSteps.map { stringResource(id = it) }),
+        style = MaterialTheme.typography.bodyMedium
     )
 }
 
@@ -130,13 +138,9 @@ fun BotConfigurationBlock(
 fun BotDetailsBlock(state: BotSetupState.Configured) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Icon(
-            imageVector = Icons.Outlined.AccountCircle,
-            contentDescription = "Bot icon",
-            Modifier.size(36.dp)
-        )
+        Monogram(fromString = state.botName, textStyle = MaterialTheme.typography.headlineSmall)
         Column {
             BotTitle(text = state.botName)
             BotDescription(text = "@${state.botUsername}")

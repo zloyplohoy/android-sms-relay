@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -85,6 +86,8 @@ fun SetupProgressIndicator(
             .fillMaxWidth()
             .padding(horizontal = 32.dp),
         strokeCap = StrokeCap.Round,
+        trackColor = MaterialTheme.colorScheme.primaryContainer,
+        color = MaterialTheme.colorScheme.primary
     )
 }
 
