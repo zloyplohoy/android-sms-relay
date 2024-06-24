@@ -30,8 +30,7 @@ fun ContactListItem(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        modifier = Modifier.fillMaxWidth()
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Monogram(fromString = title)
         Column(

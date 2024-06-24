@@ -51,7 +51,7 @@ fun SetupScreen(
     val setupProgressAnimated: Float by animateFloatAsState(
         label = "Setup progress",
         targetValue = setupProgress,
-        animationSpec = tween(easing = FastOutSlowInEasing),
+        animationSpec = tween(),
     )
 
     SetupScreen(setupProgress = setupProgressAnimated) {

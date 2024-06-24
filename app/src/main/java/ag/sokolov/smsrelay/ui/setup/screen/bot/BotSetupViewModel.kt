@@ -26,7 +26,7 @@ class BotSetupViewModel @Inject constructor(
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = BotSetupState.NotConfigured
+        initialValue = BotSetupState.Loading
     )
 
     private val telegramApiTokenRegex = Regex("""^\d{10}:[A-Za-z0-9_-]{35}$""")
