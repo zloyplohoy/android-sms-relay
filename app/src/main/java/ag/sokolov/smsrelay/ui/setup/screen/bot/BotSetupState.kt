@@ -6,7 +6,6 @@ sealed class BotSetupState {
     data object Loading : BotSetupState()
 
     data class Configured(
-
         val botName: String,
         val botUsername: String
     ) : BotSetupState()

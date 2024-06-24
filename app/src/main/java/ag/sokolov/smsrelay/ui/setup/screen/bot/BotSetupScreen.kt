@@ -7,7 +7,9 @@ import ag.sokolov.smsrelay.ui.setup.common.element.ordered_list.orderedList
 import ag.sokolov.smsrelay.ui.setup.common.element.setup_step_section.SetupStepSection
 import ag.sokolov.smsrelay.ui.setup.common.element.setup_step_title.SetupStepTitle
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.animateDpAsState
@@ -50,6 +52,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -69,7 +72,7 @@ fun BotSetupScreen(
     BotSetupScreen(
         state = state,
         onContinue = onContinue,
-        onTokenValueChange = viewModel::onTokenValueChange,
+        onTokenValueChanged = viewModel::onTokenValueChanged,
         onTokenReset = viewModel::onTokenReset
     )
 }
@@ -78,7 +81,7 @@ fun BotSetupScreen(
 internal fun BotSetupScreen(
     state: BotSetupState,
     onContinue: () -> Unit,
-    onTokenValueChange: (value: String) -> Unit,
+    onTokenValueChanged: (value: String) -> Unit,
     onTokenReset: () -> Unit
 ) {
     Column(
@@ -86,14 +89,14 @@ internal fun BotSetupScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(32.dp)
-            .verticalScroll(rememberScrollState()),
+            .verticalScroll(rememberScrollState()), // look at this
     ) {
         SetupStepTitle(stringResource(R.string.bot_setup_step_title))
         SetupStepSection(name = "Bot setup instructions") {
             Column(verticalArrangement = Arrangement.spacedBy(24.dp)) {
                 BotSetupDescription()
                 TokenInputBlock(
-                    state = state, onValueChange = onTokenValueChange, onReset = onTokenReset
+                    state = state, onValueChange = onTokenValueChanged, onReset = onTokenReset
                 )
             }
         }
@@ -141,7 +144,10 @@ fun TokenInputBlock(
 ) {
     var token by rememberSaveable { mutableStateOf("") }
 
-    val isTokenInputEnabled = state is BotSetupState.NotConfigured || state is BotSetupState.Error
+    val isTokenInputEnabled by remember(state) {
+        mutableStateOf(state is BotSetupState.NotConfigured || state is BotSetupState.Error)
+    }
+//    val isTokenInputEnabled = state is BotSetupState.NotConfigured || state is BotSetupState.Error
 
     Row(
         verticalAlignment = Alignment.Top,
@@ -172,7 +178,7 @@ fun TokenInputBlock(
 
             val tokenTextFieldWidth by animateDpAsState(label = "Token input width",
                 targetValue = if (isTokenTextFieldExpanded) maxWidth else OutlinedTextFieldDefaults.MinHeight,
-                animationSpec = tween(),
+                animationSpec = tween(5000),
                 finishedListener = {
                     tokenInputFieldAnimationFinished = true
                     isInitialTransitionState = false
@@ -183,6 +189,7 @@ fun TokenInputBlock(
                 is BotSetupState.Loading -> stringResource(R.string.sample_telegram_bot_api_token)
                 else -> token
             },
+//                value = token,
                 onValueChange = { value ->
                     token = value
                     onValueChange(value)
@@ -226,7 +233,10 @@ fun TokenInputBlock(
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier
                     .width(tokenTextFieldWidth)
-                    .zIndex(1f),
+                    .zIndex(1f)
+                    .onFocusChanged {
+                        Log.d("TAG", "isFocused: ${it.isFocused}")
+                    },
                 shape = RoundedCornerShape(percent = 50)
             )
             this@Row.AnimatedVisibility(
@@ -280,7 +290,7 @@ fun PreviewBotSetupScreenNotConfigured() {
             SetupScreen(setupProgress = 0.33f) {
                 BotSetupScreen(state = BotSetupState.NotConfigured,
                     onContinue = {},
-                    onTokenValueChange = {},
+                    onTokenValueChanged = {},
                     onTokenReset = {})
             }
         }
@@ -295,7 +305,7 @@ fun PreviewBotSetupScreenLoading() {
             SetupScreen(setupProgress = 0.33f) {
                 BotSetupScreen(state = BotSetupState.Loading,
                     onContinue = {},
-                    onTokenValueChange = {},
+                    onTokenValueChanged = {},
                     onTokenReset = {})
             }
         }
@@ -310,7 +320,7 @@ fun PreviewBotSetupScreenConfigured() {
             SetupScreen(setupProgress = 0.33f) {
                 BotSetupScreen(state = BotSetupState.Configured(
                     botName = "Awesome Telegram bot", botUsername = "awesome_telegram_bot"
-                ), onContinue = {}, onTokenValueChange = {}, onTokenReset = {})
+                ), onContinue = {}, onTokenValueChanged = {}, onTokenReset = {})
             }
         }
     }
@@ -324,7 +334,7 @@ fun PreviewBotSetupScreenError() {
             SetupScreen(setupProgress = 0.33f) {
                 BotSetupScreen(state = BotSetupState.Error(errorMessage = "Invalid token"),
                     onContinue = {},
-                    onTokenValueChange = {},
+                    onTokenValueChanged = {},
                     onTokenReset = {})
             }
         }
