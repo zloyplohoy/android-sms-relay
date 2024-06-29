@@ -31,11 +31,15 @@ sealed interface SetupDestination {
 
 fun NavGraphBuilder.setupScreenContent(
     setupNavController: NavController,
+    setLoadingState: (Boolean) -> Unit,
     onFinished: () -> Unit
 ) =
     navigation<SetupDestination.ROOT>(startDestination = SetupDestination.BOT) {
         composable<SetupDestination.BOT> {
-            BotSetupScreen(onContinue = setupNavController::navigateToRecipientSetup)
+            BotSetupScreen(
+                setLoadingState = setLoadingState,
+                onContinue = setupNavController::navigateToRecipientSetup
+            )
         }
         composable<SetupDestination.RECIPIENT> {
             RecipientSetupScreen(onContinue = setupNavController::navigateToPermissionsSetup)

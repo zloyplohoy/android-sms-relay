@@ -17,7 +17,10 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
@@ -51,9 +54,17 @@ fun SetupScreen(
         label = "Setup progress", targetValue = setupProgress, animationSpec = tween()
     )
 
-    SetupScreen(setupProgress = setupProgressAnimated) {
+    var showLoadingIndicator by remember { mutableStateOf(false) }
+
+    fun setLoadingState(isLoading: Boolean) {
+        showLoadingIndicator = isLoading
+    }
+
+    SetupScreen(setupProgress = setupProgressAnimated, showLoadingIndicator = showLoadingIndicator) {
         SetupNavHost(
-            setupNavController = setupNavController, onFinished = navController::finishSetup
+            setupNavController = setupNavController,
+            setLoadingState = ::setLoadingState,
+            onFinished = navController::finishSetup
         )
     }
 }
@@ -61,6 +72,7 @@ fun SetupScreen(
 @Composable
 fun SetupScreen(
     setupProgress: Float,
+    showLoadingIndicator: Boolean = false,
     content: @Composable (() -> Unit) = {}
 ) {
     Column(
@@ -68,27 +80,40 @@ fun SetupScreen(
             .fillMaxSize()
             .padding(top = 32.dp)
     ) {
-        SetupProgressIndicator(progress = setupProgress)
+        SetupProgressIndicator(
+            progress = setupProgress, showLoadingIndicator = showLoadingIndicator
+        )
         content()
     }
 }
 
 @Composable
 fun SetupProgressIndicator(
-    progress: Float
+    progress: Float,
+    showLoadingIndicator: Boolean
 ) {
-    LinearProgressIndicator(
-        progress = { progress },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 32.dp),
-        strokeCap = StrokeCap.Round
-    )
+    if (showLoadingIndicator) {
+        LinearProgressIndicator(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 32.dp),
+            strokeCap = StrokeCap.Round
+        )
+    } else {
+        LinearProgressIndicator(
+            progress = { progress },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 32.dp),
+            strokeCap = StrokeCap.Round
+        )
+    }
 }
 
 @Composable
 fun SetupNavHost(
     setupNavController: NavHostController,
+    setLoadingState: (Boolean) -> Unit,
     onFinished: () -> Unit
 ) {
     NavHost(modifier = Modifier.fillMaxSize(),
@@ -106,7 +131,7 @@ fun SetupNavHost(
         popExitTransition = {
             slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right) + fadeOut()
         }) {
-        setupScreenContent(setupNavController, onFinished = onFinished)
+        setupScreenContent(setupNavController, setLoadingState = setLoadingState, onFinished = onFinished)
     }
 }
 

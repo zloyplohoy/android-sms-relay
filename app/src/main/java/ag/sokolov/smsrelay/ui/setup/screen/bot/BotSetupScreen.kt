@@ -66,12 +66,14 @@ import kotlin.math.absoluteValue
 @Composable
 fun BotSetupScreen(
     onContinue: () -> Unit,
+    setLoadingState: (Boolean) -> Unit,
     viewModel: BotSetupViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     BotSetupScreen(
         state = state,
+        setLoadingState = setLoadingState,
         onContinue = onContinue,
         onTokenValueChanged = viewModel::onTokenValueChanged,
         onTokenReset = viewModel::onTokenReset
@@ -81,6 +83,7 @@ fun BotSetupScreen(
 @Composable
 internal fun BotSetupScreen(
     state: BotSetupState,
+    setLoadingState: (Boolean) -> Unit,
     onContinue: () -> Unit,
     onTokenValueChanged: (value: String) -> Unit,
     onTokenReset: () -> Unit
@@ -116,6 +119,7 @@ internal fun BotSetupScreen(
                     state = state,
                     onValueChange = onTokenValueChanged,
                     onReset = onTokenReset,
+                    setLoadingState = setLoadingState,
                     onCanContinue = ::showContinueButton
                 )
             }
@@ -161,6 +165,7 @@ fun TokenInputBlock(
     state: BotSetupState,
     onValueChange: (value: String) -> Unit,
     onReset: () -> Unit,
+    setLoadingState: (Boolean) -> Unit,
     onCanContinue: () -> Unit
 ) {
     var token by rememberSaveable { mutableStateOf("") }
@@ -209,17 +214,22 @@ fun TokenInputBlock(
                 coroutineScope.launch {
                     when (state) {
                         is BotSetupState.NotConfigured -> {
+                            setLoadingState(false)
                             botDetailsOpacity.hide()
                             tokenTextFieldWidth.expand(boxWithConstraintsScope)
                             tokenTextFieldPlaceholderOpacity.show()
                         }
                         is BotSetupState.Configured -> {
+                            setLoadingState(false)
                             launch { tokenTextFieldPlaceholderOpacity.hide() }
                             launch {
                                 tokenTextFieldWidth.collapse()
                                 botDetailsOpacity.show()
                                 onCanContinue()
                             }
+                        }
+                        is BotSetupState.Loading -> {
+                            setLoadingState(true)
                         }
                         else -> {}
                     }
@@ -321,7 +331,8 @@ fun PreviewBotSetupScreenNotConfigured() {
                 BotSetupScreen(state = BotSetupState.NotConfigured,
                     onContinue = {},
                     onTokenValueChanged = {},
-                    onTokenReset = {})
+                    onTokenReset = {},
+                    setLoadingState = {})
             }
         }
     }
@@ -336,7 +347,8 @@ fun PreviewBotSetupScreenLoading() {
                 BotSetupScreen(state = BotSetupState.Loading,
                     onContinue = {},
                     onTokenValueChanged = {},
-                    onTokenReset = {})
+                    onTokenReset = {},
+                    setLoadingState = {})
             }
         }
     }
@@ -350,7 +362,11 @@ fun PreviewBotSetupScreenConfigured() {
             SetupScreen(setupProgress = 0.33f) {
                 BotSetupScreen(state = BotSetupState.Configured(
                     botName = "Awesome Telegram bot", botUsername = "awesome_telegram_bot"
-                ), onContinue = {}, onTokenValueChanged = {}, onTokenReset = {})
+                ),
+                    onContinue = {},
+                    onTokenValueChanged = {},
+                    onTokenReset = {},
+                    setLoadingState = {})
             }
         }
     }
@@ -365,7 +381,8 @@ fun PreviewBotSetupScreenError() {
                 BotSetupScreen(state = BotSetupState.Error(errorMessage = "Invalid token"),
                     onContinue = {},
                     onTokenValueChanged = {},
-                    onTokenReset = {})
+                    onTokenReset = {},
+                    setLoadingState = {})
             }
         }
     }

@@ -6,6 +6,7 @@ import ag.sokolov.smsrelay.domain.model.TelegramBot
 import ag.sokolov.smsrelay.domain.use_case.add_telegram_bot.AddTelegramBotUseCase
 import ag.sokolov.smsrelay.domain.use_case.delete_telegram_bot.DeleteTelegramBotUseCase
 import ag.sokolov.smsrelay.domain.use_case.get_telegram_bot_2.GetTelegramBot2UseCase
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -43,7 +44,11 @@ class BotSetupViewModel @Inject constructor(
 
     val state = getTelegramBotUseCase().map { telegramBotResponse ->
         getBotSetupState(telegramBotResponse)
-    }.preventConfiguredToLoadingTransition(getSavedState()).setMinimumLoadingTime(1000).onEach {
+    }.onEach {
+        Log.d("TAG", "Obtained state: ${it.javaClass.name}")
+        Log.d("TAG", "Previous state: ${getSavedState().javaClass.name}")
+    }.preventConfiguredToLoadingTransition(getSavedState()).setMinimumLoadingTime(3_000).onEach {
+        Log.d("TAG", "Fired state: ${it.javaClass.name}")
         setSavedState(it)
     }.stateIn(
         scope = viewModelScope,
