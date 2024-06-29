@@ -34,9 +34,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Clear
-import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedIconButton
@@ -55,7 +53,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -189,9 +186,9 @@ fun TokenInputBlock(
                 else -> maxWidth.value.absoluteValue
             }
 
-            val initialTokenTextFieldValueOpacity = when (state) {
-                is BotSetupState.Configured -> 0f
-                else -> 1f
+            val initialTokenTextFieldPlaceholderOpacity = when (state) {
+                is BotSetupState.NotConfigured -> 1f
+                else -> 0f
             }
 
             val initialBotDetailsOpacity = when (state) {
@@ -201,9 +198,9 @@ fun TokenInputBlock(
 
             // Actual animation values
 
-            val tokenTextFieldWidth2 = remember { Animatable(initialTokenTextFieldWidth) }
-            val tokenTextFieldValueOpacity =
-                remember { Animatable(initialTokenTextFieldValueOpacity) }
+            val tokenTextFieldWidth = remember { Animatable(initialTokenTextFieldWidth) }
+            val tokenTextFieldPlaceholderOpacity =
+                remember { Animatable(initialTokenTextFieldPlaceholderOpacity) }
             val botDetailsOpacity = remember { Animatable(initialBotDetailsOpacity) }
 
             // Animation transitions
@@ -213,13 +210,16 @@ fun TokenInputBlock(
                     when (state) {
                         is BotSetupState.NotConfigured -> {
                             botDetailsOpacity.hide()
-                            tokenTextFieldWidth2.expand(boxWithConstraintsScope)
-                            tokenTextFieldValueOpacity.show()
+                            tokenTextFieldWidth.expand(boxWithConstraintsScope)
+                            tokenTextFieldPlaceholderOpacity.show()
                         }
                         is BotSetupState.Configured -> {
-                            tokenTextFieldWidth2.collapse()
-                            botDetailsOpacity.show()
-                            onCanContinue()
+                            launch { tokenTextFieldPlaceholderOpacity.hide() }
+                            launch {
+                                tokenTextFieldWidth.collapse()
+                                botDetailsOpacity.show()
+                                onCanContinue()
+                            }
                         }
                         else -> {}
                     }
@@ -239,7 +239,7 @@ fun TokenInputBlock(
                 singleLine = true,
                 placeholder = {
                     TokenTextFieldPlaceholder(
-                        state, Modifier.alpha(tokenTextFieldValueOpacity.value)
+                        state, Modifier.alpha(tokenTextFieldPlaceholderOpacity.value)
                     )
                 },
                 isError = state is BotSetupState.Error,
@@ -247,7 +247,7 @@ fun TokenInputBlock(
                 visualTransformation = PasswordVisualTransformation(),
                 shape = RoundedCornerShape(percent = 50),
                 modifier = Modifier
-                    .width(tokenTextFieldWidth2.value.dp)
+                    .width(tokenTextFieldWidth.value.dp)
                     .zIndex(1f)
                     .alpha(1f - botDetailsOpacity.value),
             )
@@ -295,23 +295,6 @@ fun TokenTextFieldPlaceholder(
 @Composable
 fun TokenTextFieldSupportingText(state: BotSetupState) {
     (state as? BotSetupState.Error)?.let { Text(text = it.errorMessage) }
-}
-
-@Composable
-fun TokenTextFieldTrailingIcon(state: BotSetupState) {
-    when (state) {
-        is BotSetupState.Loading -> {
-            CircularProgressIndicator(
-                strokeCap = StrokeCap.Round, strokeWidth = 2.dp, modifier = Modifier.size(20.dp)
-            )
-        }
-        is BotSetupState.Error -> {
-            Icon(
-                imageVector = Icons.Outlined.Info, contentDescription = "An error occurred"
-            )
-        }
-        else -> {}
-    }
 }
 
 @Composable

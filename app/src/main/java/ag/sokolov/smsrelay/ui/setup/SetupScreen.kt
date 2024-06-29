@@ -5,7 +5,6 @@ import ag.sokolov.smsrelay.ui.setup.navigation.finishSetup
 import ag.sokolov.smsrelay.ui.setup.navigation.setupScreenContent
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
 import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -49,9 +48,7 @@ fun SetupScreen(
 
     val setupProgress = rememberSaveable(currentSetupRoute) { getSetupProgress(currentSetupRoute) }
     val setupProgressAnimated: Float by animateFloatAsState(
-        label = "Setup progress",
-        targetValue = setupProgress,
-        animationSpec = tween(),
+        label = "Setup progress", targetValue = setupProgress, animationSpec = tween()
     )
 
     SetupScreen(setupProgress = setupProgressAnimated) {
