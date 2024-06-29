@@ -7,17 +7,15 @@ import ag.sokolov.smsrelay.ui.setup.common.element.ordered_list.orderedList
 import ag.sokolov.smsrelay.ui.setup.common.element.setup_step_section.SetupStepSection
 import ag.sokolov.smsrelay.ui.setup.common.element.setup_step_title.SetupStepTitle
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.Crossfade
-import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.core.MutableTransitionState
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -47,12 +45,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -61,6 +59,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.launch
+import kotlin.math.absoluteValue
 
 @Composable
 fun BotSetupScreen(
@@ -143,11 +143,11 @@ fun TokenInputBlock(
     onReset: () -> Unit
 ) {
     var token by rememberSaveable { mutableStateOf("") }
+    val coroutineScope = rememberCoroutineScope()
 
     val isTokenInputEnabled by remember(state) {
         mutableStateOf(state is BotSetupState.NotConfigured || state is BotSetupState.Error)
     }
-//    val isTokenInputEnabled = state is BotSetupState.NotConfigured || state is BotSetupState.Error
 
     Row(
         verticalAlignment = Alignment.Top,
@@ -155,41 +155,55 @@ fun TokenInputBlock(
         modifier = Modifier.fillMaxWidth()
     ) {
         BoxWithConstraints(modifier = Modifier.weight(1f)) {
-            var isInitialTransitionState by remember { mutableStateOf(true) }
-            var tokenInputFieldAnimationFinished by remember(state) { mutableStateOf(false) }
-            var botDetailsAnimationFinished by remember(state) { mutableStateOf(false) }
 
-            val isTokenTextFieldExpanded =
-                state !is BotSetupState.Configured && (botDetailsAnimationFinished || isInitialTransitionState)
+            val boxWithConstraintsScope = this
 
-            val isBotDetailsDisplayed =
-                state is BotSetupState.Configured && tokenInputFieldAnimationFinished
+            // Initial animation values
 
-            val isBotDetailsDisplayedTransitionState =
-                remember(state) { MutableTransitionState(isBotDetailsDisplayed) }
+            val initialTokenTextFieldWidth = when (state) {
+                is BotSetupState.Configured -> OutlinedTextFieldDefaults.MinHeight.value
+                else -> maxWidth.value.absoluteValue
+            }
 
-            isBotDetailsDisplayedTransitionState.targetState = isBotDetailsDisplayed
+            val initialTextFieldPlaceholderOpacity = when (state) {
+                is BotSetupState.NotConfigured -> 1f
+                else -> 0f
+            }
 
-            LaunchedEffect(isBotDetailsDisplayedTransitionState) {
-                snapshotFlow { isBotDetailsDisplayedTransitionState.isIdle }.collect { isIdle ->
-                    botDetailsAnimationFinished = isIdle
+            val initialBotDetailsOpacity = when (state) {
+                is BotSetupState.Configured -> 1f
+                else -> 0f
+            }
+
+            // Actual animation values
+
+            val tokenTextFieldWidth2 = remember { Animatable(initialTokenTextFieldWidth) }
+            val tokenTextFieldPlaceholderOpacity =
+                remember { Animatable(initialTextFieldPlaceholderOpacity) }
+            val botDetailsOpacity = remember { Animatable(initialBotDetailsOpacity) }
+
+            LaunchedEffect(state) {
+                coroutineScope.launch {
+                    when (state) {
+                        is BotSetupState.NotConfigured -> {
+                            botDetailsOpacity.hide()
+                            tokenTextFieldWidth2.expand(boxWithConstraintsScope)
+                            tokenTextFieldPlaceholderOpacity.show()
+                        }
+                        is BotSetupState.Configured -> {
+                            tokenTextFieldPlaceholderOpacity.hide()
+                            tokenTextFieldWidth2.collapse()
+                            botDetailsOpacity.show()
+                        }
+                        else -> {}
+                    }
                 }
             }
 
-            val tokenTextFieldWidth by animateDpAsState(label = "Token input width",
-                targetValue = if (isTokenTextFieldExpanded) maxWidth else OutlinedTextFieldDefaults.MinHeight,
-                animationSpec = tween(5000),
-                finishedListener = {
-                    tokenInputFieldAnimationFinished = true
-                    isInitialTransitionState = false
-                })
-
             OutlinedTextField(value = when (state) {
                 is BotSetupState.Configured -> ""
-                is BotSetupState.Loading -> stringResource(R.string.sample_telegram_bot_api_token)
                 else -> token
             },
-//                value = token,
                 onValueChange = { value ->
                     token = value
                     onValueChange(value)
@@ -197,16 +211,11 @@ fun TokenInputBlock(
                 enabled = isTokenInputEnabled,
                 singleLine = true,
                 placeholder = {
-                    this@Row.AnimatedVisibility(
-                        visible = state !is BotSetupState.Configured && (tokenInputFieldAnimationFinished || isInitialTransitionState),
-                        enter = fadeIn(),
-                        exit = ExitTransition.None
-                    ) {
-                        Text(
-                            text = stringResource(R.string.bot_api_token_input_placeholder),
-                            maxLines = 1
-                        )
-                    }
+                    Text(
+                        text = stringResource(R.string.bot_api_token_input_placeholder),
+                        maxLines = 1,
+                        modifier = Modifier.alpha(tokenTextFieldPlaceholderOpacity.value)
+                    )
                 },
                 trailingIcon = when (state) {
                     is BotSetupState.Loading -> {
@@ -232,18 +241,15 @@ fun TokenInputBlock(
                 supportingText = { (state as? BotSetupState.Error)?.let { Text(text = it.errorMessage) } },
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier
-                    .width(tokenTextFieldWidth)
+                    .width(tokenTextFieldWidth2.value.dp)
                     .zIndex(1f)
-                    .onFocusChanged {
-                        Log.d("TAG", "isFocused: ${it.isFocused}")
-                    },
+                    .alpha(1f - botDetailsOpacity.value),
                 shape = RoundedCornerShape(percent = 50)
             )
-            this@Row.AnimatedVisibility(
-                visibleState = isBotDetailsDisplayedTransitionState,
-                enter = fadeIn(),
-                exit = fadeOut(),
-                modifier = Modifier.zIndex(2f)
+            Box(
+                modifier = Modifier
+                    .zIndex(2f)
+                    .alpha(botDetailsOpacity.value)
             ) {
                 BotDetails(state = state)
             }
@@ -339,4 +345,20 @@ fun PreviewBotSetupScreenError() {
             }
         }
     }
+}
+
+suspend fun Animatable<Float, AnimationVector1D>.expand(boxWithConstraintsScope: BoxWithConstraintsScope) {
+    this.animateTo(boxWithConstraintsScope.maxWidth.value.absoluteValue)
+}
+
+suspend fun Animatable<Float, AnimationVector1D>.collapse() {
+    this.animateTo(OutlinedTextFieldDefaults.MinHeight.value)
+}
+
+suspend fun Animatable<Float, AnimationVector1D>.hide() {
+    this.animateTo(0f)
+}
+
+suspend fun Animatable<Float, AnimationVector1D>.show() {
+    this.animateTo(1f)
 }

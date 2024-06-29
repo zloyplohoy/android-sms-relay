@@ -6,27 +6,48 @@ import ag.sokolov.smsrelay.domain.model.TelegramBot
 import ag.sokolov.smsrelay.domain.use_case.add_telegram_bot.AddTelegramBotUseCase
 import ag.sokolov.smsrelay.domain.use_case.delete_telegram_bot.DeleteTelegramBotUseCase
 import ag.sokolov.smsrelay.domain.use_case.get_telegram_bot_2.GetTelegramBot2UseCase
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
 @HiltViewModel
 class BotSetupViewModel @Inject constructor(
     getTelegramBotUseCase: GetTelegramBot2UseCase,
     private val addTelegramBotUseCase: AddTelegramBotUseCase,
-    private val deleteTelegramBotUseCase: DeleteTelegramBotUseCase
+    private val deleteTelegramBotUseCase: DeleteTelegramBotUseCase,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
+
+    private val json = Json { encodeDefaults = true } // TODO: Why encodeDefaults?
+
+    private fun getInitialState(): BotSetupState =
+        savedStateHandle.get<String>("state")
+            ?.let { json.decodeFromString(BotSetupState.serializer(), it) }
+            ?: BotSetupState.NotConfigured
+
+    private fun setInitialState(state: BotSetupState) {
+        savedStateHandle["state"] = json.encodeToString(BotSetupState.serializer(), state)
+    }
+
     val state = getTelegramBotUseCase().map { telegramBotResponse ->
         getBotSetupState(telegramBotResponse)
+    }.setMinimumLoadingTime(1000).onEach {
+        setInitialState(it)
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = BotSetupState.NotConfigured
+        initialValue = getInitialState()
     )
 
     private val telegramApiTokenRegex = Regex("""^\d{10}:[A-Za-z0-9_-]{35}$""")
@@ -62,3 +83,26 @@ class BotSetupViewModel @Inject constructor(
             else -> BotSetupState.Error("Unhandled error")
         }
 }
+
+
+fun Flow<BotSetupState>.setMinimumLoadingTime(loadingTimeMillis: Long): Flow<BotSetupState> =
+    flow {
+        var lastEmissionTime = System.currentTimeMillis()
+        var lastValue: BotSetupState = BotSetupState.Loading
+
+        this@setMinimumLoadingTime.collect { value ->
+            val currentTime = System.currentTimeMillis()
+            val elapsedTime = currentTime - lastEmissionTime
+
+            if (elapsedTime >= loadingTimeMillis || lastValue !is BotSetupState.Loading) {
+                emit(value)
+                lastEmissionTime = currentTime
+                lastValue = value
+            } else {
+                delay(loadingTimeMillis - elapsedTime)
+                emit(value)
+                lastEmissionTime = System.currentTimeMillis()
+                lastValue = value
+            }
+        }
+    }
