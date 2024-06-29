@@ -47,7 +47,7 @@ class BotSetupViewModel @Inject constructor(
     }.onEach {
         Log.d("TAG", "Obtained state: ${it.javaClass.name}")
         Log.d("TAG", "Previous state: ${getSavedState().javaClass.name}")
-    }.preventConfiguredToLoadingTransition(getSavedState()).setMinimumLoadingTime(3_000).onEach {
+    }.preventConfiguredToLoadingTransition(::getSavedState).setMinimumLoadingTime(3_000).onEach {
         Log.d("TAG", "Fired state: ${it.javaClass.name}")
         setSavedState(it)
     }.stateIn(
@@ -113,7 +113,7 @@ fun Flow<BotSetupState>.setMinimumLoadingTime(loadingTimeMillis: Long): Flow<Bot
         }
     }
 
-fun Flow<BotSetupState>.preventConfiguredToLoadingTransition(savedState: BotSetupState) =
+fun Flow<BotSetupState>.preventConfiguredToLoadingTransition(getSavedState: () -> BotSetupState) =
     this.filterNot { newState ->
-        (savedState is BotSetupState.Configured && newState is BotSetupState.Loading)
+        (getSavedState() is BotSetupState.Configured && newState is BotSetupState.Loading)
     }
