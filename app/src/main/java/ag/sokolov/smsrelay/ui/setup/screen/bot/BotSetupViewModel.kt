@@ -6,7 +6,6 @@ import ag.sokolov.smsrelay.domain.model.TelegramBot
 import ag.sokolov.smsrelay.domain.use_case.add_telegram_bot.AddTelegramBotUseCase
 import ag.sokolov.smsrelay.domain.use_case.delete_telegram_bot.DeleteTelegramBotUseCase
 import ag.sokolov.smsrelay.domain.use_case.get_telegram_bot_2.GetTelegramBot2UseCase
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -42,19 +41,16 @@ class BotSetupViewModel @Inject constructor(
         savedStateHandle["state"] = json.encodeToString(BotSetupState.serializer(), state)
     }
 
-    val state = getTelegramBotUseCase().map { telegramBotResponse ->
-        getBotSetupState(telegramBotResponse)
-    }.onEach {
-        Log.d("TAG", "Obtained state: ${it.javaClass.name}")
-        Log.d("TAG", "Previous state: ${getSavedState().javaClass.name}")
-    }.preventConfiguredToLoadingTransition(::getSavedState).setMinimumLoadingTime(3_000).onEach {
-        Log.d("TAG", "Fired state: ${it.javaClass.name}")
-        setSavedState(it)
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = getSavedState()
-    )
+    val state = getTelegramBotUseCase()
+        .map { telegramBotResponse -> getBotSetupState(telegramBotResponse) }
+        .preventConfiguredToLoadingTransition(::getSavedState)
+        .setMinimumLoadingTime(3_000)
+        .onEach { setSavedState(it) }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = getSavedState()
+        )
 
     private val telegramApiTokenRegex = Regex("""^\d{10}:[A-Za-z0-9_-]{35}$""")
 
