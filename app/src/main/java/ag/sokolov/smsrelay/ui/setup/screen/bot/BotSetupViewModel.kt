@@ -13,6 +13,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -31,23 +32,23 @@ class BotSetupViewModel @Inject constructor(
 
     private val json = Json { encodeDefaults = true } // TODO: Why encodeDefaults?
 
-    private fun getInitialState(): BotSetupState =
+    private fun getSavedState(): BotSetupState =
         savedStateHandle.get<String>("state")
             ?.let { json.decodeFromString(BotSetupState.serializer(), it) }
             ?: BotSetupState.NotConfigured
 
-    private fun setInitialState(state: BotSetupState) {
+    private fun setSavedState(state: BotSetupState) {
         savedStateHandle["state"] = json.encodeToString(BotSetupState.serializer(), state)
     }
 
     val state = getTelegramBotUseCase().map { telegramBotResponse ->
         getBotSetupState(telegramBotResponse)
-    }.setMinimumLoadingTime(1000).onEach {
-        setInitialState(it)
+    }.preventConfiguredToLoadingTransition(getSavedState()).setMinimumLoadingTime(1000).onEach {
+        setSavedState(it)
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = getInitialState()
+        initialValue = getSavedState()
     )
 
     private val telegramApiTokenRegex = Regex("""^\d{10}:[A-Za-z0-9_-]{35}$""")
@@ -105,4 +106,9 @@ fun Flow<BotSetupState>.setMinimumLoadingTime(loadingTimeMillis: Long): Flow<Bot
                 lastValue = value
             }
         }
+    }
+
+fun Flow<BotSetupState>.preventConfiguredToLoadingTransition(savedState: BotSetupState) =
+    this.filterNot { newState ->
+        (savedState is BotSetupState.Configured && newState is BotSetupState.Loading)
     }

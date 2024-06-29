@@ -7,9 +7,13 @@ import ag.sokolov.smsrelay.ui.setup.common.element.ordered_list.orderedList
 import ag.sokolov.smsrelay.ui.setup.common.element.setup_step_section.SetupStepSection
 import ag.sokolov.smsrelay.ui.setup.common.element.setup_step_title.SetupStepTitle
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
+import androidx.compose.animation.core.EaseInOut
+import androidx.compose.animation.core.EaseInOutCirc
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
@@ -84,6 +88,22 @@ internal fun BotSetupScreen(
     onTokenValueChanged: (value: String) -> Unit,
     onTokenReset: () -> Unit
 ) {
+    var isContinueButtonVisible by remember { mutableStateOf(state is BotSetupState.Configured) }
+
+    LaunchedEffect(state) {
+        when (state) {
+            is BotSetupState.Configured -> {}
+            else -> {
+                isContinueButtonVisible = false
+            }
+        }
+    }
+
+    fun showContinueButton() {
+        Log.d("TAG", "showContinueButton: called")
+        isContinueButtonVisible = true
+    }
+
     Column(
         verticalArrangement = Arrangement.spacedBy(32.dp),
         modifier = Modifier
@@ -96,13 +116,16 @@ internal fun BotSetupScreen(
             Column(verticalArrangement = Arrangement.spacedBy(24.dp)) {
                 BotSetupDescription()
                 TokenInputBlock(
-                    state = state, onValueChange = onTokenValueChanged, onReset = onTokenReset
+                    state = state,
+                    onValueChange = onTokenValueChanged,
+                    onReset = onTokenReset,
+                    onCanContinue = ::showContinueButton
                 )
             }
         }
         Spacer(modifier = Modifier.weight(1f))
         AnimatedVisibility(
-            visible = state is BotSetupState.Configured, enter = fadeIn(), exit = fadeOut()
+            visible = isContinueButtonVisible, enter = fadeIn(), exit = fadeOut()
         ) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                 Button(
@@ -140,7 +163,8 @@ fun BotSetupDescription() {
 fun TokenInputBlock(
     state: BotSetupState,
     onValueChange: (value: String) -> Unit,
-    onReset: () -> Unit
+    onReset: () -> Unit,
+    onCanContinue: () -> Unit
 ) {
     var token by rememberSaveable { mutableStateOf("") }
     val coroutineScope = rememberCoroutineScope()
@@ -165,9 +189,9 @@ fun TokenInputBlock(
                 else -> maxWidth.value.absoluteValue
             }
 
-            val initialTextFieldPlaceholderOpacity = when (state) {
-                is BotSetupState.NotConfigured -> 1f
-                else -> 0f
+            val initialTokenTextFieldValueOpacity = when (state) {
+                is BotSetupState.Configured -> 0f
+                else -> 1f
             }
 
             val initialBotDetailsOpacity = when (state) {
@@ -178,9 +202,11 @@ fun TokenInputBlock(
             // Actual animation values
 
             val tokenTextFieldWidth2 = remember { Animatable(initialTokenTextFieldWidth) }
-            val tokenTextFieldPlaceholderOpacity =
-                remember { Animatable(initialTextFieldPlaceholderOpacity) }
+            val tokenTextFieldValueOpacity =
+                remember { Animatable(initialTokenTextFieldValueOpacity) }
             val botDetailsOpacity = remember { Animatable(initialBotDetailsOpacity) }
+
+            // Animation transitions
 
             LaunchedEffect(state) {
                 coroutineScope.launch {
@@ -188,22 +214,23 @@ fun TokenInputBlock(
                         is BotSetupState.NotConfigured -> {
                             botDetailsOpacity.hide()
                             tokenTextFieldWidth2.expand(boxWithConstraintsScope)
-                            tokenTextFieldPlaceholderOpacity.show()
+                            tokenTextFieldValueOpacity.show()
                         }
                         is BotSetupState.Configured -> {
-                            tokenTextFieldPlaceholderOpacity.hide()
                             tokenTextFieldWidth2.collapse()
                             botDetailsOpacity.show()
+                            onCanContinue()
                         }
                         else -> {}
                     }
                 }
             }
 
-            OutlinedTextField(value = when (state) {
-                is BotSetupState.Configured -> ""
-                else -> token
-            },
+            OutlinedTextField(
+                value = when (state) {
+                    is BotSetupState.Configured -> ""
+                    else -> token
+                },
                 onValueChange = { value ->
                     token = value
                     onValueChange(value)
@@ -211,40 +238,18 @@ fun TokenInputBlock(
                 enabled = isTokenInputEnabled,
                 singleLine = true,
                 placeholder = {
-                    Text(
-                        text = stringResource(R.string.bot_api_token_input_placeholder),
-                        maxLines = 1,
-                        modifier = Modifier.alpha(tokenTextFieldPlaceholderOpacity.value)
+                    TokenTextFieldPlaceholder(
+                        state, Modifier.alpha(tokenTextFieldValueOpacity.value)
                     )
                 },
-                trailingIcon = when (state) {
-                    is BotSetupState.Loading -> {
-                        {
-                            CircularProgressIndicator(
-                                strokeCap = StrokeCap.Round,
-                                strokeWidth = 2.dp,
-                                modifier = Modifier.size(20.dp)
-                            )
-                        }
-                    }
-                    is BotSetupState.Error -> {
-                        {
-                            Icon(
-                                imageVector = Icons.Outlined.Info,
-                                contentDescription = "An error occurred"
-                            )
-                        }
-                    }
-                    else -> null
-                },
                 isError = state is BotSetupState.Error,
-                supportingText = { (state as? BotSetupState.Error)?.let { Text(text = it.errorMessage) } },
+                supportingText = { TokenTextFieldSupportingText(state) },
                 visualTransformation = PasswordVisualTransformation(),
+                shape = RoundedCornerShape(percent = 50),
                 modifier = Modifier
                     .width(tokenTextFieldWidth2.value.dp)
                     .zIndex(1f)
                     .alpha(1f - botDetailsOpacity.value),
-                shape = RoundedCornerShape(percent = 50)
             )
             Box(
                 modifier = Modifier
@@ -270,6 +275,42 @@ fun TokenInputBlock(
                 imageVector = Icons.Outlined.Clear, contentDescription = "Reset token"
             )
         }
+    }
+}
+
+@Composable
+fun TokenTextFieldPlaceholder(
+    state: BotSetupState,
+    modifier: Modifier = Modifier
+) {
+    if (state is BotSetupState.NotConfigured) {
+        Text(
+            text = stringResource(R.string.bot_api_token_input_placeholder),
+            maxLines = 1,
+            modifier = modifier
+        )
+    }
+}
+
+@Composable
+fun TokenTextFieldSupportingText(state: BotSetupState) {
+    (state as? BotSetupState.Error)?.let { Text(text = it.errorMessage) }
+}
+
+@Composable
+fun TokenTextFieldTrailingIcon(state: BotSetupState) {
+    when (state) {
+        is BotSetupState.Loading -> {
+            CircularProgressIndicator(
+                strokeCap = StrokeCap.Round, strokeWidth = 2.dp, modifier = Modifier.size(20.dp)
+            )
+        }
+        is BotSetupState.Error -> {
+            Icon(
+                imageVector = Icons.Outlined.Info, contentDescription = "An error occurred"
+            )
+        }
+        else -> {}
     }
 }
 
@@ -348,17 +389,22 @@ fun PreviewBotSetupScreenError() {
 }
 
 suspend fun Animatable<Float, AnimationVector1D>.expand(boxWithConstraintsScope: BoxWithConstraintsScope) {
-    this.animateTo(boxWithConstraintsScope.maxWidth.value.absoluteValue)
+    this.animateTo(
+        boxWithConstraintsScope.maxWidth.value.absoluteValue,
+        animationSpec = tween(easing = EaseInOut)
+    )
 }
 
 suspend fun Animatable<Float, AnimationVector1D>.collapse() {
-    this.animateTo(OutlinedTextFieldDefaults.MinHeight.value)
+    this.animateTo(
+        OutlinedTextFieldDefaults.MinHeight.value, animationSpec = tween(easing = EaseInOut)
+    )
 }
 
 suspend fun Animatable<Float, AnimationVector1D>.hide() {
-    this.animateTo(0f)
+    this.animateTo(0f, animationSpec = tween(easing = EaseInOutCirc))
 }
 
 suspend fun Animatable<Float, AnimationVector1D>.show() {
-    this.animateTo(1f)
+    this.animateTo(1f, animationSpec = tween(easing = EaseInOutCirc))
 }
