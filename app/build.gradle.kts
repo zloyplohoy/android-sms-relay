@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.compose.compiler)
     // Dagger Hilt
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
