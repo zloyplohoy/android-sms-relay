@@ -5,7 +5,7 @@ import ag.sokolov.smsrelay.domain.model.Response
 import ag.sokolov.smsrelay.domain.model.TelegramBot
 import ag.sokolov.smsrelay.domain.repository.AndroidSystemRepository
 import ag.sokolov.smsrelay.domain.repository.ConfigurationRepository
-import ag.sokolov.smsrelay.domain.repository.TelegramBotApiRepository
+import ag.sokolov.smsrelay.data.telegram_bot_api.TelegramBotApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -17,7 +17,7 @@ class GetTelegramBotUseCase
 @Inject constructor(
     private val androidSystemRepository: AndroidSystemRepository,
     private val configurationRepository: ConfigurationRepository,
-    private val telegramBotApiRepository: TelegramBotApiRepository
+    private val telegramBotApi: TelegramBotApi
 ) {
     @OptIn(ExperimentalCoroutinesApi::class)
     operator fun invoke(): Flow<Response<TelegramBot?, DomainError>> =
@@ -31,7 +31,7 @@ class GetTelegramBotUseCase
                 telegramBotApiToken?.let {
                     if (isOnline) {
                         emit(Response.Loading)
-                        emit(telegramBotApiRepository.getTelegramBot(it))
+                        emit(telegramBotApi.getTelegramBot(it))
                     } else {
                         emit(Response.Failure(DomainError.NetworkUnavailable))
                     }

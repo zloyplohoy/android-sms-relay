@@ -5,7 +5,7 @@ import ag.sokolov.smsrelay.domain.model.Response
 import ag.sokolov.smsrelay.domain.model.TelegramUser
 import ag.sokolov.smsrelay.domain.repository.AndroidSystemRepository
 import ag.sokolov.smsrelay.domain.repository.ConfigurationRepository
-import ag.sokolov.smsrelay.domain.repository.TelegramBotApiRepository
+import ag.sokolov.smsrelay.data.telegram_bot_api.TelegramBotApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
@@ -14,7 +14,7 @@ class GetTelegramRecipientUseCase
 @Inject constructor(
     private val androidSystemRepository: AndroidSystemRepository,
     private val configurationRepository: ConfigurationRepository,
-    private val telegramBotApiRepository: TelegramBotApiRepository
+    private val telegramBotApi: TelegramBotApi
 ) {
     operator fun invoke(): Flow<Response<TelegramUser?, DomainError>> =
         combine(
@@ -26,13 +26,13 @@ class GetTelegramRecipientUseCase
                 if (botApiToken == null) {
                     Response.Failure(DomainError.BotApiTokenMissing)
                 } else if (recipientId == null) {
-                    when (val result = telegramBotApiRepository.getTelegramBot(botApiToken)) {
+                    when (val result = telegramBotApi.getTelegramBot(botApiToken)) {
                         is Response.Loading -> Response.Loading
                         is Response.Success -> Response.Success(null)
                         is Response.Failure -> Response.Failure(result.error)
                     }
                 } else {
-                    telegramBotApiRepository.getTelegramRecipient(botApiToken, recipientId)
+                    telegramBotApi.getTelegramRecipient(botApiToken, recipientId)
                 }
             } else {
                 Response.Failure(DomainError.NetworkUnavailable)

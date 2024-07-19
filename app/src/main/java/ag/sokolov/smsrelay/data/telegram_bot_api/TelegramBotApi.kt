@@ -1,4 +1,4 @@
-package ag.sokolov.smsrelay.domain.repository
+package ag.sokolov.smsrelay.data.telegram_bot_api
 
 import ag.sokolov.smsrelay.domain.model.DomainError
 import ag.sokolov.smsrelay.domain.model.Response
@@ -7,9 +7,11 @@ import ag.sokolov.smsrelay.domain.model.TelegramPrivateChatMessage
 import ag.sokolov.smsrelay.domain.model.TelegramUser
 import kotlin.time.Duration
 
-interface TelegramBotApiRepository {
+interface TelegramBotApi {
 
-    suspend fun getTelegramBot(botApiToken: String): Response<TelegramBot, DomainError>
+    suspend fun getTelegramBot(
+        botApiToken: String
+    ): Response<TelegramBot, DomainError>
 
     suspend fun getTelegramRecipient(
         botApiToken: String,

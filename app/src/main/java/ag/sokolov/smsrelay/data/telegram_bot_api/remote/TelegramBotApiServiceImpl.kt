@@ -1,10 +1,9 @@
-package ag.sokolov.smsrelay.data.sources.remote.api.telegram_bot.retrofit
+package ag.sokolov.smsrelay.data.telegram_bot_api.remote
 
-import ag.sokolov.smsrelay.data.sources.remote.api.telegram_bot.TelegramBotApiService
-import ag.sokolov.smsrelay.data.sources.remote.api.telegram_bot.dto.TelegramBotApiResponseDto
-import ag.sokolov.smsrelay.data.sources.remote.api.telegram_bot.dto.TelegramBotApiUpdateDto
-import ag.sokolov.smsrelay.data.sources.remote.api.telegram_bot.dto.TelegramMessageDto
-import ag.sokolov.smsrelay.data.sources.remote.api.telegram_bot.dto.TelegramUserDto
+import ag.sokolov.smsrelay.data.telegram_bot_api.remote.dto.TelegramBotApiResponseDto
+import ag.sokolov.smsrelay.data.telegram_bot_api.remote.dto.TelegramBotApiUpdateDto
+import ag.sokolov.smsrelay.data.telegram_bot_api.remote.dto.TelegramMessageDto
+import ag.sokolov.smsrelay.data.telegram_bot_api.remote.dto.TelegramUserDto
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
@@ -12,7 +11,7 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface RetrofitTelegramBotApiService : TelegramBotApiService {
+interface TelegramBotApiServiceImpl : TelegramBotApiService {
     // https://core.telegram.org/bots/api#getme
     @GET("/bot{token}/getMe")
     override suspend fun getMe(

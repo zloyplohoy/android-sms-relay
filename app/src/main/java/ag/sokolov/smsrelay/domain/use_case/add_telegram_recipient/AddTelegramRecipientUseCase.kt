@@ -1,7 +1,7 @@
 package ag.sokolov.smsrelay.domain.use_case.add_telegram_recipient
 
 import ag.sokolov.smsrelay.domain.repository.ConfigurationRepository
-import ag.sokolov.smsrelay.domain.repository.TelegramBotApiRepository
+import ag.sokolov.smsrelay.data.telegram_bot_api.TelegramBotApi
 import ag.sokolov.smsrelay.domain.service.add_recipient.AddRecipientService
 import android.content.Context
 import android.content.Intent
@@ -15,7 +15,7 @@ class AddTelegramRecipientUseCase
 @Inject constructor(
     @ApplicationContext private val appContext: Context,
     private val configurationRepository: ConfigurationRepository,
-    private val telegramBotApiRepository: TelegramBotApiRepository
+    private val telegramBotApi: TelegramBotApi
 ) {
     @RequiresApi(Build.VERSION_CODES.O)
     suspend operator fun invoke(): Result<Unit> {

@@ -2,12 +2,12 @@ package ag.sokolov.smsrelay
 
 import ag.sokolov.smsrelay.data.repository.AndroidSystemRepositoryImpl
 import ag.sokolov.smsrelay.data.repository.PreferencesDataStoreConfigurationRepository
-import ag.sokolov.smsrelay.data.repository.TelegramBotApiRepositoryImpl
-import ag.sokolov.smsrelay.data.sources.remote.api.telegram_bot.TelegramBotApiService
-import ag.sokolov.smsrelay.data.sources.remote.api.telegram_bot.retrofit.RetrofitTelegramBotApiService
+import ag.sokolov.smsrelay.data.telegram_bot_api.TelegramBotApiImpl
+import ag.sokolov.smsrelay.data.telegram_bot_api.remote.TelegramBotApiService
+import ag.sokolov.smsrelay.data.telegram_bot_api.remote.TelegramBotApiServiceImpl
 import ag.sokolov.smsrelay.domain.repository.AndroidSystemRepository
 import ag.sokolov.smsrelay.domain.repository.ConfigurationRepository
-import ag.sokolov.smsrelay.domain.repository.TelegramBotApiRepository
+import ag.sokolov.smsrelay.data.telegram_bot_api.TelegramBotApi
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
@@ -42,8 +42,8 @@ abstract class MainModule {
 
     @Binds
     abstract fun bindTelegramBotApiRepository(
-        impl: TelegramBotApiRepositoryImpl
-    ): TelegramBotApiRepository
+        impl: TelegramBotApiImpl
+    ): TelegramBotApi
 
     companion object {
         private val Context.dataStore by preferencesDataStore(name = "application_configuration",
@@ -64,7 +64,7 @@ abstract class MainModule {
 
             return Retrofit.Builder().baseUrl("https://api.telegram.org/")
                 .addConverterFactory(json.asConverterFactory(jsonMediaType)).build()
-                .create(RetrofitTelegramBotApiService::class.java)
+                .create(TelegramBotApiServiceImpl::class.java)
         }
     }
 }

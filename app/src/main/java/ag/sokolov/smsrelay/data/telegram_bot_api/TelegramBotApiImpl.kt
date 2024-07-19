@@ -1,23 +1,22 @@
-package ag.sokolov.smsrelay.data.repository
+package ag.sokolov.smsrelay.data.telegram_bot_api
 
-import ag.sokolov.smsrelay.data.sources.remote.api.telegram_bot.TelegramBotApiService
-import ag.sokolov.smsrelay.data.sources.remote.api.telegram_bot.dto.TelegramMessageDto
-import ag.sokolov.smsrelay.data.sources.remote.api.telegram_bot.dto.TelegramUserDto
+import ag.sokolov.smsrelay.data.telegram_bot_api.remote.TelegramBotApiService
+import ag.sokolov.smsrelay.data.telegram_bot_api.remote.dto.TelegramMessageDto
+import ag.sokolov.smsrelay.data.telegram_bot_api.remote.dto.TelegramUserDto
 import ag.sokolov.smsrelay.domain.model.DomainError
 import ag.sokolov.smsrelay.domain.model.Response
 import ag.sokolov.smsrelay.domain.model.TelegramBot
 import ag.sokolov.smsrelay.domain.model.TelegramPrivateChatMessage
 import ag.sokolov.smsrelay.domain.model.TelegramUser
-import ag.sokolov.smsrelay.domain.repository.TelegramBotApiRepository
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
 import kotlin.time.Duration
 
-class TelegramBotApiRepositoryImpl
+class TelegramBotApiImpl
 @Inject constructor(
     private val telegramBotApiService: TelegramBotApiService,
-) : TelegramBotApiRepository {
+) : TelegramBotApi {
     override suspend fun getTelegramBot(botApiToken: String): Response<TelegramBot, DomainError> =
         try {
             Response.Success(telegramBotApiService.getMe(botApiToken).result.toBotInfo())
@@ -74,16 +73,23 @@ class TelegramBotApiRepositoryImpl
     }
 }
 
-private fun TelegramUserDto.toBotInfo(): TelegramBot {
-    return TelegramBot(name = this.firstName, username = this.username!!)
-}
-
-private fun TelegramUserDto.toTelegramUser(): TelegramUser {
-    return TelegramUser(
-        firstName = this.firstName, lastName = this.lastName, username = this.username
+// TODO: Get rid of assertive reference
+private fun TelegramUserDto.toBotInfo(): TelegramBot =
+    TelegramBot(
+        name = this.firstName,
+        username = this.username!!
     )
-}
 
-private fun TelegramMessageDto.toTelegramMessage(): TelegramPrivateChatMessage {
-    return TelegramPrivateChatMessage(from = this.from!!.toTelegramUser(), text = this.text)
-}
+private fun TelegramUserDto.toTelegramUser(): TelegramUser =
+    TelegramUser(
+        firstName = this.firstName,
+        lastName = this.lastName,
+        username = this.username
+    )
+
+// TODO: Get rid of assertive reference
+private fun TelegramMessageDto.toTelegramMessage(): TelegramPrivateChatMessage =
+    TelegramPrivateChatMessage(
+        from = this.from!!.toTelegramUser(),
+        text = this.text
+    )
