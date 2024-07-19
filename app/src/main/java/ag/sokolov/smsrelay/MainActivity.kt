@@ -1,12 +1,14 @@
 package ag.sokolov.smsrelay
 
-import ag.sokolov.smsrelay.ui.MainScreen
+import ag.sokolov.smsrelay.ui.SMSRelayApp
+import ag.sokolov.smsrelay.ui.rememberSMSRelayAppState
 import android.os.Bundle
 import android.os.StrictMode
 import android.os.StrictMode.ThreadPolicy
 import android.os.StrictMode.VmPolicy
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -20,6 +22,12 @@ class MainActivity : ComponentActivity() {
             VmPolicy.Builder().detectAll().penaltyLog().build()
         )
         super.onCreate(savedInstanceState)
-        setContent { MainScreen() }
+
+        enableEdgeToEdge()
+
+        setContent {
+            val appState = rememberSMSRelayAppState()
+            SMSRelayApp(appState = appState)
+        }
     }
 }
