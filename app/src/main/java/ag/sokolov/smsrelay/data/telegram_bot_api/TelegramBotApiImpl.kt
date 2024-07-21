@@ -13,7 +13,7 @@ import java.io.IOException
 import javax.inject.Inject
 import kotlin.time.Duration
 
-class TelegramBotApiImpl
+internal class TelegramBotApiImpl
 @Inject constructor(
     private val telegramBotApiService: TelegramBotApiService,
 ) : TelegramBotApi {
