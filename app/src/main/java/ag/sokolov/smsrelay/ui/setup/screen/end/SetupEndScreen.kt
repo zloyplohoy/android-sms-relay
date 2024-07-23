@@ -17,8 +17,7 @@ fun NavController.navigateToSetupEnd() =
     navigate(route = SetupEndScreen)
 
 fun NavGraphBuilder.setupEndScreen(
-    onFinished: () -> Unit,
-    viewModel: SetupViewModel
+    onFinished: () -> Unit
 ) =
     composable<SetupEndScreen> {
         SetupEndScreen(

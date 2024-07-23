@@ -134,18 +134,13 @@ fun SetupNavHost(
             viewModel = viewModel
         )
         recipientSetupScreen(
-            onContinue = setupNavController::navigateToPermissionsSetup,
-            setLoadingState = setLoadingState,
-            viewModel = viewModel
+            onContinue = setupNavController::navigateToPermissionsSetup
         )
         permissionsSetupScreen(
-            onContinue = setupNavController::navigateToSetupEnd,
-            setLoadingState = setLoadingState,
-            viewModel = viewModel
+            onContinue = setupNavController::navigateToSetupEnd
         )
         setupEndScreen(
-            onFinished = onFinished,
-            viewModel = viewModel
+            onFinished = onFinished
         )
     }
 }

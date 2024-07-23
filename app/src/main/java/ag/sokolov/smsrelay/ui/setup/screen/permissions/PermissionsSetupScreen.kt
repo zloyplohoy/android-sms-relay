@@ -16,9 +16,7 @@ fun NavController.navigateToPermissionsSetup() =
     navigate(route = PermissionsSetupScreen)
 
 fun NavGraphBuilder.permissionsSetupScreen(
-    onContinue: () -> Unit,
-    setLoadingState: (Boolean) -> Unit,
-    viewModel: SetupViewModel
+    onContinue: () -> Unit
 ) =
     composable<PermissionsSetupScreen> {
         PermissionsSetupScreen(

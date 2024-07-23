@@ -16,9 +16,7 @@ fun NavController.navigateToRecipientSetup() =
     navigate(route = RecipientSetupScreen)
 
 fun NavGraphBuilder.recipientSetupScreen(
-    onContinue: () -> Unit,
-    setLoadingState: (Boolean) -> Unit,
-    viewModel: SetupViewModel
+    onContinue: () -> Unit
 ) =
     composable<RecipientSetupScreen> {
         RecipientSetupScreen(
