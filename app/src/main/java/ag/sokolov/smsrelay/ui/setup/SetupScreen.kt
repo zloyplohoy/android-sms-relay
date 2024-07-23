@@ -71,7 +71,7 @@ fun SetupScreen(
 }
 
 @Composable
-fun SetupScreen(
+internal fun SetupScreen(
     setupProgress: Float,
     isLoading: Boolean = false,
     content: @Composable (() -> Unit) = {}
