@@ -74,11 +74,23 @@ fun SetupScreen(
         isLoading = _isLoading
     ) {
         SetupNavHost(
-            setupNavController = setupNavController,
-            viewModel = viewModel,
-            setLoadingState = ::setLoadingState,
-            onFinished = onFinished
-        )
+            setupNavController = setupNavController
+        ) {
+            botSetupScreen(
+                onContinue = setupNavController::navigateToRecipientSetup,
+                setLoadingState = ::setLoadingState,
+                viewModel = viewModel
+            )
+            recipientSetupScreen(
+                onContinue = setupNavController::navigateToPermissionsSetup
+            )
+            permissionsSetupScreen(
+                onContinue = setupNavController::navigateToSetupEnd
+            )
+            setupEndScreen(
+                onFinished = onFinished
+            )
+        }
     }
 }
 
@@ -107,9 +119,7 @@ internal fun SetupScreen(
 @Composable
 fun SetupNavHost(
     setupNavController: NavHostController,
-    viewModel: SetupViewModel,
-    setLoadingState: (Boolean) -> Unit,
-    onFinished: () -> Unit
+    content: NavGraphBuilder.() -> Unit
 ) {
     NavHost(
         modifier = Modifier.fillMaxSize(),
@@ -128,20 +138,7 @@ fun SetupNavHost(
             slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right) + fadeOut()
         }
     ) {
-        botSetupScreen(
-            onContinue = setupNavController::navigateToRecipientSetup,
-            setLoadingState = setLoadingState,
-            viewModel = viewModel
-        )
-        recipientSetupScreen(
-            onContinue = setupNavController::navigateToPermissionsSetup
-        )
-        permissionsSetupScreen(
-            onContinue = setupNavController::navigateToSetupEnd
-        )
-        setupEndScreen(
-            onFinished = onFinished
-        )
+        content()
     }
 }
 
