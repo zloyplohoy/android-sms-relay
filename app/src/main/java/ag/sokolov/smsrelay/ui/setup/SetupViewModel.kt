@@ -31,6 +31,10 @@ class SetupViewModel @Inject constructor(
         state = state.copy(isLoading = isLoading)
     }
 
+    private fun setBotState(botState: BotState) {
+        state = state.copy(botState = botState)
+    }
+
     private suspend fun initializeBotState() {
         val token = configurationRepository.getTelegramBotApiToken()
         if (token != null) {
@@ -38,25 +42,6 @@ class SetupViewModel @Inject constructor(
         } else {
             setBotState(BotState.NotConfigured)
         }
-    }
-
-    private suspend fun addTelegramBot(token: String) {
-        val minOperationTimeMillis = 3_000L
-        val startTime = System.currentTimeMillis()
-        val botState = telegramBotApi.getTelegramBot(token).toBotState()
-        val endTime = System.currentTimeMillis()
-        if (botState is BotState.Configured) {
-            configurationRepository.setTelegramBotApiToken(token)
-        }
-        val elapsedTime = endTime - startTime
-        if (elapsedTime < minOperationTimeMillis) {
-            delay(minOperationTimeMillis - elapsedTime)
-        }
-        setBotState(botState)
-    }
-
-    private fun setBotState(botState: BotState) {
-        state = state.copy(botState = botState)
     }
 
     private val telegramApiTokenRegex = Regex("""^\d{10}:[A-Za-z0-9_-]{35}$""")
@@ -74,4 +59,19 @@ class SetupViewModel @Inject constructor(
             configurationRepository.deleteTelegramApiToken()
             setBotState(BotState.NotConfigured)
         }
+
+    private suspend fun addTelegramBot(token: String) {
+        val minOperationTimeMillis = 3_000L
+        val startTime = System.currentTimeMillis()
+        val botState = telegramBotApi.getTelegramBot(token).toBotState()
+        val endTime = System.currentTimeMillis()
+        if (botState is BotState.Configured) {
+            configurationRepository.setTelegramBotApiToken(token)
+        }
+        val elapsedTime = endTime - startTime
+        if (elapsedTime < minOperationTimeMillis) {
+            delay(minOperationTimeMillis - elapsedTime)
+        }
+        setBotState(botState)
+    }
 }
