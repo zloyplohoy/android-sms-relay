@@ -60,10 +60,7 @@ fun SetupScreen(
     )
 
     var _isLoading by remember { mutableStateOf(false) }
-
-    fun setLoadingState(isLoading: Boolean) {
-        _isLoading = isLoading
-    }
+    fun setLoadingState(isLoading: Boolean) { _isLoading = isLoading }
 
     SetupScreen(
         progress = setupProgressAnimated,
