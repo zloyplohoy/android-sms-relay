@@ -96,16 +96,14 @@ fun SetupProgressIndicator(
         LinearProgressIndicator(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 32.dp),
-            strokeCap = StrokeCap.Round
+                .padding(horizontal = 32.dp)
         )
     } else {
         LinearProgressIndicator(
             progress = { progress },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 32.dp),
-            strokeCap = StrokeCap.Round
+                .padding(horizontal = 32.dp)
         )
     }
 }
