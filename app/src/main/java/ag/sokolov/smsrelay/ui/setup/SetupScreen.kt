@@ -1,5 +1,6 @@
 package ag.sokolov.smsrelay.ui.setup
 
+import ag.sokolov.smsrelay.ui.common.AnimatedNavHost
 import ag.sokolov.smsrelay.ui.common.DualPurposeLinearProgressIndicator
 import ag.sokolov.smsrelay.ui.setup.screen.bot.BotSetupScreen
 import ag.sokolov.smsrelay.ui.setup.screen.bot.botSetupScreen
@@ -13,11 +14,8 @@ import ag.sokolov.smsrelay.ui.setup.screen.recipient.RecipientSetupScreen
 import ag.sokolov.smsrelay.ui.setup.screen.recipient.navigateToRecipientSetup
 import ag.sokolov.smsrelay.ui.setup.screen.recipient.recipientSetupScreen
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
-import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -34,8 +32,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -73,8 +69,10 @@ fun SetupScreen(
         progress = setupProgressAnimated,
         isLoading = _isLoading
     ) {
-        SetupNavHost(
-            setupNavController = setupNavController
+        AnimatedNavHost(
+            navController = setupNavController,
+            startDestination = BotSetupScreen,
+            modifier = Modifier.fillMaxSize()
         ) {
             botSetupScreen(
                 onContinue = setupNavController::navigateToRecipientSetup,
@@ -112,32 +110,6 @@ internal fun SetupScreen(
                 .fillMaxWidth()
                 .padding(horizontal = 32.dp)
         )
-        content()
-    }
-}
-
-@Composable
-fun SetupNavHost(
-    setupNavController: NavHostController,
-    content: NavGraphBuilder.() -> Unit
-) {
-    NavHost(
-        modifier = Modifier.fillMaxSize(),
-        navController = setupNavController,
-        startDestination = BotSetupScreen,
-        enterTransition = {
-            slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left) + fadeIn()
-        },
-        popEnterTransition = {
-            slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Right) + fadeIn()
-        },
-        exitTransition = {
-            slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Left) + fadeOut()
-        },
-        popExitTransition = {
-            slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right) + fadeOut()
-        }
-    ) {
         content()
     }
 }
