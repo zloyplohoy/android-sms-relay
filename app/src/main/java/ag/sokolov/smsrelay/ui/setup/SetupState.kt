@@ -1,6 +1,7 @@
 package ag.sokolov.smsrelay.ui.setup
 
 data class SetupState(
+    val isLoading: Boolean = false,
     var botState: BotState = BotState.Loading
 )
 

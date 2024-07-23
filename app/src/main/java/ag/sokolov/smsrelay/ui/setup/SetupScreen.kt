@@ -23,14 +23,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -48,6 +46,7 @@ fun SetupScreen(
     onFinished: () -> Unit
 ) {
     val viewModel: SetupViewModel = hiltViewModel()
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     val setupNavController = rememberNavController()
     val currentSetupRoute: String? =
@@ -60,12 +59,9 @@ fun SetupScreen(
         animationSpec = tween()
     )
 
-    var _isLoading by remember { mutableStateOf(false) }
-    fun setLoadingState(isLoading: Boolean) { _isLoading = isLoading }
-
     SetupScreen(
         progress = setupProgressAnimated,
-        isLoading = _isLoading
+        isLoading = state.isLoading
     ) {
         AnimatedNavHost(
             navController = setupNavController,
@@ -74,7 +70,7 @@ fun SetupScreen(
         ) {
             botSetupScreen(
                 onContinue = setupNavController::navigateToRecipientSetup,
-                setLoadingState = ::setLoadingState,
+                setLoadingState = viewModel::setLoadingState,
                 viewModel = viewModel
             )
             recipientSetupScreen(

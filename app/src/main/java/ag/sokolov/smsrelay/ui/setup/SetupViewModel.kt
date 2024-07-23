@@ -28,6 +28,10 @@ class SetupViewModel @Inject constructor(
         }
     }
 
+    fun setLoadingState(isLoading: Boolean) {
+        _state.value = _state.value.copy(isLoading = isLoading)
+    }
+
     private suspend fun initializeBotState() {
         val token = configurationRepository.getTelegramBotApiToken()
         if (token != null) {
