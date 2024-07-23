@@ -93,7 +93,7 @@ fun BotSetupScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     BotSetupScreen(
-        state = state,
+        state = state.botState,
         setLoadingState = setLoadingState,
         onContinue = onContinue,
         onTokenValueChanged = viewModel::onTokenValueChanged,
@@ -325,7 +325,7 @@ fun TokenTextFieldPlaceholder(
 
 @Composable
 fun TokenTextFieldSupportingText(state: BotState) {
-    (state as? BotState.Error)?.let { Text(text = it.errorMessage) }
+    (state as? BotState.Error)?.let { Text(text = it.message) }
 }
 
 @Composable
@@ -338,7 +338,7 @@ fun BotDetails(
 
     latestConfiguredState?.let { configuredState ->
         ContactListItem(
-            title = configuredState.botName, description = "@${configuredState.botUsername}"
+            title = configuredState.name, description = "@${configuredState.username}"
         )
     }
 }
@@ -382,7 +382,7 @@ fun PreviewBotSetupScreenConfigured() {
         Surface(modifier = Modifier.fillMaxSize()) {
             SetupScreen(progress = 0.33f) {
                 BotSetupScreen(state = BotState.Configured(
-                    botName = "Awesome Telegram bot", botUsername = "awesome_telegram_bot"
+                    name = "Awesome Telegram bot", username = "awesome_telegram_bot"
                 ),
                     onContinue = {},
                     onTokenValueChanged = {},
@@ -399,7 +399,7 @@ fun PreviewBotSetupScreenError() {
     SMSRelayTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
             SetupScreen(progress = 0.33f) {
-                BotSetupScreen(state = BotState.Error(errorMessage = "Invalid token"),
+                BotSetupScreen(state = BotState.Error(message = "Invalid token"),
                     onContinue = {},
                     onTokenValueChanged = {},
                     onTokenReset = {},

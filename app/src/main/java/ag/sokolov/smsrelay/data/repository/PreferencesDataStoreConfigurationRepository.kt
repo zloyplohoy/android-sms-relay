@@ -1,7 +1,5 @@
 package ag.sokolov.smsrelay.data.repository
 
-import ag.sokolov.smsrelay.domain.model.DomainError
-import ag.sokolov.smsrelay.domain.model.Response
 import ag.sokolov.smsrelay.domain.repository.ConfigurationRepository
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -22,22 +20,16 @@ class PreferencesDataStoreConfigurationRepository
         private val TELEGRAM_RECIPIENT_ID = longPreferencesKey("telegram_recipient_id")
     }
 
-    override fun getTelegramBotApiToken(): Flow<String?> =
-        dataStore.data.map { it[TELEGRAM_BOT_API_TOKEN] }.distinctUntilChanged()
+    override suspend fun getTelegramBotApiToken(): String? =
+        dataStore.data.first()[TELEGRAM_BOT_API_TOKEN]
 
-    override suspend fun setTelegramBotApiToken(botApiToken: String): Response<Unit, DomainError> =
-        runCatching { dataStore.edit { it[TELEGRAM_BOT_API_TOKEN] = botApiToken } }.fold(
-            onSuccess = { Response.Success(Unit) },
-            onFailure = { Response.Failure(DomainError.UnhandledError) },
-        )
+    override suspend fun setTelegramBotApiToken(botApiToken: String) {
+        dataStore.edit { it[TELEGRAM_BOT_API_TOKEN] = botApiToken }
+    }
 
-    override suspend fun deleteTelegramApiTokenAndRecipientId(): Result<Unit> =
-        runCatching {
-            dataStore.edit { telegramConfig ->
-                telegramConfig.remove(TELEGRAM_BOT_API_TOKEN)
-                telegramConfig.remove(TELEGRAM_RECIPIENT_ID)
-            }
-        }
+    override suspend fun deleteTelegramApiToken() {
+        dataStore.edit { it.remove(TELEGRAM_BOT_API_TOKEN) }
+    }
 
     override fun getTelegramRecipientId(): Flow<Long?> =
         dataStore.data.map { it[TELEGRAM_RECIPIENT_ID] }.distinctUntilChanged()
@@ -51,8 +43,4 @@ class PreferencesDataStoreConfigurationRepository
         runCatching {
             dataStore.edit { it.remove(TELEGRAM_RECIPIENT_ID) }
         }
-
-    override suspend fun getTelegramBotApiToken2(): String? {
-        return dataStore.data.first()[TELEGRAM_BOT_API_TOKEN]
-    }
 }
