@@ -252,7 +252,9 @@ fun TokenInputBlock(
                         is BotState.Loading -> {
                             setLoadingState(true)
                         }
-                        else -> {}
+                        else -> {
+                            setLoadingState(false)
+                        }
                     }
                 }
             }
