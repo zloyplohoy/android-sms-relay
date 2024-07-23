@@ -1,5 +1,6 @@
 package ag.sokolov.smsrelay.ui
 
+import ag.sokolov.smsrelay.ui.common.AnimatedNavHost
 import ag.sokolov.smsrelay.ui.setup.SetupScreen
 import ag.sokolov.smsrelay.ui.setup.setupScreen
 import ag.sokolov.smsrelay.ui.statistics.StatisticsScreen
@@ -19,8 +20,9 @@ fun SMSRelayApp() {
 
     SMSRelayTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
-            NavHost(
-                navController = navController, startDestination = SetupScreen
+            AnimatedNavHost(
+                navController = navController,
+                startDestination = SetupScreen
             ) {
                 setupScreen(onFinished = navController::finishSetup)
                 statisticsScreen(navController)
