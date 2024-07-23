@@ -45,9 +45,10 @@ fun NavGraphBuilder.setupScreen(onFinished: () -> Unit) =
 
 @Composable
 fun SetupScreen(
-    onFinished: () -> Unit,
-    viewModel: SetupViewModel = hiltViewModel()
+    onFinished: () -> Unit
 ) {
+    val viewModel: SetupViewModel = hiltViewModel()
+
     val setupNavController = rememberNavController()
     val currentSetupRoute: String? =
         setupNavController.currentBackStackEntryAsState().value?.destination?.route
