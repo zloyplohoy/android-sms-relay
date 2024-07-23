@@ -1,11 +1,11 @@
 package ag.sokolov.smsrelay.ui.setup
 
 import ag.sokolov.smsrelay.ui.common.DualPurposeLinearProgressIndicator
-import ag.sokolov.smsrelay.ui.setup.navigation.SetupDestination
-import ag.sokolov.smsrelay.ui.setup.navigation.navigateToSetupEnd
 import ag.sokolov.smsrelay.ui.setup.screen.bot.BotSetupScreen
 import ag.sokolov.smsrelay.ui.setup.screen.bot.botSetupScreen
 import ag.sokolov.smsrelay.ui.setup.screen.end.SetupEndScreen
+import ag.sokolov.smsrelay.ui.setup.screen.end.navigateToSetupEnd
+import ag.sokolov.smsrelay.ui.setup.screen.end.setupEndScreen
 import ag.sokolov.smsrelay.ui.setup.screen.permissions.PermissionsSetupScreen
 import ag.sokolov.smsrelay.ui.setup.screen.permissions.navigateToPermissionsSetup
 import ag.sokolov.smsrelay.ui.setup.screen.permissions.permissionsSetupScreen
@@ -143,9 +143,10 @@ fun SetupNavHost(
             setLoadingState = setLoadingState,
             viewModel = viewModel
         )
-        composable<SetupDestination.END> {
-            SetupEndScreen(onFinished = onFinished)
-        }
+        setupEndScreen(
+            onFinished = onFinished,
+            viewModel = viewModel
+        )
     }
 }
 
@@ -154,7 +155,7 @@ fun getSetupProgress(currentSetupRoute: String?): Float {
         BotSetupScreen::class.java.canonicalName?.toString() -> 0f
         RecipientSetupScreen::class.java.canonicalName?.toString() -> 0.33f
         PermissionsSetupScreen::class.java.canonicalName?.toString() -> 0.66f
-        SetupDestination.END::class.java.canonicalName?.toString() -> 1f
+        SetupEndScreen::class.java.canonicalName?.toString() -> 1f
         else -> 0f
     }
 }
