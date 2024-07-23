@@ -28,7 +28,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -46,7 +45,7 @@ fun SetupScreen(
     onFinished: () -> Unit
 ) {
     val viewModel: SetupViewModel = hiltViewModel()
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val state = viewModel.state
 
     val setupNavController = rememberNavController()
     val currentSetupRoute: String? =

@@ -4,12 +4,13 @@ import ag.sokolov.smsrelay.data.telegram_bot_api.TelegramBotApi
 import ag.sokolov.smsrelay.domain.model.DomainError
 import ag.sokolov.smsrelay.domain.model.Response
 import ag.sokolov.smsrelay.domain.repository.ConfigurationRepository
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,8 +20,8 @@ class SetupViewModel @Inject constructor(
     private val telegramBotApi: TelegramBotApi
 ) : ViewModel() {
 
-    var _state = MutableStateFlow(SetupState())
-    val state: StateFlow<SetupState> = _state
+    var state by mutableStateOf(SetupState())
+        private set
 
     init {
         viewModelScope.launch {
@@ -29,7 +30,7 @@ class SetupViewModel @Inject constructor(
     }
 
     fun setLoadingState(isLoading: Boolean) {
-        _state.value = _state.value.copy(isLoading = isLoading)
+        state = state.copy(isLoading = isLoading)
     }
 
     private suspend fun initializeBotState() {
@@ -57,7 +58,7 @@ class SetupViewModel @Inject constructor(
     }
 
     private fun updateBotState(botState: BotState) {
-        _state.value = _state.value.copy(botState = botState)
+        state = state.copy(botState = botState)
     }
 
     private val telegramApiTokenRegex = Regex("""^\d{10}:[A-Za-z0-9_-]{35}$""")
