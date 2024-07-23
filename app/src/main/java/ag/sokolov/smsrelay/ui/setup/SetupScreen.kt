@@ -126,10 +126,20 @@ fun getSetupProgress(currentSetupRoute: String?): Float {
 
 @Preview
 @Composable
-fun PreviewSetupScreen() {
+fun PreviewSetupScreenProgress() {
     SMSRelayTheme {
         Surface(Modifier.fillMaxSize()) {
             SetupScreen(progress = 0.5f)
+        }
+    }
+}
+
+@Preview
+@Composable
+fun PreviewSetupScreenLoading() {
+    SMSRelayTheme {
+        Surface(Modifier.fillMaxSize()) {
+            SetupScreen(progress = 0.5f, isLoading = true)
         }
     }
 }
