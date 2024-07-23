@@ -50,15 +50,15 @@ fun SetupScreen(
         label = "Setup progress", targetValue = setupProgress, animationSpec = tween()
     )
 
-    var showLoadingIndicator by remember { mutableStateOf(false) }
+    var _isLoading by remember { mutableStateOf(false) }
 
     fun setLoadingState(isLoading: Boolean) {
-        showLoadingIndicator = isLoading
+        _isLoading = isLoading
     }
 
     SetupScreen(
         setupProgress = setupProgressAnimated,
-        showLoadingIndicator = showLoadingIndicator
+        isLoading = _isLoading
     ) {
         SetupNavHost(
             setupNavController = setupNavController,
@@ -71,7 +71,7 @@ fun SetupScreen(
 @Composable
 fun SetupScreen(
     setupProgress: Float,
-    showLoadingIndicator: Boolean = false,
+    isLoading: Boolean = false,
     content: @Composable (() -> Unit) = {}
 ) {
     Column(
@@ -81,7 +81,7 @@ fun SetupScreen(
     ) {
         DualPurposeLinearProgressIndicator(
             progress = setupProgress,
-            isLoading = showLoadingIndicator,
+            isLoading = isLoading,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 32.dp)
