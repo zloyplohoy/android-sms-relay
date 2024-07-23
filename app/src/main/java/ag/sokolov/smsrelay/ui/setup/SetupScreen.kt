@@ -22,7 +22,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -60,7 +59,10 @@ fun SetupScreen(
         showLoadingIndicator = isLoading
     }
 
-    SetupScreen(setupProgress = setupProgressAnimated, showLoadingIndicator = showLoadingIndicator) {
+    SetupScreen(
+        setupProgress = setupProgressAnimated,
+        showLoadingIndicator = showLoadingIndicator
+    ) {
         SetupNavHost(
             setupNavController = setupNavController,
             setLoadingState = ::setLoadingState,
@@ -131,7 +133,11 @@ fun SetupNavHost(
         popExitTransition = {
             slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right) + fadeOut()
         }) {
-        setupScreenContent(setupNavController, setLoadingState = setLoadingState, onFinished = onFinished)
+        setupScreenContent(
+            setupNavController,
+            setLoadingState = setLoadingState,
+            onFinished = onFinished
+        )
     }
 }
 
@@ -150,9 +156,7 @@ fun getSetupProgress(currentSetupRoute: String?): Float {
 fun PreviewSetupScreen() {
     SMSRelayTheme {
         Surface(Modifier.fillMaxSize()) {
-            SetupScreen(setupProgress = 0.5f) {
-                Surface(Modifier.fillMaxSize(), color = Color.Red) {}
-            }
+            SetupScreen(setupProgress = 0.5f)
         }
     }
 }
