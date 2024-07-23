@@ -1,6 +1,7 @@
 package ag.sokolov.smsrelay.ui.setup.screen.bot
 
 import ag.sokolov.smsrelay.R
+import ag.sokolov.smsrelay.ui.setup.BotState
 import ag.sokolov.smsrelay.ui.setup.SetupScreen
 import ag.sokolov.smsrelay.ui.setup.SetupViewModel
 import ag.sokolov.smsrelay.ui.setup.common.element.contact_list_item.ContactListItem
