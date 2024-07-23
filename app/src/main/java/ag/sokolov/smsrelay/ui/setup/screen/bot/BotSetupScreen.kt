@@ -83,17 +83,17 @@ fun BotSetupScreen(
 
 @Composable
 internal fun BotSetupScreen(
-    state: BotSetupState,
+    state: BotState,
     setLoadingState: (Boolean) -> Unit,
     onContinue: () -> Unit,
     onTokenValueChanged: (value: String) -> Unit,
     onTokenReset: () -> Unit
 ) {
-    var isContinueButtonVisible by remember { mutableStateOf(state is BotSetupState.Configured) }
+    var isContinueButtonVisible by remember { mutableStateOf(state is BotState.Configured) }
 
     LaunchedEffect(state) {
         when (state) {
-            is BotSetupState.Configured -> {}
+            is BotState.Configured -> {}
             else -> {
                 isContinueButtonVisible = false
             }
@@ -131,7 +131,7 @@ internal fun BotSetupScreen(
         ) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                 Button(
-                    enabled = state is BotSetupState.Configured,
+                    enabled = state is BotState.Configured,
                     onClick = onContinue,
                     modifier = Modifier.height(OutlinedTextFieldDefaults.MinHeight)
                 ) {
@@ -163,7 +163,7 @@ fun BotSetupDescription() {
 
 @Composable
 fun TokenInputBlock(
-    state: BotSetupState,
+    state: BotState,
     onValueChange: (value: String) -> Unit,
     onReset: () -> Unit,
     setLoadingState: (Boolean) -> Unit,
@@ -173,7 +173,7 @@ fun TokenInputBlock(
     val coroutineScope = rememberCoroutineScope()
 
     val isTokenInputEnabled by remember(state) {
-        mutableStateOf(state is BotSetupState.NotConfigured || state is BotSetupState.Error)
+        mutableStateOf(state is BotState.NotConfigured || state is BotState.Error)
     }
 
     Row(
@@ -188,17 +188,17 @@ fun TokenInputBlock(
             // Initial animation values
 
             val initialTokenTextFieldWidth = when (state) {
-                is BotSetupState.Configured -> OutlinedTextFieldDefaults.MinHeight.value
+                is BotState.Configured -> OutlinedTextFieldDefaults.MinHeight.value
                 else -> maxWidth.value.absoluteValue
             }
 
             val initialTokenTextFieldPlaceholderOpacity = when (state) {
-                is BotSetupState.NotConfigured -> 1f
+                is BotState.NotConfigured -> 1f
                 else -> 0f
             }
 
             val initialBotDetailsOpacity = when (state) {
-                is BotSetupState.Configured -> 1f
+                is BotState.Configured -> 1f
                 else -> 0f
             }
 
@@ -214,13 +214,13 @@ fun TokenInputBlock(
             LaunchedEffect(state) {
                 coroutineScope.launch {
                     when (state) {
-                        is BotSetupState.NotConfigured -> {
+                        is BotState.NotConfigured -> {
                             setLoadingState(false)
                             botDetailsOpacity.hide()
                             tokenTextFieldWidth.expand(boxWithConstraintsScope)
                             tokenTextFieldPlaceholderOpacity.show()
                         }
-                        is BotSetupState.Configured -> {
+                        is BotState.Configured -> {
                             setLoadingState(false)
                             launch { tokenTextFieldPlaceholderOpacity.hide() }
                             launch {
@@ -229,7 +229,7 @@ fun TokenInputBlock(
                                 onCanContinue()
                             }
                         }
-                        is BotSetupState.Loading -> {
+                        is BotState.Loading -> {
                             setLoadingState(true)
                         }
                         else -> {}
@@ -239,7 +239,7 @@ fun TokenInputBlock(
 
             OutlinedTextField(
                 value = when (state) {
-                    is BotSetupState.Configured -> ""
+                    is BotState.Configured -> ""
                     else -> token
                 },
                 onValueChange = { value ->
@@ -253,7 +253,7 @@ fun TokenInputBlock(
                         state, Modifier.alpha(tokenTextFieldPlaceholderOpacity.value)
                     )
                 },
-                isError = state is BotSetupState.Error,
+                isError = state is BotState.Error,
                 supportingText = { TokenTextFieldSupportingText(state) },
                 visualTransformation = PasswordVisualTransformation(),
                 shape = RoundedCornerShape(percent = 50),
@@ -280,7 +280,7 @@ fun TokenInputBlock(
                 }
             },
             modifier = Modifier.size(OutlinedTextFieldDefaults.MinHeight),
-            enabled = state !is BotSetupState.Loading
+            enabled = state !is BotState.Loading
         ) {
             Icon(
                 imageVector = Icons.Outlined.Clear, contentDescription = "Reset token"
@@ -291,10 +291,10 @@ fun TokenInputBlock(
 
 @Composable
 fun TokenTextFieldPlaceholder(
-    state: BotSetupState,
+    state: BotState,
     modifier: Modifier = Modifier
 ) {
-    if (state is BotSetupState.NotConfigured) {
+    if (state is BotState.NotConfigured) {
         Text(
             text = stringResource(R.string.bot_api_token_input_placeholder),
             maxLines = 1,
@@ -304,17 +304,17 @@ fun TokenTextFieldPlaceholder(
 }
 
 @Composable
-fun TokenTextFieldSupportingText(state: BotSetupState) {
-    (state as? BotSetupState.Error)?.let { Text(text = it.errorMessage) }
+fun TokenTextFieldSupportingText(state: BotState) {
+    (state as? BotState.Error)?.let { Text(text = it.errorMessage) }
 }
 
 @Composable
 fun BotDetails(
-    state: BotSetupState
+    state: BotState
 ) {
-    var latestConfiguredState by remember { mutableStateOf<BotSetupState.Configured?>(null) }
+    var latestConfiguredState by remember { mutableStateOf<BotState.Configured?>(null) }
 
-    if (state is BotSetupState.Configured) latestConfiguredState = state
+    if (state is BotState.Configured) latestConfiguredState = state
 
     latestConfiguredState?.let { configuredState ->
         ContactListItem(
@@ -329,7 +329,7 @@ fun PreviewBotSetupScreenNotConfigured() {
     SMSRelayTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
             SetupScreen(setupProgress = 0.33f) {
-                BotSetupScreen(state = BotSetupState.NotConfigured,
+                BotSetupScreen(state = BotState.NotConfigured,
                     onContinue = {},
                     onTokenValueChanged = {},
                     onTokenReset = {},
@@ -345,7 +345,7 @@ fun PreviewBotSetupScreenLoading() {
     SMSRelayTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
             SetupScreen(setupProgress = 0.33f) {
-                BotSetupScreen(state = BotSetupState.Loading,
+                BotSetupScreen(state = BotState.Loading,
                     onContinue = {},
                     onTokenValueChanged = {},
                     onTokenReset = {},
@@ -361,7 +361,7 @@ fun PreviewBotSetupScreenConfigured() {
     SMSRelayTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
             SetupScreen(setupProgress = 0.33f) {
-                BotSetupScreen(state = BotSetupState.Configured(
+                BotSetupScreen(state = BotState.Configured(
                     botName = "Awesome Telegram bot", botUsername = "awesome_telegram_bot"
                 ),
                     onContinue = {},
@@ -379,7 +379,7 @@ fun PreviewBotSetupScreenError() {
     SMSRelayTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
             SetupScreen(setupProgress = 0.33f) {
-                BotSetupScreen(state = BotSetupState.Error(errorMessage = "Invalid token"),
+                BotSetupScreen(state = BotState.Error(errorMessage = "Invalid token"),
                     onContinue = {},
                     onTokenValueChanged = {},
                     onTokenReset = {},

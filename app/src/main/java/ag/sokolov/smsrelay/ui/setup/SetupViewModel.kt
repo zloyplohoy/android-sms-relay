@@ -1,19 +1,23 @@
 package ag.sokolov.smsrelay.ui.setup
 
+import ag.sokolov.smsrelay.data.telegram_bot_api.TelegramBotApi
 import ag.sokolov.smsrelay.domain.model.DomainError
 import ag.sokolov.smsrelay.domain.model.Response
 import ag.sokolov.smsrelay.domain.model.TelegramBot
+import ag.sokolov.smsrelay.domain.repository.ConfigurationRepository
 import ag.sokolov.smsrelay.domain.use_case.add_telegram_bot.AddTelegramBotUseCase
 import ag.sokolov.smsrelay.domain.use_case.delete_telegram_bot.DeleteTelegramBotUseCase
 import ag.sokolov.smsrelay.domain.use_case.get_telegram_bot_2.GetTelegramBot2UseCase
-import ag.sokolov.smsrelay.ui.setup.screen.bot.BotSetupState
+import ag.sokolov.smsrelay.ui.setup.screen.bot.BotState
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
@@ -28,18 +32,61 @@ class SetupViewModel @Inject constructor(
     getTelegramBotUseCase: GetTelegramBot2UseCase,
     private val addTelegramBotUseCase: AddTelegramBotUseCase,
     private val deleteTelegramBotUseCase: DeleteTelegramBotUseCase,
-    private val savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle,
+    private val configurationRepository: ConfigurationRepository,
+    private val telegramBotApi: TelegramBotApi
 ) : ViewModel() {
+
+    var _state2 = MutableStateFlow(SetupState())
+    val state2: StateFlow<SetupState> = _state2
+
+    init {
+        updateBotState()
+    }
+
+
+    private fun updateBotState() {
+        viewModelScope.launch {
+            val telegramBotApiToken = configurationRepository.getTelegramBotApiToken2()
+
+            if (telegramBotApiToken != null) {
+                val botDetails = telegramBotApi.getTelegramBot(telegramBotApiToken)
+                when (botDetails) {
+                    is Response.Success -> {
+                        _state2.value = _state2.value.copy(
+                            botState = BotState.Configured(
+                                botName = botDetails.data.name,
+                                botUsername = botDetails.data.username
+                            )
+                        )
+                    }
+                    is Response.Failure -> {
+                        _state2.value = _state2.value.copy(
+                            botState = BotState.Error(
+                                errorMessage = botDetails.error.toString()
+                            )
+                        )
+                    }
+                    else -> {}
+                }
+                _state2.value = _state2.value.copy(botState = BotState.Loading)
+            } else {
+                _state2.value = _state2.value.copy(botState = BotState.NotConfigured)
+            }
+        }
+    }
+
+    // old implementation
 
     private val json = Json { encodeDefaults = true } // TODO: Why encodeDefaults?
 
-    private fun getSavedState(): BotSetupState =
+    private fun getSavedState(): BotState =
         savedStateHandle.get<String>("state")
-            ?.let { json.decodeFromString(BotSetupState.serializer(), it) }
-            ?: BotSetupState.NotConfigured
+            ?.let { json.decodeFromString(BotState.serializer(), it) }
+            ?: BotState.NotConfigured
 
-    private fun setSavedState(state: BotSetupState) {
-        savedStateHandle["state"] = json.encodeToString(BotSetupState.serializer(), state)
+    private fun setSavedState(state: BotState) {
+        savedStateHandle["state"] = json.encodeToString(BotState.serializer(), state)
     }
 
     val state = getTelegramBotUseCase()
@@ -67,37 +114,37 @@ class SetupViewModel @Inject constructor(
             deleteTelegramBotUseCase()
         }
 
-    private fun getBotSetupState(telegramBotResponse: Response<TelegramBot?, DomainError>): BotSetupState =
+    private fun getBotSetupState(telegramBotResponse: Response<TelegramBot?, DomainError>): BotState =
         when (telegramBotResponse) {
-            is Response.Loading -> BotSetupState.Loading
+            is Response.Loading -> BotState.Loading
             is Response.Success -> getBotStateFromData(telegramBotResponse.data)
             is Response.Failure -> getBotStateFromError(telegramBotResponse.error)
         }
 
-    private fun getBotStateFromData(telegramBot: TelegramBot? = null): BotSetupState =
-        telegramBot?.let { BotSetupState.Configured(botName = it.name, botUsername = it.username) }
-            ?: BotSetupState.NotConfigured
+    private fun getBotStateFromData(telegramBot: TelegramBot? = null): BotState =
+        telegramBot?.let { BotState.Configured(botName = it.name, botUsername = it.username) }
+            ?: BotState.NotConfigured
 
-    private fun getBotStateFromError(error: DomainError): BotSetupState =
+    private fun getBotStateFromError(error: DomainError): BotState =
         when (error) {
-            is DomainError.NetworkUnavailable -> BotSetupState.Error("Device is offline")
-            is DomainError.NetworkError -> BotSetupState.Error("Network error")
-            is DomainError.BotApiTokenInvalid -> BotSetupState.Error("Bot API token invalid")
-            else -> BotSetupState.Error("Unhandled error")
+            is DomainError.NetworkUnavailable -> BotState.Error("Device is offline")
+            is DomainError.NetworkError -> BotState.Error("Network error")
+            is DomainError.BotApiTokenInvalid -> BotState.Error("Bot API token invalid")
+            else -> BotState.Error("Unhandled error")
         }
 }
 
 
-fun Flow<BotSetupState>.setMinimumLoadingTime(loadingTimeMillis: Long): Flow<BotSetupState> =
+fun Flow<BotState>.setMinimumLoadingTime(loadingTimeMillis: Long): Flow<BotState> =
     flow {
         var lastEmissionTime = System.currentTimeMillis()
-        var lastValue: BotSetupState = BotSetupState.Loading
+        var lastValue: BotState = BotState.Loading
 
         this@setMinimumLoadingTime.collect { value ->
             val currentTime = System.currentTimeMillis()
             val elapsedTime = currentTime - lastEmissionTime
 
-            if (elapsedTime >= loadingTimeMillis || lastValue !is BotSetupState.Loading) {
+            if (elapsedTime >= loadingTimeMillis || lastValue !is BotState.Loading) {
                 emit(value)
                 lastEmissionTime = currentTime
                 lastValue = value
@@ -110,7 +157,7 @@ fun Flow<BotSetupState>.setMinimumLoadingTime(loadingTimeMillis: Long): Flow<Bot
         }
     }
 
-fun Flow<BotSetupState>.preventConfiguredToLoadingTransition(getSavedState: () -> BotSetupState) =
+fun Flow<BotState>.preventConfiguredToLoadingTransition(getSavedState: () -> BotState) =
     this.filterNot { newState ->
-        (getSavedState() is BotSetupState.Configured && newState is BotSetupState.Loading)
+        (getSavedState() is BotState.Configured && newState is BotState.Loading)
     }

@@ -8,6 +8,8 @@ interface ConfigurationRepository {
     // Telegram bot API token
     fun getTelegramBotApiToken(): Flow<String?>
 
+    suspend fun getTelegramBotApiToken2(): String?
+
     suspend fun setTelegramBotApiToken(botApiToken: String): Response<Unit, DomainError>
 
     suspend fun deleteTelegramApiTokenAndRecipientId(): Result<Unit>

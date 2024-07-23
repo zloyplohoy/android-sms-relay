@@ -10,6 +10,7 @@ import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -50,4 +51,8 @@ class PreferencesDataStoreConfigurationRepository
         runCatching {
             dataStore.edit { it.remove(TELEGRAM_RECIPIENT_ID) }
         }
+
+    override suspend fun getTelegramBotApiToken2(): String? {
+        return dataStore.data.first()[TELEGRAM_BOT_API_TOKEN]
+    }
 }

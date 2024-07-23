@@ -3,19 +3,19 @@ package ag.sokolov.smsrelay.ui.setup.screen.bot
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed class BotSetupState {
+sealed class BotState {
     @Serializable
-    data object NotConfigured : BotSetupState()
+    data object NotConfigured : BotState()
 
     @Serializable
-    data object Loading : BotSetupState()
+    data object Loading : BotState()
 
     @Serializable
     data class Configured(
         val botName: String,
         val botUsername: String
-    ) : BotSetupState()
+    ) : BotState()
 
     @Serializable
-    data class Error(val errorMessage: String) : BotSetupState()
+    data class Error(val errorMessage: String) : BotState()
 }
