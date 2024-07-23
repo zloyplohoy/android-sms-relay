@@ -112,7 +112,7 @@ fun SetupNavHost(
     NavHost(
         modifier = Modifier.fillMaxSize(),
         navController = setupNavController,
-        startDestination = SetupDestination.ROOT,
+        startDestination = BotSetupScreen,
         enterTransition = {
             slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left) + fadeIn()
         },
