@@ -36,9 +36,9 @@ class SetupViewModel @Inject constructor(
     private suspend fun initializeBotState() {
         val token = configurationRepository.getTelegramBotApiToken()
         if (token != null) {
-            updateBotState(getBotStateFromApi(token))
+            setBotState(getBotStateFromApi(token))
         } else {
-            updateBotState(BotState.NotConfigured)
+            setBotState(BotState.NotConfigured)
         }
     }
 
@@ -54,10 +54,10 @@ class SetupViewModel @Inject constructor(
         if (elapsedTime < minOperationTimeMillis) {
             delay(minOperationTimeMillis - elapsedTime)
         }
-        updateBotState(botState)
+        setBotState(botState)
     }
 
-    private fun updateBotState(botState: BotState) {
+    private fun setBotState(botState: BotState) {
         state = state.copy(botState = botState)
     }
 
@@ -66,7 +66,7 @@ class SetupViewModel @Inject constructor(
     fun onTokenValueChanged(token: String) =
         viewModelScope.launch {
             if (telegramApiTokenRegex.matches(token)) {
-                updateBotState(BotState.Loading)
+                setBotState(BotState.Loading)
                 addTelegramBot(token)
             }
         }
@@ -74,7 +74,7 @@ class SetupViewModel @Inject constructor(
     fun onTokenReset() =
         viewModelScope.launch {
             configurationRepository.deleteTelegramApiToken()
-            updateBotState(BotState.NotConfigured)
+            setBotState(BotState.NotConfigured)
         }
 
     private suspend fun getBotStateFromApi(token: String): BotState =
