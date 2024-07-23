@@ -2,7 +2,7 @@ package ag.sokolov.smsrelay.ui.setup
 
 data class SetupState(
     val isLoading: Boolean = false,
-    var botState: BotState = BotState.Loading
+    val botState: BotState = BotState.Loading
 )
 
 sealed class BotState {
