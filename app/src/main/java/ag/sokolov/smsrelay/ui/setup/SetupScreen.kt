@@ -1,5 +1,6 @@
 package ag.sokolov.smsrelay.ui.setup
 
+import ag.sokolov.smsrelay.ui.common.DualPurposeLinearProgressIndicator
 import ag.sokolov.smsrelay.ui.setup.navigation.SetupDestination
 import ag.sokolov.smsrelay.ui.setup.navigation.setupScreenContent
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
@@ -12,7 +13,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -21,7 +21,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
@@ -80,31 +79,14 @@ fun SetupScreen(
             .fillMaxSize()
             .padding(top = 32.dp)
     ) {
-        SetupProgressIndicator(
-            progress = setupProgress, showLoadingIndicator = showLoadingIndicator
+        DualPurposeLinearProgressIndicator(
+            progress = setupProgress,
+            isLoading = showLoadingIndicator,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 32.dp)
         )
         content()
-    }
-}
-
-@Composable
-fun SetupProgressIndicator(
-    progress: Float,
-    showLoadingIndicator: Boolean
-) {
-    if (showLoadingIndicator) {
-        LinearProgressIndicator(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 32.dp)
-        )
-    } else {
-        LinearProgressIndicator(
-            progress = { progress },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 32.dp)
-        )
     }
 }
 
