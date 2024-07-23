@@ -13,6 +13,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
 import androidx.work.WorkRequest
+import androidx.work.workDataOf
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -83,8 +84,13 @@ class SetupViewModel @Inject constructor(
     }
 
     fun doWork() {
+        val pin = (100000..999999).random().toString()
         val request: WorkRequest =
-            OneTimeWorkRequestBuilder<AddRecipientWorker>().setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+            OneTimeWorkRequestBuilder<AddRecipientWorker>()
+                .setInputData(workDataOf(
+                    "PIN" to pin
+                ))
+                .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
                 .build()
         WorkManager.getInstance(application).enqueue(request)
     }

@@ -11,8 +11,9 @@ class AddRecipientWorker(
     workerParams: WorkerParameters
 ) : Worker(appContext, workerParams) {
     override fun doWork(): Result {
+        val pin = inputData.getString("PIN") ?: return Result.failure()
         repeat(5) {
-            Log.d("TAG", "doWork: Doing work, no shit")
+            Log.d("TAG", "doWork: Doing work with $pin, no shit")
             sleep(10_000)
         }
         return Result.success()
