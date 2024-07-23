@@ -27,30 +27,6 @@ sealed interface SetupDestination {
     object END
 }
 
-fun NavGraphBuilder.setupScreenContent(
-    setupNavController: NavController,
-    viewModel: SetupViewModel,
-    setLoadingState: (Boolean) -> Unit,
-    onFinished: () -> Unit
-) =
-    navigation<SetupDestination.ROOT>(startDestination = BotSetupScreen) {
-        botSetupScreen(
-            onContinue = setupNavController::navigateToRecipientSetup,
-            setLoadingState = setLoadingState,
-            viewModel = viewModel
-        )
-        composable<SetupDestination.RECIPIENT> {
-            RecipientSetupScreen(onContinue = setupNavController::navigateToPermissionsSetup)
-        }
-        composable<SetupDestination.PERMISSIONS> {
-            PermissionsSetupScreen(onContinue = setupNavController::navigateToSetupEnd)
-        }
-        composable<SetupDestination.END> {
-            SetupEndScreen(onFinished = onFinished)
-        }
-    }
-
-
 fun NavController.navigateToRecipientSetup() =
     navigate(route = SetupDestination.RECIPIENT)
 

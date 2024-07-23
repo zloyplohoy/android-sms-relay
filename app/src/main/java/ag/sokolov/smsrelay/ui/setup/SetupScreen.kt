@@ -2,8 +2,14 @@ package ag.sokolov.smsrelay.ui.setup
 
 import ag.sokolov.smsrelay.ui.common.DualPurposeLinearProgressIndicator
 import ag.sokolov.smsrelay.ui.setup.navigation.SetupDestination
-import ag.sokolov.smsrelay.ui.setup.navigation.setupScreenContent
+import ag.sokolov.smsrelay.ui.setup.navigation.navigateToPermissionsSetup
+import ag.sokolov.smsrelay.ui.setup.navigation.navigateToRecipientSetup
+import ag.sokolov.smsrelay.ui.setup.navigation.navigateToSetupEnd
 import ag.sokolov.smsrelay.ui.setup.screen.bot.BotSetupScreen
+import ag.sokolov.smsrelay.ui.setup.screen.bot.botSetupScreen
+import ag.sokolov.smsrelay.ui.setup.screen.end.SetupEndScreen
+import ag.sokolov.smsrelay.ui.setup.screen.permissions.PermissionsSetupScreen
+import ag.sokolov.smsrelay.ui.setup.screen.recipient.RecipientSetupScreen
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.animateFloatAsState
@@ -103,7 +109,8 @@ fun SetupNavHost(
     setLoadingState: (Boolean) -> Unit,
     onFinished: () -> Unit
 ) {
-    NavHost(modifier = Modifier.fillMaxSize(),
+    NavHost(
+        modifier = Modifier.fillMaxSize(),
         navController = setupNavController,
         startDestination = SetupDestination.ROOT,
         enterTransition = {
@@ -117,13 +124,22 @@ fun SetupNavHost(
         },
         popExitTransition = {
             slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right) + fadeOut()
-        }) {
-        setupScreenContent(
-            setupNavController,
-            viewModel = viewModel,
+        }
+    ) {
+        botSetupScreen(
+            onContinue = setupNavController::navigateToRecipientSetup,
             setLoadingState = setLoadingState,
-            onFinished = onFinished
+            viewModel = viewModel
         )
+        composable<SetupDestination.RECIPIENT> {
+            RecipientSetupScreen(onContinue = setupNavController::navigateToPermissionsSetup)
+        }
+        composable<SetupDestination.PERMISSIONS> {
+            PermissionsSetupScreen(onContinue = setupNavController::navigateToSetupEnd)
+        }
+        composable<SetupDestination.END> {
+            SetupEndScreen(onFinished = onFinished)
+        }
     }
 }
 
