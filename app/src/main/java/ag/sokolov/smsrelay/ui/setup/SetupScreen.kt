@@ -7,6 +7,8 @@ import ag.sokolov.smsrelay.ui.setup.screen.bot.BotSetupScreen
 import ag.sokolov.smsrelay.ui.setup.screen.bot.botSetupScreen
 import ag.sokolov.smsrelay.ui.setup.screen.end.SetupEndScreen
 import ag.sokolov.smsrelay.ui.setup.screen.permissions.PermissionsSetupScreen
+import ag.sokolov.smsrelay.ui.setup.screen.permissions.navigateToPermissionsSetup
+import ag.sokolov.smsrelay.ui.setup.screen.permissions.permissionsSetupScreen
 import ag.sokolov.smsrelay.ui.setup.screen.recipient.RecipientSetupScreen
 import ag.sokolov.smsrelay.ui.setup.screen.recipient.navigateToRecipientSetup
 import ag.sokolov.smsrelay.ui.setup.screen.recipient.recipientSetupScreen
@@ -132,13 +134,15 @@ fun SetupNavHost(
             viewModel = viewModel
         )
         recipientSetupScreen(
-            onContinue = setupNavController::navigateToRecipientSetup,
+            onContinue = setupNavController::navigateToPermissionsSetup,
             setLoadingState = setLoadingState,
             viewModel = viewModel
         )
-        composable<SetupDestination.PERMISSIONS> {
-            PermissionsSetupScreen(onContinue = setupNavController::navigateToSetupEnd)
-        }
+        permissionsSetupScreen(
+            onContinue = setupNavController::navigateToSetupEnd,
+            setLoadingState = setLoadingState,
+            viewModel = viewModel
+        )
         composable<SetupDestination.END> {
             SetupEndScreen(onFinished = onFinished)
         }
@@ -149,7 +153,7 @@ fun getSetupProgress(currentSetupRoute: String?): Float {
     return when (currentSetupRoute) {
         BotSetupScreen::class.java.canonicalName?.toString() -> 0f
         RecipientSetupScreen::class.java.canonicalName?.toString() -> 0.33f
-        SetupDestination.PERMISSIONS::class.java.canonicalName?.toString() -> 0.66f
+        PermissionsSetupScreen::class.java.canonicalName?.toString() -> 0.66f
         SetupDestination.END::class.java.canonicalName?.toString() -> 1f
         else -> 0f
     }

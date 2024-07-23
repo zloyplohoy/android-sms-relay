@@ -9,14 +9,8 @@ sealed interface SetupDestination {
     object ROOT
 
     @Serializable
-    object PERMISSIONS
-
-    @Serializable
     object END
 }
-
-fun NavController.navigateToPermissionsSetup() =
-    navigate(route = SetupDestination.PERMISSIONS)
 
 fun NavController.navigateToSetupEnd() =
     navigate(route = SetupDestination.END)
