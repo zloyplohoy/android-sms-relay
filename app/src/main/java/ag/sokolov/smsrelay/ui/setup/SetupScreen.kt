@@ -47,7 +47,9 @@ fun SetupScreen(
 
     val setupProgress = rememberSaveable(currentSetupRoute) { getSetupProgress(currentSetupRoute) }
     val setupProgressAnimated: Float by animateFloatAsState(
-        label = "Setup progress", targetValue = setupProgress, animationSpec = tween()
+        label = "Setup progress",
+        targetValue = setupProgress,
+        animationSpec = tween()
     )
 
     var _isLoading by remember { mutableStateOf(false) }
