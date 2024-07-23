@@ -1,8 +1,6 @@
 package ag.sokolov.smsrelay.ui.setup
 
 import ag.sokolov.smsrelay.data.telegram_bot_api.TelegramBotApi
-import ag.sokolov.smsrelay.domain.model.DomainError
-import ag.sokolov.smsrelay.domain.model.Response
 import ag.sokolov.smsrelay.domain.repository.ConfigurationRepository
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,7 +34,7 @@ class SetupViewModel @Inject constructor(
     private suspend fun initializeBotState() {
         val token = configurationRepository.getTelegramBotApiToken()
         if (token != null) {
-            setBotState(getBotStateFromApi(token))
+            setBotState(telegramBotApi.getTelegramBot(token).toBotState())
         } else {
             setBotState(BotState.NotConfigured)
         }
@@ -45,7 +43,7 @@ class SetupViewModel @Inject constructor(
     private suspend fun addTelegramBot(token: String) {
         val minOperationTimeMillis = 3_000L
         val startTime = System.currentTimeMillis()
-        val botState = getBotStateFromApi(token)
+        val botState = telegramBotApi.getTelegramBot(token).toBotState()
         val endTime = System.currentTimeMillis()
         if (botState is BotState.Configured) {
             configurationRepository.setTelegramBotApiToken(token)
@@ -75,26 +73,5 @@ class SetupViewModel @Inject constructor(
         viewModelScope.launch {
             configurationRepository.deleteTelegramApiToken()
             setBotState(BotState.NotConfigured)
-        }
-
-    private suspend fun getBotStateFromApi(token: String): BotState =
-        when (val apiResponse = telegramBotApi.getTelegramBot(token)) {
-            is Response.Loading -> BotState.Loading
-            is Response.Success -> {
-                BotState.Configured(
-                    name = apiResponse.data.name,
-                    username = apiResponse.data.username
-                )
-            }
-            is Response.Failure -> {
-                BotState.Error(
-                    message = when (apiResponse.error) {
-                        is DomainError.NetworkUnavailable -> "Device is offline"
-                        is DomainError.NetworkError -> "Network error"
-                        is DomainError.BotApiTokenInvalid -> "Bot API token invalid"
-                        else -> "Unhandled error"
-                    }
-                )
-            }
         }
 }
