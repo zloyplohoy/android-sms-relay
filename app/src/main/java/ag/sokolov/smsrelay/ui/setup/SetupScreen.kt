@@ -59,7 +59,7 @@ fun SetupScreen(
     }
 
     SetupScreen(
-        setupProgress = setupProgressAnimated,
+        progress = setupProgressAnimated,
         isLoading = _isLoading
     ) {
         SetupNavHost(
@@ -72,7 +72,7 @@ fun SetupScreen(
 
 @Composable
 internal fun SetupScreen(
-    setupProgress: Float,
+    progress: Float,
     isLoading: Boolean = false,
     content: @Composable (() -> Unit) = {}
 ) {
@@ -82,7 +82,7 @@ internal fun SetupScreen(
             .padding(top = 32.dp)
     ) {
         DualPurposeLinearProgressIndicator(
-            progress = setupProgress,
+            progress = progress,
             isLoading = isLoading,
             modifier = Modifier
                 .fillMaxWidth()
@@ -136,7 +136,7 @@ fun getSetupProgress(currentSetupRoute: String?): Float {
 fun PreviewSetupScreen() {
     SMSRelayTheme {
         Surface(Modifier.fillMaxSize()) {
-            SetupScreen(setupProgress = 0.5f)
+            SetupScreen(progress = 0.5f)
         }
     }
 }

@@ -328,7 +328,7 @@ fun BotDetails(
 fun PreviewBotSetupScreenNotConfigured() {
     SMSRelayTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
-            SetupScreen(setupProgress = 0.33f) {
+            SetupScreen(progress = 0.33f) {
                 BotSetupScreen(state = BotState.NotConfigured,
                     onContinue = {},
                     onTokenValueChanged = {},
@@ -344,7 +344,7 @@ fun PreviewBotSetupScreenNotConfigured() {
 fun PreviewBotSetupScreenLoading() {
     SMSRelayTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
-            SetupScreen(setupProgress = 0.33f) {
+            SetupScreen(progress = 0.33f) {
                 BotSetupScreen(state = BotState.Loading,
                     onContinue = {},
                     onTokenValueChanged = {},
@@ -360,7 +360,7 @@ fun PreviewBotSetupScreenLoading() {
 fun PreviewBotSetupScreenConfigured() {
     SMSRelayTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
-            SetupScreen(setupProgress = 0.33f) {
+            SetupScreen(progress = 0.33f) {
                 BotSetupScreen(state = BotState.Configured(
                     botName = "Awesome Telegram bot", botUsername = "awesome_telegram_bot"
                 ),
@@ -378,7 +378,7 @@ fun PreviewBotSetupScreenConfigured() {
 fun PreviewBotSetupScreenError() {
     SMSRelayTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
-            SetupScreen(setupProgress = 0.33f) {
+            SetupScreen(progress = 0.33f) {
                 BotSetupScreen(state = BotState.Error(errorMessage = "Invalid token"),
                     onContinue = {},
                     onTokenValueChanged = {},
