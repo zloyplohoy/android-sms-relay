@@ -6,7 +6,8 @@ import ag.sokolov.smsrelay.domain.model.TelegramBot
 
 data class SetupState(
     val isLoading: Boolean = false,
-    val botState: BotState = BotState.Loading
+    val botState: BotState = BotState.Loading,
+    val recipientState: RecipientState = RecipientState.Loading
 )
 
 sealed class BotState {
@@ -43,3 +44,17 @@ fun Response<TelegramBot, DomainError>.toBotState() =
             )
         }
     }
+
+sealed class RecipientState {
+    data class Configured(
+        val name: String,
+        val username: String?
+    ) : RecipientState()
+
+    data class Error(
+        val message: String
+    ) : RecipientState()
+
+    data object NotConfigured : RecipientState()
+    data object Loading : RecipientState()
+}

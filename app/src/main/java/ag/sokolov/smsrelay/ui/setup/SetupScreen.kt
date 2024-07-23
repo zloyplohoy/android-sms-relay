@@ -73,7 +73,8 @@ fun SetupScreen(
                 viewModel = viewModel
             )
             recipientSetupScreen(
-                onContinue = setupNavController::navigateToPermissionsSetup
+                onContinue = setupNavController::navigateToPermissionsSetup,
+                viewModel = viewModel
             )
             permissionsSetupScreen(
                 onContinue = setupNavController::navigateToSetupEnd
