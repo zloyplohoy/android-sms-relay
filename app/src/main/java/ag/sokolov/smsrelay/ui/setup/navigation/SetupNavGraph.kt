@@ -1,10 +1,11 @@
 package ag.sokolov.smsrelay.ui.setup.navigation
 
+import ag.sokolov.smsrelay.ui.setup.SetupViewModel
 import ag.sokolov.smsrelay.ui.setup.screen.bot.BotSetupScreen
+import ag.sokolov.smsrelay.ui.setup.screen.bot.botSetupScreen
 import ag.sokolov.smsrelay.ui.setup.screen.end.SetupEndScreen
 import ag.sokolov.smsrelay.ui.setup.screen.permissions.PermissionsSetupScreen
 import ag.sokolov.smsrelay.ui.setup.screen.recipient.RecipientSetupScreen
-import ag.sokolov.smsrelay.ui.statistics.StatisticsScreen
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -15,9 +16,6 @@ import kotlinx.serialization.Serializable
 sealed interface SetupDestination {
     @Serializable
     object ROOT
-
-    @Serializable
-    object BOT
 
     @Serializable
     object RECIPIENT
@@ -31,16 +29,16 @@ sealed interface SetupDestination {
 
 fun NavGraphBuilder.setupScreenContent(
     setupNavController: NavController,
+    viewModel: SetupViewModel,
     setLoadingState: (Boolean) -> Unit,
     onFinished: () -> Unit
 ) =
-    navigation<SetupDestination.ROOT>(startDestination = SetupDestination.BOT) {
-        composable<SetupDestination.BOT> {
-            BotSetupScreen(
-                setLoadingState = setLoadingState,
-                onContinue = setupNavController::navigateToRecipientSetup
-            )
-        }
+    navigation<SetupDestination.ROOT>(startDestination = BotSetupScreen) {
+        botSetupScreen(
+            onContinue = setupNavController::navigateToRecipientSetup,
+            setLoadingState = setLoadingState,
+            viewModel = viewModel
+        )
         composable<SetupDestination.RECIPIENT> {
             RecipientSetupScreen(onContinue = setupNavController::navigateToPermissionsSetup)
         }

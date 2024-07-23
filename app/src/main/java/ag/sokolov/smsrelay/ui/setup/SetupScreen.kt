@@ -3,6 +3,7 @@ package ag.sokolov.smsrelay.ui.setup
 import ag.sokolov.smsrelay.ui.common.DualPurposeLinearProgressIndicator
 import ag.sokolov.smsrelay.ui.setup.navigation.SetupDestination
 import ag.sokolov.smsrelay.ui.setup.navigation.setupScreenContent
+import ag.sokolov.smsrelay.ui.setup.screen.bot.BotSetupScreen
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.animateFloatAsState
@@ -23,6 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -39,7 +41,8 @@ fun NavGraphBuilder.setupScreen(onFinished: () -> Unit) =
 
 @Composable
 fun SetupScreen(
-    onFinished: () -> Unit
+    onFinished: () -> Unit,
+    viewModel: SetupViewModel = hiltViewModel()
 ) {
     val setupNavController = rememberNavController()
     val currentSetupRoute: String? =
@@ -64,6 +67,7 @@ fun SetupScreen(
     ) {
         SetupNavHost(
             setupNavController = setupNavController,
+            viewModel = viewModel,
             setLoadingState = ::setLoadingState,
             onFinished = onFinished
         )
@@ -95,6 +99,7 @@ internal fun SetupScreen(
 @Composable
 fun SetupNavHost(
     setupNavController: NavHostController,
+    viewModel: SetupViewModel,
     setLoadingState: (Boolean) -> Unit,
     onFinished: () -> Unit
 ) {
@@ -115,6 +120,7 @@ fun SetupNavHost(
         }) {
         setupScreenContent(
             setupNavController,
+            viewModel = viewModel,
             setLoadingState = setLoadingState,
             onFinished = onFinished
         )
@@ -123,7 +129,7 @@ fun SetupNavHost(
 
 fun getSetupProgress(currentSetupRoute: String?): Float {
     return when (currentSetupRoute) {
-        SetupDestination.BOT::class.java.canonicalName?.toString() -> 0f
+        BotSetupScreen::class.java.canonicalName?.toString() -> 0f
         SetupDestination.RECIPIENT::class.java.canonicalName?.toString() -> 0.33f
         SetupDestination.PERMISSIONS::class.java.canonicalName?.toString() -> 0.66f
         SetupDestination.END::class.java.canonicalName?.toString() -> 1f

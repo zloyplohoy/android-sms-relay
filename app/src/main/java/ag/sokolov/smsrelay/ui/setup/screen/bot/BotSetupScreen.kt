@@ -1,8 +1,8 @@
 package ag.sokolov.smsrelay.ui.setup.screen.bot
 
 import ag.sokolov.smsrelay.R
-import ag.sokolov.smsrelay.ui.setup.SetupViewModel
 import ag.sokolov.smsrelay.ui.setup.SetupScreen
+import ag.sokolov.smsrelay.ui.setup.SetupViewModel
 import ag.sokolov.smsrelay.ui.setup.common.element.contact_list_item.ContactListItem
 import ag.sokolov.smsrelay.ui.setup.common.element.ordered_list.orderedList
 import ag.sokolov.smsrelay.ui.setup.common.element.setup_step_section.SetupStepSection
@@ -61,8 +61,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.composable
 import kotlinx.coroutines.launch
+import kotlinx.serialization.Serializable
 import kotlin.math.absoluteValue
+
+@Serializable
+object BotSetupScreen
+
+fun NavGraphBuilder.botSetupScreen(
+    onContinue: () -> Unit,
+    setLoadingState: (Boolean) -> Unit,
+    viewModel: SetupViewModel
+) =
+    composable<BotSetupScreen> {
+        BotSetupScreen(
+            onContinue = onContinue,
+            setLoadingState = setLoadingState,
+            viewModel = viewModel
+        )
+    }
 
 @Composable
 fun BotSetupScreen(
