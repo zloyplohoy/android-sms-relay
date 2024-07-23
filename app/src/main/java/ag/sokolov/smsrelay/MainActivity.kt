@@ -20,9 +20,8 @@ class MainActivity : ComponentActivity() {
         StrictMode.setVmPolicy(
             VmPolicy.Builder().detectAll().penaltyLog().build()
         )
-        super.onCreate(savedInstanceState)
 
-        enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
 
         setContent {
             SMSRelayApp()
