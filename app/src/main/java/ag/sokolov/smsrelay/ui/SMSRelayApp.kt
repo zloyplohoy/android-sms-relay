@@ -1,43 +1,36 @@
 package ag.sokolov.smsrelay.ui
 
-import ag.sokolov.smsrelay.navigation.SMSRelayNavHost
-import androidx.compose.foundation.layout.Box
+import ag.sokolov.smsrelay.ui.setup.SetupScreen
+import ag.sokolov.smsrelay.ui.setup.setupScreen
+import ag.sokolov.smsrelay.ui.statistics.StatisticsScreen
+import ag.sokolov.smsrelay.ui.statistics.statisticsScreen
+import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarDuration.Short
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SnackbarResult.ActionPerformed
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.rememberNavController
 
 @Composable
-fun SMSRelayApp(
-    appState: SMSRelayAppState,
-    modifier: Modifier = Modifier
-) {
-    Surface {
-        val snackbarHostState = remember { SnackbarHostState() }
+fun SMSRelayApp() {
+    val navController = rememberNavController()
 
-        Scaffold { paddingValues ->
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
+    SMSRelayTheme {
+        Surface(modifier = Modifier.fillMaxSize()) {
+            NavHost(
+                navController = navController, startDestination = SetupScreen
             ) {
-                SMSRelayNavHost(
-                    appState = appState,
-                    onShowSnackbar = { message, action ->
-                        snackbarHostState.showSnackbar(
-                            message = message,
-                            actionLabel = action,
-                            duration = Short,
-                        ) == ActionPerformed
-                    })
+                setupScreen(onFinished = navController::finishSetup)
+                statisticsScreen(navController)
             }
-
         }
     }
 }
+
+fun NavController.finishSetup() =
+    navigate(route = StatisticsScreen) {
+        popUpTo(graph.startDestinationId) { inclusive = true }
+        launchSingleTop = true
+    }

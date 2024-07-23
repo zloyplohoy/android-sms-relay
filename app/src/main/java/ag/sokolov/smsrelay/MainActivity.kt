@@ -1,7 +1,6 @@
 package ag.sokolov.smsrelay
 
 import ag.sokolov.smsrelay.ui.SMSRelayApp
-import ag.sokolov.smsrelay.ui.rememberSMSRelayAppState
 import android.os.Bundle
 import android.os.StrictMode
 import android.os.StrictMode.ThreadPolicy
@@ -26,8 +25,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            val appState = rememberSMSRelayAppState()
-            SMSRelayApp(appState = appState)
+            SMSRelayApp()
         }
     }
 }

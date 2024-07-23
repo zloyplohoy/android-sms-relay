@@ -1,7 +1,6 @@
 package ag.sokolov.smsrelay.ui.setup
 
 import ag.sokolov.smsrelay.ui.setup.navigation.SetupDestination
-import ag.sokolov.smsrelay.ui.setup.navigation.finishSetup
 import ag.sokolov.smsrelay.ui.setup.navigation.setupScreenContent
 import ag.sokolov.smsrelay.ui.theme.SMSRelayTheme
 import androidx.compose.animation.AnimatedContentTransitionScope
@@ -25,7 +24,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -37,12 +35,12 @@ import kotlinx.serialization.Serializable
 @Serializable
 object SetupScreen
 
-fun NavGraphBuilder.setupScreen(navController: NavController) =
-    composable<SetupScreen> { SetupScreen(navController) }
+fun NavGraphBuilder.setupScreen(onFinished: () -> Unit) =
+    composable<SetupScreen> { SetupScreen(onFinished) }
 
 @Composable
 fun SetupScreen(
-    navController: NavController
+    onFinished: () -> Unit
 ) {
     val setupNavController = rememberNavController()
     val currentSetupRoute: String? =
@@ -66,7 +64,7 @@ fun SetupScreen(
         SetupNavHost(
             setupNavController = setupNavController,
             setLoadingState = ::setLoadingState,
-            onFinished = navController::finishSetup
+            onFinished = onFinished
         )
     }
 }

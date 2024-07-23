@@ -1,6 +1,7 @@
 package ag.sokolov.smsrelay.ui.setup.screen.bot
 
 import ag.sokolov.smsrelay.R
+import ag.sokolov.smsrelay.ui.setup.SetupViewModel
 import ag.sokolov.smsrelay.ui.setup.SetupScreen
 import ag.sokolov.smsrelay.ui.setup.common.element.contact_list_item.ContactListItem
 import ag.sokolov.smsrelay.ui.setup.common.element.ordered_list.orderedList
@@ -67,7 +68,7 @@ import kotlin.math.absoluteValue
 fun BotSetupScreen(
     onContinue: () -> Unit,
     setLoadingState: (Boolean) -> Unit,
-    viewModel: BotSetupViewModel = hiltViewModel()
+    viewModel: SetupViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 

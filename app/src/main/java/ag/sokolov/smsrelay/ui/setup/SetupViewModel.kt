@@ -1,4 +1,4 @@
-package ag.sokolov.smsrelay.ui.setup.screen.bot
+package ag.sokolov.smsrelay.ui.setup
 
 import ag.sokolov.smsrelay.domain.model.DomainError
 import ag.sokolov.smsrelay.domain.model.Response
@@ -6,6 +6,7 @@ import ag.sokolov.smsrelay.domain.model.TelegramBot
 import ag.sokolov.smsrelay.domain.use_case.add_telegram_bot.AddTelegramBotUseCase
 import ag.sokolov.smsrelay.domain.use_case.delete_telegram_bot.DeleteTelegramBotUseCase
 import ag.sokolov.smsrelay.domain.use_case.get_telegram_bot_2.GetTelegramBot2UseCase
+import ag.sokolov.smsrelay.ui.setup.screen.bot.BotSetupState
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -23,7 +24,7 @@ import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
 @HiltViewModel
-class BotSetupViewModel @Inject constructor(
+class SetupViewModel @Inject constructor(
     getTelegramBotUseCase: GetTelegramBot2UseCase,
     private val addTelegramBotUseCase: AddTelegramBotUseCase,
     private val deleteTelegramBotUseCase: DeleteTelegramBotUseCase,

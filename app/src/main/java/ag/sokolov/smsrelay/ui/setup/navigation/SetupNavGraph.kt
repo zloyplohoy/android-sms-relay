@@ -61,11 +61,3 @@ fun NavController.navigateToPermissionsSetup() =
 
 fun NavController.navigateToSetupEnd() =
     navigate(route = SetupDestination.END)
-
-fun NavController.finishSetup() =
-    navigate(StatisticsScreen) {
-        popUpTo(graph.startDestinationId) {
-            inclusive = true
-        }
-        launchSingleTop = true
-    }
