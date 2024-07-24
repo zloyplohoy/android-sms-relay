@@ -3,7 +3,6 @@ package ag.sokolov.smsrelay.ui.setup
 import ag.sokolov.smsrelay.data.telegram_bot_api.TelegramBotApi
 import ag.sokolov.smsrelay.domain.repository.ConfigurationRepository
 import ag.sokolov.smsrelay.ui.setup.screen.recipient.AddRecipientWorker
-import android.app.Application
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -24,7 +23,7 @@ import javax.inject.Inject
 class SetupViewModel @Inject constructor(
     private val configurationRepository: ConfigurationRepository,
     private val telegramBotApi: TelegramBotApi,
-    private val application: Application
+    private val workManager: WorkManager
 ) : ViewModel() {
 
     var state by mutableStateOf(SetupState())
@@ -90,7 +89,7 @@ class SetupViewModel @Inject constructor(
             OneTimeWorkRequestBuilder<AddRecipientWorker>().setInputData(
                 workDataOf("PIN" to pin)
             ).setExpedited(OutOfQuotaPolicy.DROP_WORK_REQUEST).build()
-        val work = WorkManager.getInstance(application).enqueueUniqueWork(
+        val work = workManager.enqueueUniqueWork(
             "ADD_RECIPIENT",
             ExistingWorkPolicy.REPLACE,
             request
