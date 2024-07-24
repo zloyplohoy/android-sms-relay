@@ -15,7 +15,7 @@ import androidx.work.WorkerParameters
 import java.lang.Thread.sleep
 
 // TODO: This is garbage, needs to be rewritten properly
-class AddRecipientWorker(
+class RecipientVerificationWorker(
     appContext: Context,
     workerParams: WorkerParameters
 ) : Worker(appContext, workerParams) {
