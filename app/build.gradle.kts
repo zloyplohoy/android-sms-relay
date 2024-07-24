@@ -4,7 +4,7 @@ plugins {
     alias(libs.plugins.compose.compiler)
     // Dagger Hilt
     alias(libs.plugins.ksp)
-    alias(libs.plugins.hilt)
+    alias(libs.plugins.dagger.hilt)
     // Kotlin serialization
     alias(libs.plugins.kotlin.serialization)
 }
@@ -73,8 +73,9 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     // Dagger Hilt
-    ksp(libs.hilt.compiler)
-    implementation(libs.hilt)
+    ksp(libs.dagger.hilt.compiler)
+    implementation(libs.dagger.hilt)
+    // AndroidX Dagger Hilt extensions
     implementation(libs.hilt.navigation.compose)
     // DataStore
     implementation(libs.datastore.preferences)
