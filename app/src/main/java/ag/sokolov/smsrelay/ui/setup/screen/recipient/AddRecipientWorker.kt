@@ -13,10 +13,8 @@ import androidx.work.ForegroundInfo
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import java.lang.Thread.sleep
-import javax.inject.Singleton
 
 // TODO: This is garbage, needs to be rewritten properly
-@Singleton
 class AddRecipientWorker(
     appContext: Context,
     workerParams: WorkerParameters
