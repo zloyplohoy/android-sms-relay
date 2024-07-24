@@ -9,10 +9,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
-import androidx.work.WorkRequest
 import androidx.work.workDataOf
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -85,13 +86,14 @@ class SetupViewModel @Inject constructor(
 
     fun doWork() {
         val pin = (100000..999999).random().toString()
-        val request: WorkRequest =
-            OneTimeWorkRequestBuilder<AddRecipientWorker>()
-                .setInputData(workDataOf(
-                    "PIN" to pin
-                ))
-                .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
-                .build()
-        WorkManager.getInstance(application).enqueue(request)
+        val request: OneTimeWorkRequest =
+            OneTimeWorkRequestBuilder<AddRecipientWorker>().setInputData(
+                workDataOf("PIN" to pin)
+            ).setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST).build()
+        val work = WorkManager.getInstance(application).enqueueUniqueWork(
+            "ADD_RECIPIENT",
+            ExistingWorkPolicy.REPLACE,
+            request
+        )
     }
 }
