@@ -19,6 +19,10 @@ class RecipientVerificationWorker(
     override fun doWork(): Result {
         val pin = inputData.getString("PIN") ?: return Result.failure()
         repeat(5) {
+            if(isStopped) {
+                Log.d("TAG", "doWork: Stopped $pin")
+                return Result.failure()
+            }
             Log.d("TAG", "doWork: Doing work with $pin, no shit")
             sleep(5_000)
         }
