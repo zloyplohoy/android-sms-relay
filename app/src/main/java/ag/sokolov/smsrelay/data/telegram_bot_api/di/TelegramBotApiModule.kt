@@ -10,6 +10,7 @@ import dagger.hilt.components.SingletonComponent
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class TelegramBotApiModule {
+
     @Binds
     internal abstract fun bindTelegramBotApiRepository(impl: TelegramBotApiImpl): TelegramBotApi
 }

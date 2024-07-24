@@ -15,6 +15,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 internal object TelegramBotApiServiceModule {
+
     @Provides
     @Singleton
     fun provideTelegramBotApi(): TelegramBotApiService {
