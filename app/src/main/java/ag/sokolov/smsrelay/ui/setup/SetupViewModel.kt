@@ -2,7 +2,7 @@ package ag.sokolov.smsrelay.ui.setup
 
 import ag.sokolov.smsrelay.data.telegram_bot_api.TelegramBotApi
 import ag.sokolov.smsrelay.domain.repository.ConfigurationRepository
-import ag.sokolov.smsrelay.ui.setup.screen.recipient.RecipientVerificationWorker
+import ag.sokolov.smsrelay.work.RecipientVerificationWorker
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue

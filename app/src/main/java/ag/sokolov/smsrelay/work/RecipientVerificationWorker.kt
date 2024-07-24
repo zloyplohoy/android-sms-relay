@@ -1,4 +1,4 @@
-package ag.sokolov.smsrelay.ui.setup.screen.recipient
+package ag.sokolov.smsrelay.work
 
 import ag.sokolov.smsrelay.R
 import ag.sokolov.smsrelay.domain.model.Constants.RECIPIENT_VERIFICATION_NOTIFICATION_CHANNEL_ID
