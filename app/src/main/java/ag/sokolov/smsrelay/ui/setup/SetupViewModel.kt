@@ -89,7 +89,7 @@ class SetupViewModel @Inject constructor(
         val request: OneTimeWorkRequest =
             OneTimeWorkRequestBuilder<AddRecipientWorker>().setInputData(
                 workDataOf("PIN" to pin)
-            ).setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST).build()
+            ).setExpedited(OutOfQuotaPolicy.DROP_WORK_REQUEST).build()
         val work = WorkManager.getInstance(application).enqueueUniqueWork(
             "ADD_RECIPIENT",
             ExistingWorkPolicy.REPLACE,
