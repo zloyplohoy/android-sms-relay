@@ -1,7 +1,7 @@
 package ag.sokolov.smsrelay.work
 
 import ag.sokolov.smsrelay.R
-import ag.sokolov.smsrelay.domain.model.Constants.RECIPIENT_VERIFICATION_NOTIFICATION_CHANNEL_ID
+import ag.sokolov.smsrelay.constants.Constants.RECIPIENT_VERIFICATION_NOTIFICATION_CHANNEL_ID
 import ag.sokolov.smsrelay.domain.repository.ConfigurationRepository
 import android.app.Notification
 import android.content.Context
