@@ -7,10 +7,14 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.S_V2
+import androidx.hilt.work.HiltWorkerFactory
+import androidx.work.Configuration
 import dagger.hilt.android.HiltAndroidApp
+import javax.inject.Inject
 
+// TODO: Reformat and rearrange
 @HiltAndroidApp
-class MainApplication : Application() {
+class MainApplication : Application(), Configuration.Provider {
 
     override fun onCreate() {
         super.onCreate()
@@ -34,4 +38,12 @@ class MainApplication : Application() {
         val notificationManager = getSystemService(NotificationManager::class.java)
         notificationManager.createNotificationChannel(RECIPIENT_VERIFICATION_NOTIFICATION_CHANNEL)
     }
+
+    @Inject
+    lateinit var workerFactory: HiltWorkerFactory
+
+    override val workManagerConfiguration: Configuration
+        get() = Configuration.Builder()
+            .setWorkerFactory(workerFactory)
+            .build()
 }
