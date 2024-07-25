@@ -40,6 +40,7 @@ class RecipientRegistrationWorker @AssistedInject constructor(
         withTimeoutOrNull(RECIPIENT_VERIFICATION_TIMEOUT) {
             while (!isStopped) {
                 findVerificationMessage(telegramBotApiToken)?.let {
+                    configurationRepository.setTelegramRecipientId(it.from.id)
                     return@withTimeoutOrNull Result.success()
                 }
             }
