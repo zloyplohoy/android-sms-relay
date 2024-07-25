@@ -22,7 +22,7 @@ interface TelegramBotApi {
     suspend fun getMessages(
         botApiToken: String,
         longPollingTimeout: Duration
-    ): Result<List<TelegramPrivateChatMessage>>
+    ): Response<List<TelegramPrivateChatMessage>, DomainError>
 
     suspend fun sendMessage(
         botApiToken: String,

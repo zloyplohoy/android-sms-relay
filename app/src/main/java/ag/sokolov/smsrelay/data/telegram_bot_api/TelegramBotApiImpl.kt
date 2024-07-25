@@ -55,13 +55,30 @@ internal class TelegramBotApiImpl
             )
         }
 
-    // TODO: Rewrite with handler
     override suspend fun getMessages(
         botApiToken: String,
         longPollingTimeout: Duration
-    ): Result<List<TelegramPrivateChatMessage>> {
-        TODO()
-    }
+    ): Response<List<TelegramPrivateChatMessage>, DomainError> =
+        try {
+            Response.Success(
+                telegramBotApiService.getUpdates(
+                    botApiToken,
+                    longPollingTimeout.inWholeSeconds,
+                    allowedUpdates = listOf("message")
+                ).result.mapNotNull { it.message?.toTelegramMessage() }
+            )
+        } catch (e: IOException) {
+            Response.Failure(DomainError.NetworkError)
+        } catch (e: HttpException) {
+            Response.Failure(
+                when (e.code()) {
+                    // TODO: Validate token on input instead of handling 404
+                    // When token is too short, 404 is returned instead of 401
+                    401, 404 -> DomainError.BotApiTokenInvalid
+                    else -> DomainError.UnhandledError
+                }
+            )
+        }
 
     // TODO: Rewrite with handler
     override suspend fun sendMessage(
