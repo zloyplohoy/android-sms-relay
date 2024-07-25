@@ -60,9 +60,11 @@ class SetupViewModel @Inject constructor(
 
     private suspend fun initializeRecipientState() {
         val token = config.getTelegramBotApiToken()
-        val recipientId = config.getTelegramRecipientId().first()
+        val recipientId = config.getTelegramRecipientId()
         if (token != null && recipientId != null) {
             setRecipientState(botApi.getTelegramRecipient(token, recipientId).toRecipientState())
+        } else {
+            setBotState(BotState.NotConfigured)
         }
     }
 
