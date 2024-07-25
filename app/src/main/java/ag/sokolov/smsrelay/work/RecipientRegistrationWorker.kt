@@ -23,7 +23,7 @@ import kotlinx.coroutines.withTimeoutOrNull
 
 // TODO: This is garbage, needs to be rewritten properly
 @HiltWorker
-class RecipientVerificationWorker @AssistedInject constructor(
+class RecipientRegistrationWorker @AssistedInject constructor(
     @Assisted appContext: Context,
     @Assisted workerParams: WorkerParameters,
     private val configurationRepository: ConfigurationRepository,

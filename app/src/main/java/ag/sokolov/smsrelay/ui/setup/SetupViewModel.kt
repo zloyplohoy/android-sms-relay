@@ -2,7 +2,7 @@ package ag.sokolov.smsrelay.ui.setup
 
 import ag.sokolov.smsrelay.data.telegram_bot_api.TelegramBotApi
 import ag.sokolov.smsrelay.domain.repository.ConfigurationRepository
-import ag.sokolov.smsrelay.work.RecipientVerificationWorker
+import ag.sokolov.smsrelay.work.RecipientRegistrationWorker
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -86,7 +86,7 @@ class SetupViewModel @Inject constructor(
     fun doWork() {
         val verificationCode = (100000..999999).random().toString()
         val request: OneTimeWorkRequest =
-            OneTimeWorkRequestBuilder<RecipientVerificationWorker>()
+            OneTimeWorkRequestBuilder<RecipientRegistrationWorker>()
                 .setInputData(workDataOf("VERIFICATION_CODE" to verificationCode))
                 .setExpedited(OutOfQuotaPolicy.DROP_WORK_REQUEST).build()
         val work = workManager.enqueueUniqueWork(
