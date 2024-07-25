@@ -19,6 +19,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.random.Random
 
 @HiltViewModel
 class SetupViewModel @Inject constructor(
@@ -107,7 +108,7 @@ class SetupViewModel @Inject constructor(
 
     fun doWork() {
         // TODO: Add recipient state update logic based on worker response
-        val verificationCode = (100000..999999).random().toString()
+        val verificationCode = generateVerificationCode()
         val request: OneTimeWorkRequest =
             OneTimeWorkRequestBuilder<RecipientRegistrationWorker>()
                 .setInputData(workDataOf("VERIFICATION_CODE" to verificationCode))
@@ -118,4 +119,7 @@ class SetupViewModel @Inject constructor(
             request
         )
     }
+
+    private fun generateVerificationCode(): String =
+        "%05d".format(Random.nextInt(0, 100_000))
 }
