@@ -84,10 +84,10 @@ class SetupViewModel @Inject constructor(
     }
 
     fun doWork() {
-        val pin = (100000..999999).random().toString()
+        val verificationCode = (100000..999999).random().toString()
         val request: OneTimeWorkRequest =
             OneTimeWorkRequestBuilder<RecipientVerificationWorker>()
-                .setInputData(workDataOf("PIN" to pin))
+                .setInputData(workDataOf("VERIFICATION_CODE" to verificationCode))
                 .setExpedited(OutOfQuotaPolicy.DROP_WORK_REQUEST).build()
         val work = workManager.enqueueUniqueWork(
             "ADD_RECIPIENT",

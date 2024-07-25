@@ -1,5 +1,6 @@
 package ag.sokolov.smsrelay.data.telegram_bot_api
 
+import ag.sokolov.smsrelay.constants.Constants.TELEGRAM_BOT_API_LONG_POLLING_TIMEOUT
 import ag.sokolov.smsrelay.data.telegram_bot_api.remote.TelegramBotApiService
 import ag.sokolov.smsrelay.data.telegram_bot_api.remote.dto.TelegramMessageDto
 import ag.sokolov.smsrelay.data.telegram_bot_api.remote.dto.TelegramUserDto
@@ -11,7 +12,6 @@ import ag.sokolov.smsrelay.domain.model.TelegramUser
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
-import kotlin.time.Duration
 
 internal class TelegramBotApiImpl
 @Inject constructor(
@@ -56,14 +56,13 @@ internal class TelegramBotApiImpl
         }
 
     override suspend fun getMessages(
-        botApiToken: String,
-        longPollingTimeout: Duration
+        botApiToken: String
     ): Response<List<TelegramPrivateChatMessage>, DomainError> =
         try {
             Response.Success(
                 telegramBotApiService.getUpdates(
                     botApiToken,
-                    longPollingTimeout.inWholeSeconds,
+                    TELEGRAM_BOT_API_LONG_POLLING_TIMEOUT.inWholeSeconds,
                     allowedUpdates = listOf("message")
                 ).result.mapNotNull { it.message?.toTelegramMessage() }
             )

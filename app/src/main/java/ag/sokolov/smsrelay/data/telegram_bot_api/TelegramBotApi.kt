@@ -18,10 +18,8 @@ interface TelegramBotApi {
         recipientId: Long
     ): Response<TelegramUser, DomainError>
 
-    // TODO: Refactor for new approach
     suspend fun getMessages(
-        botApiToken: String,
-        longPollingTimeout: Duration
+        botApiToken: String
     ): Response<List<TelegramPrivateChatMessage>, DomainError>
 
     suspend fun sendMessage(

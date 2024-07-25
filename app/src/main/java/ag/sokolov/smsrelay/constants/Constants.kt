@@ -8,4 +8,5 @@ data object Constants {
     val RECIPIENT_VERIFICATION_TIMEOUT: Duration = 10.seconds
     const val RECIPIENT_VERIFICATION_NOTIFICATION_CHANNEL_ID: String = "RECIPIENT_VERIFICATION"
     const val RECIPIENT_VERIFICATION_NOTIFICATION_CHANNEL_NAME: String = "Recipient verification"
+    const val RECIPIENT_VERIFICATION_NOTIFICATION_TITLE: String = "Recipient verification running"
 }
