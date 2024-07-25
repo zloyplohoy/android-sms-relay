@@ -3,6 +3,7 @@ package ag.sokolov.smsrelay.ui.setup
 import ag.sokolov.smsrelay.domain.model.DomainError
 import ag.sokolov.smsrelay.domain.model.Response
 import ag.sokolov.smsrelay.domain.model.TelegramBot
+import ag.sokolov.smsrelay.domain.model.TelegramUser
 
 data class SetupState(
     val isLoading: Boolean = false,
@@ -57,3 +58,25 @@ sealed class RecipientState {
     data object NotConfigured : RecipientState()
     data object Loading : RecipientState()
 }
+
+fun Response<TelegramUser, DomainError>.toRecipientState() =
+    when (this) {
+        is Response.Success -> {
+            RecipientState.Configured(
+                name = this.data.lastName?.let { "${this.data.firstName} $it" }
+                    ?: this.data.firstName
+
+            )
+        }
+        is Response.Failure -> {
+            RecipientState.Error(
+                message = when (this.error) {
+                    is DomainError.NetworkUnavailable -> "Device is offline"
+                    is DomainError.NetworkError -> "Network error"
+                    is DomainError.BotApiTokenInvalid -> "Bot API token invalid"
+                    is DomainError.RecipientInvalid -> "Bot blocked by recipient"
+                    else -> "Unhandled error"
+                }
+            )
+        }
+    }
