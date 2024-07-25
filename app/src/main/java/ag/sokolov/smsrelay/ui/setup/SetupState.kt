@@ -64,8 +64,8 @@ fun Response<TelegramUser, DomainError>.toRecipientState() =
         is Response.Success -> {
             RecipientState.Configured(
                 name = this.data.lastName?.let { "${this.data.firstName} $it" }
-                    ?: this.data.firstName
-
+                    ?: this.data.firstName,
+                username = this.data.username
             )
         }
         is Response.Failure -> {
