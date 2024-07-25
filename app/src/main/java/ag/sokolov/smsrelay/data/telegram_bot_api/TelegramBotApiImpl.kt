@@ -104,6 +104,7 @@ private fun TelegramUserDto.toBotInfo(): TelegramBot =
 
 private fun TelegramUserDto.toTelegramUser(): TelegramUser =
     TelegramUser(
+        id = this.id,
         firstName = this.firstName,
         lastName = this.lastName,
         username = this.username
