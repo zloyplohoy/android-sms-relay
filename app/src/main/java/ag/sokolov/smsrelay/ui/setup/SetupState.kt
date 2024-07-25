@@ -26,7 +26,6 @@ sealed class BotState {
 
 fun Response<TelegramBot, DomainError>.toBotState() =
     when (this) {
-        is Response.Loading -> BotState.Loading
         is Response.Success -> {
             BotState.Configured(
                 name = this.data.name,
