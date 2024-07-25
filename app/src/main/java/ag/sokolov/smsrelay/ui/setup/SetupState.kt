@@ -48,7 +48,7 @@ fun Response<TelegramBot, DomainError>.toBotState() =
 sealed class RecipientState {
     data class Configured(
         val name: String,
-        val username: String?
+        val username: String? = null
     ) : RecipientState()
 
     data class Error(
