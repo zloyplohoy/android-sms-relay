@@ -34,12 +34,15 @@ fun RecipientSetupScreen(
 ) {
     val state = viewModel.state
     Column {
-        Text(text = "recipientState = ${state.recipientState.javaClass.canonicalName}")
+        Text(text = "recipientState = ${state.recipientState}")
         Button(onClick = { viewModel.doWork() }) {
             Text(text = "Start work")
         }
         Button(onClick = { /*TODO*/ }) {
             Text(text = "Start telegram")
+        }
+        Button(onClick = { viewModel.onRecipientReset() }) {
+            Text(text = "Delete recipient")
         }
         Button(onClick = onContinue) {
             Text(text = "To permissions")
