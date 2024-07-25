@@ -23,6 +23,7 @@ interface TelegramBotApiServiceImpl : TelegramBotApiService {
     override suspend fun getUpdates(
         @Path("token") token: String,
         @Query("timeout") timeout: Long?,
+        @Query("offset") offset: Long?,
         @Query("allowed_updates") allowedUpdates: List<String>?
     ): TelegramBotApiResponseDto<List<TelegramBotApiUpdateDto>>
 

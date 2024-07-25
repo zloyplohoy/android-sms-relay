@@ -18,6 +18,7 @@ interface TelegramBotApiService {
     suspend fun getUpdates(
         token: String,
         timeout: Long? = null,
+        offset: Long? = null,
         allowedUpdates: List<String>? = null
     ): TelegramBotApiResponseDto<List<TelegramBotApiUpdateDto>>
 

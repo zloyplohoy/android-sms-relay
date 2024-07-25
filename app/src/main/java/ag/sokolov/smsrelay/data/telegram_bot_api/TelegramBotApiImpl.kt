@@ -17,6 +17,9 @@ internal class TelegramBotApiImpl
 @Inject constructor(
     private val telegramBotApiService: TelegramBotApiService,
 ) : TelegramBotApi {
+    // TODO: This implementation assumes that there is only one update consumer
+    private var offset: Long? = null
+
     override suspend fun getTelegramBot(botApiToken: String): Response<TelegramBot, DomainError> =
         try {
             Response.Success(telegramBotApiService.getMe(botApiToken).result.toBotInfo())
@@ -64,7 +67,10 @@ internal class TelegramBotApiImpl
                     botApiToken,
                     TELEGRAM_BOT_API_LONG_POLLING_TIMEOUT.inWholeSeconds,
                     allowedUpdates = listOf("message")
-                ).result.mapNotNull { it.message?.toTelegramMessage() }
+                ).result.mapNotNull {
+                    offset = it.updateId + 1
+                    it.message?.toTelegramMessage()
+                }
             )
         } catch (e: IOException) {
             Response.Failure(DomainError.NetworkError)
