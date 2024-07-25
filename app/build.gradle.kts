@@ -76,7 +76,9 @@ dependencies {
     ksp(libs.dagger.hilt.compiler)
     implementation(libs.dagger.hilt)
     // AndroidX Dagger Hilt extensions
+    ksp(libs.androidx.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
+    implementation(libs.hilt.work)
     // DataStore
     implementation(libs.datastore.preferences)
     // Kotlin serialization
