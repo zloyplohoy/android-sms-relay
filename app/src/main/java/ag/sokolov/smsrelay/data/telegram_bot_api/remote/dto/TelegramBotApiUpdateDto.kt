@@ -8,5 +8,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class TelegramBotApiUpdateDto(
     @SerialName("update_id") val updateId: Long,
-    val message: TelegramMessageDto?
+    val message: TelegramMessageDto? = null
 )
