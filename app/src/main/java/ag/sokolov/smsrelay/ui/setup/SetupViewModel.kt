@@ -64,7 +64,7 @@ class SetupViewModel @Inject constructor(
         if (token != null && recipientId != null) {
             setRecipientState(botApi.getTelegramRecipient(token, recipientId).toRecipientState())
         } else {
-            setBotState(BotState.NotConfigured)
+            setRecipientState(RecipientState.NotConfigured)
         }
     }
 
