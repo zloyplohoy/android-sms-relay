@@ -97,7 +97,7 @@ class SetupViewModel @Inject constructor(
         setBotState(botState)
     }
 
-    fun deleteTelegramRecipient() {
+    fun onRecipientReset() =
         viewModelScope.launch {
             config.deleteTelegramRecipientId()
             setRecipientState(RecipientState.NotConfigured)
