@@ -66,6 +66,7 @@ internal class TelegramBotApiImpl
                 telegramBotApiService.getUpdates(
                     botApiToken,
                     TELEGRAM_BOT_API_LONG_POLLING_TIMEOUT.inWholeSeconds,
+                    offset = offset,
                     allowedUpdates = listOf("message")
                 ).result.mapNotNull {
                     offset = it.updateId + 1
