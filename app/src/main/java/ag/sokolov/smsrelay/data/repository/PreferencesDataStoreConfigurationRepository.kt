@@ -31,16 +31,14 @@ class PreferencesDataStoreConfigurationRepository
         dataStore.edit { it.remove(TELEGRAM_BOT_API_TOKEN) }
     }
 
-    override fun getTelegramRecipientId(): Flow<Long?> =
-        dataStore.data.map { it[TELEGRAM_RECIPIENT_ID] }.distinctUntilChanged()
+    override suspend fun getTelegramRecipientId(): Long? =
+        dataStore.data.first()[TELEGRAM_RECIPIENT_ID]
 
-    override suspend fun setTelegramRecipientId(recipientId: Long): Result<Unit> =
-        runCatching {
-            dataStore.edit { it[TELEGRAM_RECIPIENT_ID] = recipientId }
-        }
+    override suspend fun setTelegramRecipientId(recipientId: Long) {
+        dataStore.edit { it[TELEGRAM_RECIPIENT_ID] = recipientId }
+    }
 
-    override suspend fun deleteTelegramRecipientId(): Result<Unit> =
-        runCatching {
-            dataStore.edit { it.remove(TELEGRAM_RECIPIENT_ID) }
-        }
+    override suspend fun deleteTelegramRecipientId() {
+        dataStore.edit { it.remove(TELEGRAM_RECIPIENT_ID) }
+    }
 }

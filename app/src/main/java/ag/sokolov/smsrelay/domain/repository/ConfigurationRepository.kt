@@ -9,9 +9,7 @@ interface ConfigurationRepository {
     suspend fun deleteTelegramApiToken()
 
     // Telegram recipient ID
-    fun getTelegramRecipientId(): Flow<Long?>
-
-    suspend fun setTelegramRecipientId(recipientId: Long): Result<Unit>
-
-    suspend fun deleteTelegramRecipientId(): Result<Unit>
+    suspend fun getTelegramRecipientId(): Long?
+    suspend fun setTelegramRecipientId(recipientId: Long)
+    suspend fun deleteTelegramRecipientId()
 }
