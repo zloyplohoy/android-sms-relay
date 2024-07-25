@@ -10,7 +10,6 @@ import ag.sokolov.smsrelay.domain.model.TelegramPrivateChatMessage
 import ag.sokolov.smsrelay.domain.repository.ConfigurationRepository
 import android.app.Notification
 import android.content.Context
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
@@ -18,10 +17,8 @@ import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withTimeoutOrNull
 
-// TODO: This is garbage, needs to be rewritten properly
 @HiltWorker
 class RecipientRegistrationWorker @AssistedInject constructor(
     @Assisted appContext: Context,
@@ -30,34 +27,28 @@ class RecipientRegistrationWorker @AssistedInject constructor(
     private val telegramBotApi: TelegramBotApi
 ) : CoroutineWorker(appContext, workerParams) {
 
-    private val verificationCode = inputData.getString("VERIFICATION_CODE")
+    private val verificationCode: String? = inputData.getString("VERIFICATION_CODE")
 
     override suspend fun doWork(): Result {
-
-        // TODO: Remove
-        Log.d("TAG", "doWork: code is $verificationCode")
-        delay(10_000)
-
         verificationCode ?: return Result.failure()
         val telegramBotApiToken =
             configurationRepository.getTelegramBotApiToken() ?: return Result.failure()
+        return registerRecipient(telegramBotApiToken)
+    }
 
-        return withTimeoutOrNull(RECIPIENT_VERIFICATION_TIMEOUT) {
+    private suspend fun registerRecipient(telegramBotApiToken: String): Result =
+        withTimeoutOrNull(RECIPIENT_VERIFICATION_TIMEOUT) {
             while (!isStopped) {
-                getRecipientVerificationResult(telegramBotApiToken)?.let { return@withTimeoutOrNull it }
+                findVerificationMessage(telegramBotApiToken)?.let {
+                    return@withTimeoutOrNull Result.success()
+                }
             }
             Result.failure()
         } ?: Result.failure()
-    }
 
-    private suspend fun getRecipientVerificationResult(telegramBotApiToken: String): Result? {
-        return when (val apiResponse = telegramBotApi.getMessages(telegramBotApiToken)) {
-            is Response.Success -> {
-                apiResponse.data.find { isValidVerificationMessage(it) }?.let { Result.success() }
-            }
-            else -> {
-                Result.failure()
-            }
+    private suspend fun findVerificationMessage(telegramBotApiToken: String): TelegramPrivateChatMessage? {
+        return (telegramBotApi.getMessages(telegramBotApiToken) as? Response.Success)?.data?.find {
+            isValidVerificationMessage(it)
         }
     }
 
