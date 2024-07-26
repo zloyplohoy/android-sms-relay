@@ -10,6 +10,7 @@ import ag.sokolov.smsrelay.domain.model.TelegramBot
 import ag.sokolov.smsrelay.domain.model.TelegramPrivateChatMessage
 import ag.sokolov.smsrelay.domain.model.TelegramUser
 import kotlinx.serialization.json.Json
+import okhttp3.Call
 import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.HttpException
 import retrofit2.Retrofit
@@ -17,7 +18,9 @@ import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import java.io.IOException
 import javax.inject.Inject
 
-internal class TelegramBotApiImpl @Inject constructor() : TelegramBotApi {
+internal class TelegramBotApiImpl @Inject constructor(
+    okHttpCallFactory: dagger.Lazy<Call.Factory>
+) : TelegramBotApi {
 
     val json = Json { ignoreUnknownKeys = true }
     val jsonMediaType = "application/json".toMediaType()
@@ -25,6 +28,7 @@ internal class TelegramBotApiImpl @Inject constructor() : TelegramBotApi {
     val telegramBotApiService =
         Retrofit.Builder()
             .baseUrl("https://api.telegram.org/")
+            .callFactory { okHttpCallFactory.get().newCall(it) }
             .addConverterFactory(json.asConverterFactory(jsonMediaType))
             .build()
             .create(RetrofitTelegramBotApi::class.java)

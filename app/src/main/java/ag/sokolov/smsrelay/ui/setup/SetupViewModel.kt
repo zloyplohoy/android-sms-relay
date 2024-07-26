@@ -15,6 +15,7 @@ import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
 import androidx.work.workDataOf
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -31,7 +32,7 @@ class SetupViewModel @Inject constructor(
         private set
 
     init {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             initializeBotState()
             initializeRecipientState()
         }
