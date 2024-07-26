@@ -68,10 +68,10 @@ internal class TelegramBotApiImpl
                     TELEGRAM_BOT_API_LONG_POLLING_TIMEOUT.inWholeSeconds,
                     offset = offset,
                     allowedUpdates = listOf("message")
-                ).result.mapNotNull {
-                    offset = it.updateId + 1
-                    it.message?.toTelegramMessage()
-                }
+                ).result
+                    .onEach { offset = it.updateId + 1 }
+                    .mapNotNull { it.message }
+                    .map { it.toTelegramMessage() }
             )
         } catch (e: IOException) {
             Response.Failure(DomainError.NetworkError)
