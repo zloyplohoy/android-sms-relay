@@ -1,9 +1,9 @@
 package ag.sokolov.smsrelay.data.telegram_bot_api
 
 import ag.sokolov.smsrelay.data.constants.Constants.TELEGRAM_BOT_API_LONG_POLLING_TIMEOUT
-import ag.sokolov.smsrelay.data.telegram_bot_api.remote.TelegramBotApiService
-import ag.sokolov.smsrelay.data.telegram_bot_api.remote.dto.MessageDto
-import ag.sokolov.smsrelay.data.telegram_bot_api.remote.dto.UserDto
+import ag.sokolov.smsrelay.data.telegram_bot_api.retrofit.RetrofitTelegramBotApi
+import ag.sokolov.smsrelay.data.telegram_bot_api.retrofit.dto.MessageDto
+import ag.sokolov.smsrelay.data.telegram_bot_api.retrofit.dto.UserDto
 import ag.sokolov.smsrelay.domain.model.DomainError
 import ag.sokolov.smsrelay.domain.model.Response
 import ag.sokolov.smsrelay.domain.model.TelegramBot
@@ -27,7 +27,7 @@ internal class TelegramBotApiImpl @Inject constructor() : TelegramBotApi {
             .baseUrl("https://api.telegram.org/")
             .addConverterFactory(json.asConverterFactory(jsonMediaType))
             .build()
-            .create(TelegramBotApiService::class.java)
+            .create(RetrofitTelegramBotApi::class.java)
 
     // TODO: This implementation assumes that there is only one update consumer
     private var offset: Long? = null

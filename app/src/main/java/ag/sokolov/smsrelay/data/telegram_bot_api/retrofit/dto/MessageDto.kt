@@ -1,4 +1,4 @@
-package ag.sokolov.smsrelay.data.telegram_bot_api.remote.dto
+package ag.sokolov.smsrelay.data.telegram_bot_api.retrofit.dto
 
 import kotlinx.serialization.Serializable
 
