@@ -2,8 +2,8 @@ package ag.sokolov.smsrelay.data.telegram_bot_api
 
 import ag.sokolov.smsrelay.constants.Constants.TELEGRAM_BOT_API_LONG_POLLING_TIMEOUT
 import ag.sokolov.smsrelay.data.telegram_bot_api.remote.TelegramBotApiService
-import ag.sokolov.smsrelay.data.telegram_bot_api.remote.dto.TelegramMessageDto
-import ag.sokolov.smsrelay.data.telegram_bot_api.remote.dto.TelegramUserDto
+import ag.sokolov.smsrelay.data.telegram_bot_api.remote.dto.MessageDto
+import ag.sokolov.smsrelay.data.telegram_bot_api.remote.dto.UserDto
 import ag.sokolov.smsrelay.domain.model.DomainError
 import ag.sokolov.smsrelay.domain.model.Response
 import ag.sokolov.smsrelay.domain.model.TelegramBot
@@ -97,13 +97,13 @@ internal class TelegramBotApiImpl
 }
 
 // TODO: Get rid of assertive reference
-private fun TelegramUserDto.toBotInfo(): TelegramBot =
+private fun UserDto.toBotInfo(): TelegramBot =
     TelegramBot(
         name = this.firstName,
         username = this.username!!
     )
 
-private fun TelegramUserDto.toTelegramUser(): TelegramUser =
+private fun UserDto.toTelegramUser(): TelegramUser =
     TelegramUser(
         id = this.id,
         firstName = this.firstName,
@@ -112,7 +112,7 @@ private fun TelegramUserDto.toTelegramUser(): TelegramUser =
     )
 
 // TODO: Get rid of assertive reference
-private fun TelegramMessageDto.toTelegramMessage(): TelegramPrivateChatMessage =
+private fun MessageDto.toTelegramMessage(): TelegramPrivateChatMessage =
     TelegramPrivateChatMessage(
         from = this.from!!.toTelegramUser(),
         text = this.text

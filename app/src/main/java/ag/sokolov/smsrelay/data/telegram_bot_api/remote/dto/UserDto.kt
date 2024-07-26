@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 // https://core.telegram.org/bots/api#user
 
 @Serializable
-data class TelegramUserDto(
+data class UserDto(
     val id: Long,
     @SerialName("first_name") val firstName: String,
     @SerialName("last_name") val lastName: String? = null,

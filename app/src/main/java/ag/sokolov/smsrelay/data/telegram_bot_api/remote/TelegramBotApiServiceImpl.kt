@@ -1,9 +1,9 @@
 package ag.sokolov.smsrelay.data.telegram_bot_api.remote
 
-import ag.sokolov.smsrelay.data.telegram_bot_api.remote.dto.TelegramBotApiResponseDto
-import ag.sokolov.smsrelay.data.telegram_bot_api.remote.dto.TelegramBotApiUpdateDto
-import ag.sokolov.smsrelay.data.telegram_bot_api.remote.dto.TelegramMessageDto
-import ag.sokolov.smsrelay.data.telegram_bot_api.remote.dto.TelegramUserDto
+import ag.sokolov.smsrelay.data.telegram_bot_api.remote.dto.ResponseDto
+import ag.sokolov.smsrelay.data.telegram_bot_api.remote.dto.UpdateDto
+import ag.sokolov.smsrelay.data.telegram_bot_api.remote.dto.MessageDto
+import ag.sokolov.smsrelay.data.telegram_bot_api.remote.dto.UserDto
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
@@ -16,7 +16,7 @@ interface TelegramBotApiServiceImpl : TelegramBotApiService {
     @GET("/bot{token}/getMe")
     override suspend fun getMe(
         @Path("token") token: String
-    ): TelegramBotApiResponseDto<TelegramUserDto>
+    ): ResponseDto<UserDto>
 
     // https://core.telegram.org/bots/api#getupdates
     @GET("/bot{token}/getUpdates")
@@ -25,7 +25,7 @@ interface TelegramBotApiServiceImpl : TelegramBotApiService {
         @Query("timeout") timeout: Long?,
         @Query("offset") offset: Long?,
         @Query("allowed_updates") allowedUpdates: List<String>?
-    ): TelegramBotApiResponseDto<List<TelegramBotApiUpdateDto>>
+    ): ResponseDto<List<UpdateDto>>
 
     // https://core.telegram.org/bots/api#sendmessage
     @FormUrlEncoded
@@ -34,12 +34,12 @@ interface TelegramBotApiServiceImpl : TelegramBotApiService {
         @Path("token") token: String,
         @Field("chat_id") chatId: Long,
         @Field("text") text: String
-    ): TelegramBotApiResponseDto<TelegramMessageDto>
+    ): ResponseDto<MessageDto>
 
     // https://core.telegram.org/bots/api#getchat
     @GET("/bot{token}/getChat")
     override suspend fun getChat(
         @Path("token") token: String,
         @Query("chat_id") chatId: Long
-    ): TelegramBotApiResponseDto<TelegramUserDto>
+    ): ResponseDto<UserDto>
 }
