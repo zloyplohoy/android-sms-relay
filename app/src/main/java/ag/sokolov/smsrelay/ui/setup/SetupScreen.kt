@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -39,6 +40,9 @@ object SetupScreen
 
 fun NavGraphBuilder.setupScreen(onFinished: () -> Unit) =
     composable<SetupScreen> { SetupScreen(onFinished) }
+
+fun NavController.navigateToSetup() =
+    navigate(SetupScreen)
 
 @Composable
 fun SetupScreen(
