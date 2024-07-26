@@ -1,4 +1,4 @@
-package ag.sokolov.smsrelay.di
+package ag.sokolov.smsrelay.work.di
 
 import android.content.Context
 import androidx.work.WorkManager
