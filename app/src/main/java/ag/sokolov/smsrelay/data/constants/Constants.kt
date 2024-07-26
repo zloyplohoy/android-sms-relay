@@ -1,4 +1,4 @@
-package ag.sokolov.smsrelay.constants
+package ag.sokolov.smsrelay.data.constants
 
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds

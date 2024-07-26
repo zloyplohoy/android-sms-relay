@@ -1,6 +1,6 @@
 package ag.sokolov.smsrelay.data.telegram_bot_api
 
-import ag.sokolov.smsrelay.constants.Constants.TELEGRAM_BOT_API_LONG_POLLING_TIMEOUT
+import ag.sokolov.smsrelay.data.constants.Constants.TELEGRAM_BOT_API_LONG_POLLING_TIMEOUT
 import ag.sokolov.smsrelay.data.telegram_bot_api.remote.TelegramBotApiService
 import ag.sokolov.smsrelay.data.telegram_bot_api.remote.dto.MessageDto
 import ag.sokolov.smsrelay.data.telegram_bot_api.remote.dto.UserDto
