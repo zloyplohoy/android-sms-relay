@@ -5,9 +5,9 @@ import ag.sokolov.smsrelay.constants.Constants.RECIPIENT_VERIFICATION_NOTIFICATI
 import ag.sokolov.smsrelay.constants.Constants.RECIPIENT_VERIFICATION_NOTIFICATION_TITLE
 import ag.sokolov.smsrelay.constants.Constants.RECIPIENT_VERIFICATION_TIMEOUT
 import ag.sokolov.smsrelay.data.telegram_bot_api.TelegramBotApi
+import ag.sokolov.smsrelay.data.telegram_config.TelegramConfig
 import ag.sokolov.smsrelay.domain.model.Response
 import ag.sokolov.smsrelay.domain.model.TelegramPrivateChatMessage
-import ag.sokolov.smsrelay.domain.repository.ConfigurationRepository
 import android.app.Notification
 import android.content.Context
 import androidx.core.app.NotificationCompat
@@ -23,7 +23,7 @@ import kotlinx.coroutines.withTimeoutOrNull
 class RecipientRegistrationWorker @AssistedInject constructor(
     @Assisted appContext: Context,
     @Assisted workerParams: WorkerParameters,
-    private val configurationRepository: ConfigurationRepository,
+    private val telegramConfig: TelegramConfig,
     private val telegramBotApi: TelegramBotApi
 ) : CoroutineWorker(appContext, workerParams) {
 
@@ -32,7 +32,7 @@ class RecipientRegistrationWorker @AssistedInject constructor(
     override suspend fun doWork(): Result {
         verificationCode ?: return Result.failure()
         val telegramBotApiToken =
-            configurationRepository.getTelegramBotApiToken() ?: return Result.failure()
+            telegramConfig.getToken() ?: return Result.failure()
         return registerRecipient(telegramBotApiToken)
     }
 
@@ -40,7 +40,7 @@ class RecipientRegistrationWorker @AssistedInject constructor(
         withTimeoutOrNull(RECIPIENT_VERIFICATION_TIMEOUT) {
             while (!isStopped) {
                 findVerificationMessage(telegramBotApiToken)?.let {
-                    configurationRepository.setTelegramRecipientId(it.from.id)
+                    telegramConfig.setRecipientId(it.from.id)
                     return@withTimeoutOrNull Result.success()
                 }
             }

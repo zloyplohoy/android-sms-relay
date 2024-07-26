@@ -1,7 +1,7 @@
 package ag.sokolov.smsrelay.ui.setup
 
 import ag.sokolov.smsrelay.data.telegram_bot_api.TelegramBotApi
-import ag.sokolov.smsrelay.domain.repository.ConfigurationRepository
+import ag.sokolov.smsrelay.data.telegram_config.TelegramConfig
 import ag.sokolov.smsrelay.work.RecipientRegistrationWorker
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -16,14 +16,13 @@ import androidx.work.WorkManager
 import androidx.work.workDataOf
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.random.Random
 
 @HiltViewModel
 class SetupViewModel @Inject constructor(
-    private val config: ConfigurationRepository,
+    private val telegramConfig: TelegramConfig,
     private val botApi: TelegramBotApi,
     private val workManager: WorkManager
 ) : ViewModel() {
@@ -51,7 +50,7 @@ class SetupViewModel @Inject constructor(
     }
 
     private suspend fun initializeBotState() {
-        val token = config.getTelegramBotApiToken()
+        val token = telegramConfig.getToken()
         if (token != null) {
             setBotState(botApi.getTelegramBot(token).toBotState())
         } else {
@@ -60,8 +59,8 @@ class SetupViewModel @Inject constructor(
     }
 
     private suspend fun initializeRecipientState() {
-        val token = config.getTelegramBotApiToken()
-        val recipientId = config.getTelegramRecipientId()
+        val token = telegramConfig.getToken()
+        val recipientId = telegramConfig.getRecipientId()
         if (token != null && recipientId != null) {
             setRecipientState(botApi.getTelegramRecipient(token, recipientId).toRecipientState())
         } else {
@@ -81,7 +80,7 @@ class SetupViewModel @Inject constructor(
 
     fun onTokenReset() =
         viewModelScope.launch {
-            config.deleteTelegramApiToken()
+            telegramConfig.getToken()
             setBotState(BotState.NotConfigured)
         }
 
@@ -91,7 +90,7 @@ class SetupViewModel @Inject constructor(
         val botState = botApi.getTelegramBot(token).toBotState()
         val endTime = System.currentTimeMillis()
         if (botState is BotState.Configured) {
-            config.setTelegramBotApiToken(token)
+            telegramConfig.setToken(token)
         }
         val elapsedTime = endTime - startTime
         if (elapsedTime < minOperationTimeMillis) {
@@ -102,7 +101,7 @@ class SetupViewModel @Inject constructor(
 
     fun onRecipientReset() =
         viewModelScope.launch {
-            config.deleteTelegramRecipientId()
+            telegramConfig.deleteRecipientId()
             setRecipientState(RecipientState.NotConfigured)
         }
 
