@@ -1,9 +1,7 @@
 package ag.sokolov.smsrelay
 
 import ag.sokolov.smsrelay.data.repository.AndroidSystemRepositoryImpl
-import ag.sokolov.smsrelay.data.repository.PreferencesDataStoreConfigurationRepository
 import ag.sokolov.smsrelay.domain.repository.AndroidSystemRepository
-import ag.sokolov.smsrelay.domain.repository.ConfigurationRepository
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
@@ -26,11 +24,6 @@ abstract class MainModule {
     abstract fun bindAndroidSystemRepository(
         impl: AndroidSystemRepositoryImpl
     ): AndroidSystemRepository
-
-    @Binds
-    abstract fun bindConfigurationRepository(
-        impl: PreferencesDataStoreConfigurationRepository
-    ): ConfigurationRepository
 
     companion object {
         private val Context.dataStore by preferencesDataStore(name = "application_configuration",
