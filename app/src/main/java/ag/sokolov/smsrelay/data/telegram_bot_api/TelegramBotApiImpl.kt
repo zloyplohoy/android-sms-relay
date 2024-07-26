@@ -9,14 +9,26 @@ import ag.sokolov.smsrelay.domain.model.Response
 import ag.sokolov.smsrelay.domain.model.TelegramBot
 import ag.sokolov.smsrelay.domain.model.TelegramPrivateChatMessage
 import ag.sokolov.smsrelay.domain.model.TelegramUser
+import kotlinx.serialization.json.Json
+import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.HttpException
+import retrofit2.Retrofit
+import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import java.io.IOException
 import javax.inject.Inject
 
-internal class TelegramBotApiImpl
-@Inject constructor(
-    private val telegramBotApiService: TelegramBotApiService,
-) : TelegramBotApi {
+internal class TelegramBotApiImpl @Inject constructor() : TelegramBotApi {
+
+    val json = Json { ignoreUnknownKeys = true }
+    val jsonMediaType = "application/json".toMediaType()
+
+    val telegramBotApiService =
+        Retrofit.Builder()
+            .baseUrl("https://api.telegram.org/")
+            .addConverterFactory(json.asConverterFactory(jsonMediaType))
+            .build()
+            .create(TelegramBotApiService::class.java)
+
     // TODO: This implementation assumes that there is only one update consumer
     private var offset: Long? = null
 
