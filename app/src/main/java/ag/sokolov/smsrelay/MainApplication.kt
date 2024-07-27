@@ -19,6 +19,8 @@ class MainApplication : Application(), Configuration.Provider {
     override fun onCreate() {
         super.onCreate()
 
+        // TODO: Test if this runs on the main thread
+        // TODO: Test if running on the main thread poses and issue
         // On API < 32 WorkManager starts expedited workers
         // as foreground services which require notifications
         if (SDK_INT < S_V2) {
