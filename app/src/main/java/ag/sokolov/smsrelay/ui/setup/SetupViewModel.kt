@@ -42,7 +42,7 @@ class SetupViewModel @Inject constructor(
     val launchedEffectFlow = MutableSharedFlow<SetupLaunchedEffect>()
 
     val stateFlow: StateFlow<SetupState> = combine(
-        botApi2.getTelegramBot(), botApi2.getTelegramRecipient()
+        botApi2.getTelegramBotFlow(), botApi2.getTelegramRecipientFlow()
     ) { getTelegramBotResponse, getTelegramRecipientResponse ->
         getTelegramBotResponse.toBotState() to getTelegramRecipientResponse.toRecipientState()
     }.map { (botState, recipientState) ->

@@ -8,6 +8,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface TelegramBotApi2 {
 
-    fun getTelegramBot(): Flow<Response<TelegramBot?, DomainError>>
-    fun getTelegramRecipient(): Flow<Response<TelegramUser?, DomainError>>
+    fun getTelegramBotFlow(): Flow<Response<TelegramBot?, DomainError>>
+    fun getTelegramRecipientFlow(): Flow<Response<TelegramUser?, DomainError>>
 }
