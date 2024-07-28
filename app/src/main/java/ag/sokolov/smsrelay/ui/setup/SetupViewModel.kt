@@ -13,14 +13,17 @@ import androidx.work.workDataOf
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.random.Random
+import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
 class SetupViewModel @Inject constructor(
@@ -30,6 +33,8 @@ class SetupViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val scope = CoroutineScope(Dispatchers.IO)
+
+    private var isLoadingInLastRecordedState: Boolean = false
 
     val stateFlow: StateFlow<SetupState> = combine(
         botApi2.getTelegramBot(), botApi2.getTelegramRecipient()
@@ -41,6 +46,10 @@ class SetupViewModel @Inject constructor(
             recipientState = recipientState,
             isLoading = botState is BotState.Loading || recipientState is RecipientState.Loading
         )
+    }.onEach {
+        // Delay transitions from loading state to allow animations to play
+        if (isLoadingInLastRecordedState) { delay(3.seconds) }
+        isLoadingInLastRecordedState = it.isLoading
     }.stateIn(
         scope = scope,
         started = SharingStarted.WhileSubscribed(3_000),
