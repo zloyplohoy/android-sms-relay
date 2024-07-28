@@ -71,13 +71,11 @@ object BotSetupScreen
 
 fun NavGraphBuilder.botSetupScreen(
     onContinue: () -> Unit,
-    setLoadingState: (Boolean) -> Unit,
     viewModel: SetupViewModel
 ) =
     composable<BotSetupScreen> {
         BotSetupScreen(
             onContinue = onContinue,
-            setLoadingState = setLoadingState,
             viewModel = viewModel
         )
     }
@@ -85,14 +83,12 @@ fun NavGraphBuilder.botSetupScreen(
 @Composable
 fun BotSetupScreen(
     onContinue: () -> Unit,
-    setLoadingState: (Boolean) -> Unit,
     viewModel: SetupViewModel
 ) {
     val state = viewModel.state
 
     BotSetupScreen(
         state = state.botState,
-        setLoadingState = setLoadingState,
         onContinue = onContinue,
         onTokenValueChanged = viewModel::onTokenValueChanged,
         onTokenReset = viewModel::onTokenReset
@@ -102,7 +98,6 @@ fun BotSetupScreen(
 @Composable
 internal fun BotSetupScreen(
     state: BotState,
-    setLoadingState: (Boolean) -> Unit,
     onContinue: () -> Unit,
     onTokenValueChanged: (value: String) -> Unit,
     onTokenReset: () -> Unit
@@ -138,7 +133,6 @@ internal fun BotSetupScreen(
                     state = state,
                     onValueChange = onTokenValueChanged,
                     onReset = onTokenReset,
-                    setLoadingState = setLoadingState,
                     onCanContinue = ::showContinueButton
                 )
             }
@@ -184,7 +178,6 @@ fun TokenInputBlock(
     state: BotState,
     onValueChange: (value: String) -> Unit,
     onReset: () -> Unit,
-    setLoadingState: (Boolean) -> Unit,
     onCanContinue: () -> Unit
 ) {
     var token by rememberSaveable { mutableStateOf("") }
@@ -233,13 +226,11 @@ fun TokenInputBlock(
                 coroutineScope.launch {
                     when (state) {
                         is BotState.NotConfigured -> {
-                            setLoadingState(false)
                             botDetailsOpacity.hide()
                             tokenTextFieldWidth.expand(boxWithConstraintsScope)
                             tokenTextFieldPlaceholderOpacity.show()
                         }
                         is BotState.Configured -> {
-                            setLoadingState(false)
                             launch { tokenTextFieldPlaceholderOpacity.hide() }
                             launch {
                                 tokenTextFieldWidth.collapse()
@@ -247,12 +238,7 @@ fun TokenInputBlock(
                                 onCanContinue()
                             }
                         }
-                        is BotState.Loading -> {
-                            setLoadingState(true)
-                        }
-                        else -> {
-                            setLoadingState(false)
-                        }
+                        else -> {}
                     }
                 }
             }
@@ -349,11 +335,12 @@ fun PreviewBotSetupScreenNotConfigured() {
     SMSRelayTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
             SetupScreen(progress = 0.33f) {
-                BotSetupScreen(state = BotState.NotConfigured,
+                BotSetupScreen(
+                    state = BotState.NotConfigured,
                     onContinue = {},
                     onTokenValueChanged = {},
-                    onTokenReset = {},
-                    setLoadingState = {})
+                    onTokenReset = {}
+                )
             }
         }
     }
@@ -365,11 +352,12 @@ fun PreviewBotSetupScreenLoading() {
     SMSRelayTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
             SetupScreen(progress = 0.33f) {
-                BotSetupScreen(state = BotState.Loading,
+                BotSetupScreen(
+                    state = BotState.Loading,
                     onContinue = {},
                     onTokenValueChanged = {},
-                    onTokenReset = {},
-                    setLoadingState = {})
+                    onTokenReset = {}
+                )
             }
         }
     }
@@ -381,13 +369,14 @@ fun PreviewBotSetupScreenConfigured() {
     SMSRelayTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
             SetupScreen(progress = 0.33f) {
-                BotSetupScreen(state = BotState.Configured(
-                    name = "Awesome Telegram bot", username = "awesome_telegram_bot"
-                ),
+                BotSetupScreen(
+                    state = BotState.Configured(
+                        name = "Awesome Telegram bot", username = "awesome_telegram_bot"
+                    ),
                     onContinue = {},
                     onTokenValueChanged = {},
-                    onTokenReset = {},
-                    setLoadingState = {})
+                    onTokenReset = {}
+                )
             }
         }
     }
@@ -399,11 +388,12 @@ fun PreviewBotSetupScreenError() {
     SMSRelayTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
             SetupScreen(progress = 0.33f) {
-                BotSetupScreen(state = BotState.Error(message = "Invalid token"),
+                BotSetupScreen(
+                    state = BotState.Error(message = "Invalid token"),
                     onContinue = {},
                     onTokenValueChanged = {},
-                    onTokenReset = {},
-                    setLoadingState = {})
+                    onTokenReset = {}
+                )
             }
         }
     }

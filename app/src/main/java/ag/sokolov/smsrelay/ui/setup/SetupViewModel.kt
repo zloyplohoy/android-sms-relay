@@ -38,10 +38,6 @@ class SetupViewModel @Inject constructor(
         }
     }
 
-    fun setLoadingState(isLoading: Boolean) {
-        state = state.copy(isLoading = isLoading)
-    }
-
     private fun setBotState(botState: BotState) {
         state = state.copy(botState = botState)
     }

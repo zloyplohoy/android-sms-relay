@@ -73,7 +73,6 @@ fun SetupScreen(
         ) {
             botSetupScreen(
                 onContinue = setupNavController::navigateToRecipientSetup,
-                setLoadingState = viewModel::setLoadingState,
                 viewModel = viewModel
             )
             recipientSetupScreen(
