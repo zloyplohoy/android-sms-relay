@@ -81,7 +81,7 @@ class SetupViewModel @Inject constructor(
 
     fun onTokenReset() =
         viewModelScope.launch {
-            telegramConfig.getToken()
+            telegramConfig.deleteToken()
             setBotState(BotState.NotConfigured)
         }
 
