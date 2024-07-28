@@ -43,12 +43,13 @@ internal class TelegramBotApiImpl2 @Inject constructor(
         } catch (e: IOException) {
             Response.Failure(DomainError.NetworkError)
         } catch (e: HttpException) {
-            Response.Failure(
-                when (e.code()) {
-                    401 -> DomainError.BotApiTokenInvalid
-                    else -> DomainError.UnhandledError
-                }
-            )
+            Response.Failure(mapHttpExceptionToDomainError(e))
+        }
+
+    private fun mapHttpExceptionToDomainError(e: HttpException): DomainError =
+        when (e.code()) {
+            401 -> DomainError.BotApiTokenInvalid
+            else -> DomainError.UnhandledError
         }
 
     @OptIn(ExperimentalCoroutinesApi::class)
