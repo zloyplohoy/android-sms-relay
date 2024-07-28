@@ -8,8 +8,7 @@ import ag.sokolov.smsrelay.domain.model.TelegramUser
 data class SetupState(
     val botState: BotState = BotState.Loading,
     val recipientState: RecipientState = RecipientState.Loading,
-    val isLoading: Boolean =
-        botState is BotState.Loading || recipientState is RecipientState.Loading
+    val isLoading: Boolean = true
 )
 
 sealed class BotState {
