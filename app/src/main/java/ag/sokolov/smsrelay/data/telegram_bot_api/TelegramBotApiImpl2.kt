@@ -53,7 +53,7 @@ internal class TelegramBotApiImpl2 @Inject constructor(
         }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    override fun getTelegramBotFlow(): Flow<Response<TelegramBot, DomainError>> =
+    override fun getTelegramBotFlow(): Flow<Response<TelegramBot?, DomainError>> =
         telegramConfig.getTokenFlow().flatMapConcat { token ->
             token?.let {
                 flow {
