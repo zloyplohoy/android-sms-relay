@@ -4,6 +4,7 @@ import ag.sokolov.smsrelay.data.telegram_bot_api.TelegramBotApi2
 import ag.sokolov.smsrelay.data.telegram_config.TelegramConfig
 import ag.sokolov.smsrelay.work.RecipientRegistrationWorker
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
@@ -14,6 +15,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -35,6 +37,9 @@ class SetupViewModel @Inject constructor(
     private val scope = CoroutineScope(Dispatchers.IO)
 
     private var isLoadingInLastRecordedState: Boolean = false
+    private var telegramBotUsername: String? = null
+
+    val launchedEffectFlow = MutableSharedFlow<SetupLaunchedEffect>()
 
     val stateFlow: StateFlow<SetupState> = combine(
         botApi2.getTelegramBot(), botApi2.getTelegramRecipient()
@@ -47,8 +52,12 @@ class SetupViewModel @Inject constructor(
             isLoading = botState is BotState.Loading || recipientState is RecipientState.Loading
         )
     }.onEach {
+        telegramBotUsername = (it.botState as? BotState.Configured)?.username
+    }.onEach {
         // Delay transitions from loading state to allow animations to play
-        if (isLoadingInLastRecordedState) { delay(3.seconds) }
+        if (isLoadingInLastRecordedState) {
+            delay(3.seconds)
+        }
         isLoadingInLastRecordedState = it.isLoading
     }.stateIn(
         scope = scope,
@@ -72,15 +81,17 @@ class SetupViewModel @Inject constructor(
         scope.launch { telegramConfig.deleteRecipientId() }
 
     fun onRecipientRegistrationStarted() {
-        // TODO: Add recipient state update logic based on worker response
         val verificationCode = generateVerificationCode()
+
         val request: OneTimeWorkRequest =
             OneTimeWorkRequestBuilder<RecipientRegistrationWorker>()
                 .setInputData(workDataOf("VERIFICATION_CODE" to verificationCode))
                 .setExpedited(OutOfQuotaPolicy.DROP_WORK_REQUEST).build()
-        val work = workManager.enqueueUniqueWork(
-            "ADD_RECIPIENT", ExistingWorkPolicy.REPLACE, request
-        )
+
+        workManager.enqueueUniqueWork("REGISTER_RECIPIENT", ExistingWorkPolicy.REPLACE, request)
+
+        val uri = "tg://resolve?domain=$telegramBotUsername&start=$verificationCode"
+        viewModelScope.launch { launchedEffectFlow.emit(SetupLaunchedEffect.NavigateToUri(uri)) }
     }
 
     private fun generateVerificationCode(): String =
