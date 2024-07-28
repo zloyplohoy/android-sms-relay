@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -25,7 +26,7 @@ class TelegramConfigImpl @Inject constructor(
         dataStore.data.first()[TOKEN]
 
     override fun getTokenFlow(): Flow<String?> =
-        dataStore.data.map { it[TOKEN] }
+        dataStore.data.map { it[TOKEN] }.distinctUntilChanged()
 
     override suspend fun setToken(token: String) {
         dataStore.edit { it[TOKEN] = token }
@@ -41,7 +42,7 @@ class TelegramConfigImpl @Inject constructor(
         dataStore.data.first()[RECIPIENT_ID]
 
     override fun getRecipientIdFlow(): Flow<Long?> =
-        dataStore.data.map { it[RECIPIENT_ID] }
+        dataStore.data.map { it[RECIPIENT_ID] }.distinctUntilChanged()
 
     override suspend fun setRecipientId(recipientId: Long) {
         dataStore.edit { it[RECIPIENT_ID] = recipientId }
