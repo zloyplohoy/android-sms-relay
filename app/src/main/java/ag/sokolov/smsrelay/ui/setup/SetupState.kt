@@ -25,14 +25,16 @@ sealed class BotState {
     data object Loading : BotState()
 }
 
-fun Response<TelegramBot, DomainError>.toBotState() =
+fun Response<TelegramBot?, DomainError>.toBotState() =
     when (this) {
+        is Response.Loading -> BotState.Loading
+
         is Response.Success -> {
-            BotState.Configured(
-                name = this.data.name,
-                username = this.data.username
-            )
+            this.data?.let { bot ->
+                BotState.Configured(name = bot.name, username = bot.username)
+            } ?: BotState.NotConfigured
         }
+
         is Response.Failure -> {
             BotState.Error(
                 message = when (this.error) {
@@ -59,15 +61,20 @@ sealed class RecipientState {
     data object Loading : RecipientState()
 }
 
-fun Response<TelegramUser, DomainError>.toRecipientState() =
+fun Response<TelegramUser?, DomainError>.toRecipientState() =
     when (this) {
+        is Response.Loading -> RecipientState.Loading
+
         is Response.Success -> {
-            RecipientState.Configured(
-                name = this.data.lastName?.let { "${this.data.firstName} $it" }
-                    ?: this.data.firstName,
-                username = this.data.username
-            )
+            this.data?.let {
+                RecipientState.Configured(
+                    name = this.data!!.lastName?.let { "${this.data.firstName} $it" }
+                        ?: this.data.firstName,
+                    username = this.data.username
+                )
+            } ?: RecipientState.NotConfigured
         }
+
         is Response.Failure -> {
             RecipientState.Error(
                 message = when (this.error) {

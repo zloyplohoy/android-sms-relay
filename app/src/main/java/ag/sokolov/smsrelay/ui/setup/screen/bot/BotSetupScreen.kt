@@ -60,6 +60,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import kotlinx.coroutines.launch
@@ -70,30 +71,19 @@ import kotlin.math.absoluteValue
 object BotSetupScreen
 
 fun NavGraphBuilder.botSetupScreen(
+    viewModel: SetupViewModel,
     onContinue: () -> Unit,
-    viewModel: SetupViewModel
 ) =
     composable<BotSetupScreen> {
+        val state by viewModel.stateFlow.collectAsStateWithLifecycle()
+
         BotSetupScreen(
+            state = state.botState,
             onContinue = onContinue,
-            viewModel = viewModel
+            onTokenValueChanged = viewModel::onTokenValueChanged,
+            onTokenReset = viewModel::onTokenReset
         )
     }
-
-@Composable
-fun BotSetupScreen(
-    onContinue: () -> Unit,
-    viewModel: SetupViewModel
-) {
-    val state = viewModel.state
-
-    BotSetupScreen(
-        state = state.botState,
-        onContinue = onContinue,
-        onTokenValueChanged = viewModel::onTokenValueChanged,
-        onTokenReset = viewModel::onTokenReset
-    )
-}
 
 @Composable
 internal fun BotSetupScreen(
