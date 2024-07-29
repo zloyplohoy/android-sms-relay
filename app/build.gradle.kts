@@ -93,4 +93,6 @@ dependencies {
     implementation(libs.work.runtime.ktx)
     // Jetpack Compose navigation
     implementation(libs.androidx.navigation.compose)
+    // Accompanist
+    implementation(libs.accompanist.permissions)
 }
