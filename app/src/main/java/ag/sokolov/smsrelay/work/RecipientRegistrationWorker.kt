@@ -4,9 +4,8 @@ import ag.sokolov.smsrelay.R
 import ag.sokolov.smsrelay.data.constants.Constants.RECIPIENT_VERIFICATION_NOTIFICATION_CHANNEL_ID
 import ag.sokolov.smsrelay.data.constants.Constants.RECIPIENT_VERIFICATION_NOTIFICATION_TITLE
 import ag.sokolov.smsrelay.data.constants.Constants.RECIPIENT_VERIFICATION_TIMEOUT
-import ag.sokolov.smsrelay.data.telegram_bot_api.TelegramBotApi
+import ag.sokolov.smsrelay.data.telegram_bot_api.TelegramBotApi2
 import ag.sokolov.smsrelay.data.telegram_config.TelegramConfig
-import ag.sokolov.smsrelay.domain.model.Response
 import ag.sokolov.smsrelay.domain.model.TelegramPrivateChatMessage
 import android.app.Notification
 import android.content.Context
@@ -17,41 +16,33 @@ import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.withTimeoutOrNull
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.takeWhile
+import kotlinx.coroutines.flow.timeout
 
 @HiltWorker
 class RecipientRegistrationWorker @AssistedInject constructor(
     @Assisted appContext: Context,
     @Assisted workerParams: WorkerParameters,
     private val telegramConfig: TelegramConfig,
-    private val telegramBotApi: TelegramBotApi
+    private val telegramBotApi2: TelegramBotApi2
 ) : CoroutineWorker(appContext, workerParams) {
 
     private val verificationCode: String? = inputData.getString("VERIFICATION_CODE")
 
-    override suspend fun doWork(): Result {
-        verificationCode ?: return Result.failure()
-        val telegramBotApiToken =
-            telegramConfig.getToken() ?: return Result.failure()
-        return registerRecipient(telegramBotApiToken)
-    }
-
-    private suspend fun registerRecipient(telegramBotApiToken: String): Result =
-        withTimeoutOrNull(RECIPIENT_VERIFICATION_TIMEOUT) {
-            while (!isStopped) {
-                findVerificationMessage(telegramBotApiToken)?.let {
-                    telegramConfig.setRecipientId(it.from.id)
-                    return@withTimeoutOrNull Result.success()
-                }
-            }
-            Result.failure()
-        } ?: Result.failure()
-
-    private suspend fun findVerificationMessage(telegramBotApiToken: String): TelegramPrivateChatMessage? {
-        return (telegramBotApi.getMessages(telegramBotApiToken) as? Response.Success)?.data?.find {
-            isValidVerificationMessage(it)
-        }
-    }
+    @OptIn(FlowPreview::class)
+    override suspend fun doWork(): Result =
+        telegramBotApi2.getMessagesFlow()
+            .takeWhile { !isStopped }
+            .timeout(RECIPIENT_VERIFICATION_TIMEOUT)
+            .filter { isValidVerificationMessage(it) }
+            .firstOrNull()
+            ?.let { validVerificationMessage ->
+                telegramConfig.setRecipientId(validVerificationMessage.from.id)
+                Result.success()
+            } ?: Result.failure()
 
     private fun isValidVerificationMessage(message: TelegramPrivateChatMessage): Boolean =
         verificationCode?.let { message.text == "/start $verificationCode" } ?: false
