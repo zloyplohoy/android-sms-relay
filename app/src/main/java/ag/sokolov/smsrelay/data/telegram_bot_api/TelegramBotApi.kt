@@ -13,4 +13,6 @@ interface TelegramBotApi {
     fun getTelegramRecipientFlow(): Flow<Response<TelegramUser?, DomainError>>
 
     fun getMessagesFlow(): Flow<TelegramPrivateChatMessage>
+
+    suspend fun sendMessage(message: String)
 }

@@ -127,4 +127,17 @@ internal class TelegramBotApiImpl @Inject constructor(
             from = this.from!!.toTelegramUser(),
             text = this.text
         )
+
+    override suspend fun sendMessage(message: String) {
+        val token = telegramConfig.getToken()
+        val recipientId = telegramConfig.getRecipientId()
+
+        if (token != null && recipientId != null) {
+            try {
+                telegramBotApiService.sendMessage(token, recipientId, message)
+            } catch (_: Exception) {
+                // TODO: Verify successful delivery
+            }
+        }
+    }
 }

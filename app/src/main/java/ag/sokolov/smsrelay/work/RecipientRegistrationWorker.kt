@@ -41,6 +41,8 @@ class RecipientRegistrationWorker @AssistedInject constructor(
             .firstOrNull()
             ?.let { validVerificationMessage ->
                 telegramConfig.setRecipientId(validVerificationMessage.from.id)
+                telegramBotApi.sendMessage(
+                    "Verification complete! Return to the application to finish setup.")
                 Result.success()
             } ?: Result.failure()
 
