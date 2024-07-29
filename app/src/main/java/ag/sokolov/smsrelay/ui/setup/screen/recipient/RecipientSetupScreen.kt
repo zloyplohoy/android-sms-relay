@@ -61,16 +61,13 @@ fun RecipientSetupScreen(
     Column {
         Text(text = "recipientState = $state")
         Button(onClick = { onRecipientRegistrationStarted() }) {
-            Text(text = "Start work")
-        }
-        Button(onClick = { /*TODO*/ }) {
-            Text(text = "Start telegram")
+            Text(text = "Verify recipient")
         }
         Button(onClick = { onRecipientReset() }) {
             Text(text = "Delete recipient")
         }
         Button(onClick = onContinue) {
-            Text(text = "To permissions")
+            Text(text = "Continue")
         }
     }
 }
