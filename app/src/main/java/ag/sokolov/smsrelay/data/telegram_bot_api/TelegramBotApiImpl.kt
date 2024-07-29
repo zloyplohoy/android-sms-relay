@@ -26,10 +26,10 @@ import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import java.io.IOException
 import javax.inject.Inject
 
-internal class TelegramBotApiImpl2 @Inject constructor(
+internal class TelegramBotApiImpl @Inject constructor(
     okHttpCallFactory: dagger.Lazy<Call.Factory>,
     private val telegramConfig: TelegramConfig
-) : TelegramBotApi2 {
+) : TelegramBotApi {
 
     private val json = Json { ignoreUnknownKeys = true }
     private val jsonMediaType = "application/json".toMediaType()

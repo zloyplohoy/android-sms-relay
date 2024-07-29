@@ -1,7 +1,7 @@
 package ag.sokolov.smsrelay.data.telegram_bot_api.di
 
-import ag.sokolov.smsrelay.data.telegram_bot_api.TelegramBotApi2
-import ag.sokolov.smsrelay.data.telegram_bot_api.TelegramBotApiImpl2
+import ag.sokolov.smsrelay.data.telegram_bot_api.TelegramBotApi
+import ag.sokolov.smsrelay.data.telegram_bot_api.TelegramBotApiImpl
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -16,7 +16,7 @@ import javax.inject.Singleton
 abstract class TelegramBotApiModule {
 
     @Binds
-    internal abstract fun bindTelegramBotApiRepository2(impl: TelegramBotApiImpl2): TelegramBotApi2
+    internal abstract fun bindTelegramBotApi(impl: TelegramBotApiImpl): TelegramBotApi
 
     companion object {
 

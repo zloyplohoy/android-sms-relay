@@ -4,7 +4,7 @@ import ag.sokolov.smsrelay.R
 import ag.sokolov.smsrelay.data.constants.Constants.RECIPIENT_VERIFICATION_NOTIFICATION_CHANNEL_ID
 import ag.sokolov.smsrelay.data.constants.Constants.RECIPIENT_VERIFICATION_NOTIFICATION_TITLE
 import ag.sokolov.smsrelay.data.constants.Constants.RECIPIENT_VERIFICATION_TIMEOUT
-import ag.sokolov.smsrelay.data.telegram_bot_api.TelegramBotApi2
+import ag.sokolov.smsrelay.data.telegram_bot_api.TelegramBotApi
 import ag.sokolov.smsrelay.data.telegram_config.TelegramConfig
 import ag.sokolov.smsrelay.domain.model.TelegramPrivateChatMessage
 import android.app.Notification
@@ -27,14 +27,14 @@ class RecipientRegistrationWorker @AssistedInject constructor(
     @Assisted appContext: Context,
     @Assisted workerParams: WorkerParameters,
     private val telegramConfig: TelegramConfig,
-    private val telegramBotApi2: TelegramBotApi2
+    private val telegramBotApi: TelegramBotApi
 ) : CoroutineWorker(appContext, workerParams) {
 
     private val verificationCode: String? = inputData.getString("VERIFICATION_CODE")
 
     @OptIn(FlowPreview::class)
     override suspend fun doWork(): Result =
-        telegramBotApi2.getMessagesFlow()
+        telegramBotApi.getMessagesFlow()
             .takeWhile { !isStopped }
             .timeout(RECIPIENT_VERIFICATION_TIMEOUT)
             .filter { isValidVerificationMessage(it) }

@@ -1,6 +1,6 @@
 package ag.sokolov.smsrelay.ui.setup
 
-import ag.sokolov.smsrelay.data.telegram_bot_api.TelegramBotApi2
+import ag.sokolov.smsrelay.data.telegram_bot_api.TelegramBotApi
 import ag.sokolov.smsrelay.data.telegram_config.TelegramConfig
 import ag.sokolov.smsrelay.work.RecipientRegistrationWorker
 import androidx.lifecycle.ViewModel
@@ -30,7 +30,7 @@ import kotlin.time.Duration.Companion.seconds
 @HiltViewModel
 class SetupViewModel @Inject constructor(
     private val telegramConfig: TelegramConfig,
-    botApi2: TelegramBotApi2,
+    botApi2: TelegramBotApi,
     private val workManager: WorkManager
 ) : ViewModel() {
 

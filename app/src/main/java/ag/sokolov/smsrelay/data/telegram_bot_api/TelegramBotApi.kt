@@ -7,7 +7,7 @@ import ag.sokolov.smsrelay.domain.model.TelegramPrivateChatMessage
 import ag.sokolov.smsrelay.domain.model.TelegramUser
 import kotlinx.coroutines.flow.Flow
 
-interface TelegramBotApi2 {
+interface TelegramBotApi {
 
     fun getTelegramBotFlow(): Flow<Response<TelegramBot?, DomainError>>
     fun getTelegramRecipientFlow(): Flow<Response<TelegramUser?, DomainError>>
