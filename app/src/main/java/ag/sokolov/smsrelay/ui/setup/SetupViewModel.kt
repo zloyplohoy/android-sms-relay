@@ -61,7 +61,7 @@ class SetupViewModel @Inject constructor(
         isLoadingInLastRecordedState = it.isLoading
     }.stateIn(
         scope = scope,
-        started = SharingStarted.WhileSubscribed(3_000),
+        started = SharingStarted.Lazily,
         initialValue = SetupState()
     )
 
