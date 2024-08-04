@@ -11,7 +11,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -32,14 +32,24 @@ fun NavGraphBuilder.permissionsSetupScreen(
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun PermissionsSetupScreen(onContinue: () -> Unit) {
-    val permissionState = rememberPermissionState(permission = Manifest.permission.READ_SMS)
+    val permissionState = rememberMultiplePermissionsState(
+        permissions = listOf(
+            Manifest.permission.RECEIVE_SMS,
+            Manifest.permission.READ_SMS
+        )
+    )
     val requestPermissionLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {}
+        rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {}
 
     Column {
-        Text(text = "Permission granted: ${permissionState.status}")
+        Text(text = "Permission granted: ${permissionState.allPermissionsGranted}")
         Button(onClick = {
-            requestPermissionLauncher.launch(Manifest.permission.READ_SMS)
+            requestPermissionLauncher.launch(
+                arrayOf(
+                    Manifest.permission.RECEIVE_SMS,
+                    Manifest.permission.READ_SMS
+                )
+            )
         }) {
             Text(text = "Request permission")
         }
