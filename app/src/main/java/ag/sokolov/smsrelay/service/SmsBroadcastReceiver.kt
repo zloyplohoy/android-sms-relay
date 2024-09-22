@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.provider.Telephony
-import android.telephony.SmsMessage
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -18,24 +17,23 @@ class SmsBroadcastReceiver : BroadcastReceiver() {
     @Inject
     lateinit var telegramBotApi: TelegramBotApi
 
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
+
     override fun onReceive(
         context: Context,
         intent: Intent?
     ) {
         if (Telephony.Sms.Intents.SMS_RECEIVED_ACTION == intent?.action) {
             val messages = Telephony.Sms.Intents.getMessagesFromIntent(intent)
-            messages.forEach { message ->
-                CoroutineScope(Dispatchers.IO).launch {
-                    telegramBotApi.sendMessage(message.toTelegramMessage())
-                }
+
+            val sender = messages[0].originatingAddress
+            val body = messages.joinToString { it.messageBody }
+
+            val relayedMessage = listOf(sender, body).joinToString("\n\n")
+
+            coroutineScope.launch {
+                telegramBotApi.sendMessage(relayedMessage)
             }
         }
     }
-
-    private fun SmsMessage.toTelegramMessage() =
-        """
-            ${this.originatingAddress}
-
-            ${this.messageBody}
-        """.trimIndent()
 }
