@@ -23,6 +23,8 @@ retrofit = "2.11.0"
 okhttp = "4.12.0"
 # WorkManager
 workManager = "2.9.0"
+# Jetpack Compose navigation
+jetpackComposeNavigation = "2.8.1"
 # Accompanist
 accompanist = "0.34.0"
 
@@ -60,7 +62,7 @@ okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhtt
 # WorkManager
 work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workManager" }
 # Jetpack Compose navigation
-androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose" }
+androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "jetpackComposeNavigation" }
 # Accompanist
 accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist" }
 
