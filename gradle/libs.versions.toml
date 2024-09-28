@@ -15,7 +15,7 @@ androidxHilt = "1.2.0"
 # DataStore
 datastorePreferences = "1.1.1"
 # Kotlin serialization
-kotlinxSerializationJson = "1.6.3"
+kotlinxSerializationJson = "1.7.3"
 # Retrofit
 retrofit = "2.11.0"
 # OkHttp
