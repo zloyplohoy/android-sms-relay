@@ -45,6 +45,7 @@ android {
 
 dependencies {
     implementation(projects.core.concurrency)
+    implementation(projects.core.datastore)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -64,8 +65,6 @@ dependencies {
     // AndroidX Dagger Hilt extensions
     implementation(libs.hilt.navigation.compose)
     implementation(libs.hilt.work)
-    // DataStore
-    implementation(libs.datastore.preferences)
     // Kotlin serialization
     implementation(libs.kotlinx.serialization.json)
     // Retrofit

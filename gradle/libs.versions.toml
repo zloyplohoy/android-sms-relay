@@ -52,7 +52,6 @@ dagger-hilt-core = { group = "com.google.dagger", name = "hilt-core", version.re
 hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "androidxHilt" }
 hilt-work = { group = "androidx.hilt", name = "hilt-work", version.ref = "androidxHilt" }
 # DataStore
-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastorePreferences" }
 androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastorePreferences" }
 # Kotlin serialization
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
