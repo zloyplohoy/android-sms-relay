@@ -22,3 +22,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "sms-relay"
 include(":app")
+include(":core:concurrency")
