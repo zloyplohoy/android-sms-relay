@@ -20,5 +20,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "SMS Relay"
+rootProject.name = "sms-relay"
 include(":app")
