@@ -5,7 +5,7 @@ import ag.sokolov.smsrelay.data.constants.Constants.RECIPIENT_VERIFICATION_NOTIF
 import ag.sokolov.smsrelay.data.constants.Constants.RECIPIENT_VERIFICATION_NOTIFICATION_TITLE
 import ag.sokolov.smsrelay.data.constants.Constants.RECIPIENT_VERIFICATION_TIMEOUT
 import ag.sokolov.smsrelay.data.telegram_bot_api.TelegramBotApi
-import ag.sokolov.smsrelay.data.telegram_config.TelegramConfig
+import ag.sokolov.smsrelay.data.telegram_config.TelegramConfigRepository
 import ag.sokolov.smsrelay.domain.model.TelegramPrivateChatMessage
 import android.app.Notification
 import android.content.Context
@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.timeout
 class RecipientRegistrationWorker @AssistedInject constructor(
     @Assisted appContext: Context,
     @Assisted workerParams: WorkerParameters,
-    private val telegramConfig: TelegramConfig,
+    private val telegramConfigRepository: TelegramConfigRepository,
     private val telegramBotApi: TelegramBotApi
 ) : CoroutineWorker(appContext, workerParams) {
 
@@ -40,7 +40,7 @@ class RecipientRegistrationWorker @AssistedInject constructor(
             .filter { isValidVerificationMessage(it) }
             .firstOrNull()
             ?.let { validVerificationMessage ->
-                telegramConfig.setRecipientId(validVerificationMessage.from.id)
+                telegramConfigRepository.setRecipientId(validVerificationMessage.from.id)
                 telegramBotApi.sendMessage(
                     "Verification complete! Return to the application to finish setup.")
                 Result.success()

@@ -11,9 +11,9 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class TelegramConfigImpl @Inject constructor(
+class TelegramConfigRepositoryImpl @Inject constructor(
     private val dataStore: DataStore<Preferences>
-) : TelegramConfig {
+) : TelegramConfigRepository {
 
     companion object {
         private val TOKEN = stringPreferencesKey("telegram_config_bot_api_token")
