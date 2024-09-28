@@ -15,7 +15,6 @@ androidxHilt = "1.2.0"
 # DataStore
 datastorePreferences = "1.1.1"
 # Kotlin serialization
-kotlinSerialization = "2.0.0"
 kotlinxSerializationJson = "1.6.3"
 # Retrofit
 retrofit = "2.11.0"
@@ -74,4 +73,4 @@ compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 dagger-hilt = { id = "com.google.dagger.hilt.android", version.ref = "daggerHilt" }
 # Kotlin serialization
-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinSerialization" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
