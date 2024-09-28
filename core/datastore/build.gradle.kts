@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.smsrelay.android.library)
     alias(libs.plugins.smsrelay.hilt)
-//    alias(libs.plugins.jetbrains.kotlin.android)
 }
 
 android {
