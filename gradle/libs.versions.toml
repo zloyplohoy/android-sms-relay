@@ -1,6 +1,6 @@
 [versions]
 agp = "8.6.1"
-kotlin = "2.0.0"
+kotlin = "2.0.20"
 coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -9,14 +9,13 @@ lifecycleRuntimeKtx = "2.8.6"
 activityCompose = "1.9.2"
 composeBom = "2024.09.02"
 # Dagger Hilt
-ksp = "2.0.0-1.0.21"
-daggerHilt = "2.51.1"
+ksp = "2.0.20-1.0.25"
+daggerHilt = "2.52"
 androidxHilt = "1.2.0"
 # DataStore
 datastorePreferences = "1.1.1"
 # Kotlin serialization
-kotlinSerialization = "2.0.0"
-kotlinxSerializationJson = "1.6.3"
+kotlinxSerializationJson = "1.7.3"
 # Retrofit
 retrofit = "2.11.0"
 # OkHttp
@@ -26,7 +25,7 @@ workManager = "2.9.1"
 # Jetpack Compose navigation
 jetpackComposeNavigation = "2.8.1"
 # Accompanist
-accompanist = "0.34.0"
+accompanist = "0.36.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -74,4 +73,4 @@ compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 dagger-hilt = { id = "com.google.dagger.hilt.android", version.ref = "daggerHilt" }
 # Kotlin serialization
-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinSerialization" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
