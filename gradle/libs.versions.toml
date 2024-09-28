@@ -64,6 +64,9 @@ work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "jetpackComposeNavigation" }
 # Accompanist
 accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist" }
+# Build logic plugin dependencies
+android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
+kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -74,3 +77,5 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 dagger-hilt = { id = "com.google.dagger.hilt.android", version.ref = "daggerHilt" }
 # Kotlin serialization
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+# Build logic convention plugins
+smsrelay-android-application = { id = "smsrelay.android.application" }
