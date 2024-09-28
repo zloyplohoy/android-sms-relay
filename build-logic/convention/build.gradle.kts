@@ -14,17 +14,35 @@
  * limitations under the License.
  */
 
-dependencyResolutionManagement {
-    repositories {
-        google()
-        mavenCentral()
-    }
-    versionCatalogs {
-        create("libs") {
-            from(files("../gradle/libs.versions.toml"))
-        }
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
+plugins {
+    `kotlin-dsl`
+}
+
+group = "ag.sokolov.smsrelay.buildlogic"
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_17
     }
 }
 
-rootProject.name = "build-logic"
-include(":convention")
+dependencies {
+    compileOnly(libs.android.gradle.plugin)
+    compileOnly(libs.kotlin.gradle.plugin)
+}
+
+gradlePlugin {
+    plugins {
+        register("androidApplication") {
+            id = "smsrelay.android.application"
+            implementationClass = "AndroidApplicationConventionPlugin"
+        }
+    }
+}
