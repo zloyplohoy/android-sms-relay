@@ -48,5 +48,9 @@ gradlePlugin {
             id = "smsrelay.hilt"
             implementationClass = "HiltConventionPlugin"
         }
+        register("jvmLibrary") {
+            id = "smsrelay.jvm.library"
+            implementationClass = "JvmLibraryConventionPlugin"
+        }
     }
 }
