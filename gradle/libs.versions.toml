@@ -80,3 +80,4 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 # Build logic convention plugins
 smsrelay-android-application = { id = "smsrelay.android.application" }
 smsrelay-hilt = { id = "smsrelay.hilt" }
+smsrelay-jvm-library = { id = "smsrelay.jvm.library" }
