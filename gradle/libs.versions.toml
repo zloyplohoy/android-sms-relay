@@ -77,3 +77,5 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 dagger-hilt = { id = "com.google.dagger.hilt.android", version.ref = "daggerHilt" }
 # Kotlin serialization
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+# Build logic convention plugins
+smsrelay-android-application = { id = "smsrelay.android.application" }
