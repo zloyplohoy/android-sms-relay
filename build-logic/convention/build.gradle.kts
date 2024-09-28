@@ -44,5 +44,9 @@ gradlePlugin {
             id = "smsrelay.android.application"
             implementationClass = "AndroidApplicationConventionPlugin"
         }
+        register("hilt") {
+            id = "smsrelay.hilt"
+            implementationClass = "HiltConventionPlugin"
+        }
     }
 }

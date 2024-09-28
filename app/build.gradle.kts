@@ -1,9 +1,7 @@
 plugins {
     alias(libs.plugins.smsrelay.android.application)
+    alias(libs.plugins.smsrelay.hilt)
     alias(libs.plugins.compose.compiler)
-    // Dagger Hilt
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.dagger.hilt)
     // Kotlin serialization
     alias(libs.plugins.kotlin.serialization)
 }
@@ -62,11 +60,8 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    // Dagger Hilt
-    ksp(libs.dagger.hilt.compiler)
-    implementation(libs.dagger.hilt)
     // AndroidX Dagger Hilt extensions
-    ksp(libs.androidx.hilt.compiler)
+//    ksp(libs.androidx.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
     implementation(libs.hilt.work)
     // DataStore
