@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "ag.sokolov.smsrelay.core.datastore.telegramapikey"
+    namespace = "ag.sokolov.smsrelay.core.datastore"
     compileSdk = 34
 
     defaultConfig {
