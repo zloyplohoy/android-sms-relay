@@ -4,7 +4,7 @@ import ag.sokolov.smsrelay.data.constants.Constants.TELEGRAM_BOT_API_LONG_POLLIN
 import ag.sokolov.smsrelay.data.telegram_bot_api.retrofit.RetrofitTelegramBotApi
 import ag.sokolov.smsrelay.data.telegram_bot_api.retrofit.dto.MessageDto
 import ag.sokolov.smsrelay.data.telegram_bot_api.retrofit.dto.UserDto
-import ag.sokolov.smsrelay.data.telegram_config.TelegramConfig
+import ag.sokolov.smsrelay.data.telegram_config.TelegramConfigRepository
 import ag.sokolov.smsrelay.domain.model.DomainError
 import ag.sokolov.smsrelay.domain.model.Response
 import ag.sokolov.smsrelay.domain.model.TelegramBot
@@ -28,7 +28,7 @@ import javax.inject.Inject
 
 internal class TelegramBotApiImpl @Inject constructor(
     okHttpCallFactory: dagger.Lazy<Call.Factory>,
-    private val telegramConfig: TelegramConfig
+    private val telegramConfigRepository: TelegramConfigRepository
 ) : TelegramBotApi {
 
     private val json = Json { ignoreUnknownKeys = true }
@@ -59,7 +59,7 @@ internal class TelegramBotApiImpl @Inject constructor(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun getTelegramBotFlow(): Flow<Response<TelegramBot?, DomainError>> =
-        telegramConfig.getTokenFlow().flatMapConcat { token ->
+        telegramConfigRepository.getTokenFlow().flatMapConcat { token ->
             token?.let {
                 flow {
                     emit(Response.Loading)
@@ -77,8 +77,8 @@ internal class TelegramBotApiImpl @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun getTelegramRecipientFlow(): Flow<Response<TelegramUser?, DomainError>> =
         combine(
-            telegramConfig.getTokenFlow(),
-            telegramConfig.getRecipientIdFlow()
+            telegramConfigRepository.getTokenFlow(),
+            telegramConfigRepository.getRecipientIdFlow()
         ) { token, recipientId ->
             token to recipientId
         }.flatMapConcat { (token, recipientId) ->
@@ -104,7 +104,7 @@ internal class TelegramBotApiImpl @Inject constructor(
 
     override fun getMessagesFlow(): Flow<TelegramPrivateChatMessage> =
         flow {
-            telegramConfig.getToken()?.let { token ->
+            telegramConfigRepository.getToken()?.let { token ->
                 val timeout = TELEGRAM_BOT_API_LONG_POLLING_TIMEOUT.inWholeSeconds
                 var offset: Long = 0
                 val allowedUpdates = listOf("message")
@@ -129,8 +129,8 @@ internal class TelegramBotApiImpl @Inject constructor(
         )
 
     override suspend fun sendMessage(message: String) {
-        val token = telegramConfig.getToken()
-        val recipientId = telegramConfig.getRecipientId()
+        val token = telegramConfigRepository.getToken()
+        val recipientId = telegramConfigRepository.getRecipientId()
 
         if (token != null && recipientId != null) {
             try {

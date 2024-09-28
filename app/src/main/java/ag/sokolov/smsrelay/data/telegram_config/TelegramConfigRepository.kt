@@ -2,7 +2,7 @@ package ag.sokolov.smsrelay.data.telegram_config
 
 import kotlinx.coroutines.flow.Flow
 
-interface TelegramConfig {
+interface TelegramConfigRepository {
 
     // Telegram bot API token
     suspend fun getToken(): String?
