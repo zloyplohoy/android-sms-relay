@@ -45,7 +45,7 @@ android {
 
 dependencies {
     implementation(projects.core.concurrency)
-    implementation(projects.core.datastore)
+    implementation(projects.core.data)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

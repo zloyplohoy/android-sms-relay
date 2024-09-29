@@ -1,7 +1,7 @@
 package ag.sokolov.smsrelay.ui.setup
 
+import ag.sokolov.smsrelay.core.data.repository.TelegramConfigRepository
 import ag.sokolov.smsrelay.data.telegram_bot_api.TelegramBotApi
-import ag.sokolov.smsrelay.data.telegram_config.TelegramConfigRepository
 import ag.sokolov.smsrelay.work.RecipientRegistrationWorker
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

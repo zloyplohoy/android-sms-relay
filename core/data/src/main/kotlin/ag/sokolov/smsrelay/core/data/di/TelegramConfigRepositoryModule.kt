@@ -1,7 +1,7 @@
-package ag.sokolov.smsrelay.data.telegram_config.di
+package ag.sokolov.smsrelay.core.data.di
 
-import ag.sokolov.smsrelay.data.telegram_config.TelegramConfigRepository
-import ag.sokolov.smsrelay.data.telegram_config.TelegramConfigRepositoryImpl
+import ag.sokolov.smsrelay.core.data.repository.TelegramConfigRepository
+import ag.sokolov.smsrelay.core.data.repository.TelegramConfigRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

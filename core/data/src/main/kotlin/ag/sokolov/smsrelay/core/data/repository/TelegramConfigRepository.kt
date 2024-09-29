@@ -1,4 +1,4 @@
-package ag.sokolov.smsrelay.data.telegram_config
+package ag.sokolov.smsrelay.core.data.repository
 
 import kotlinx.coroutines.flow.Flow
 
