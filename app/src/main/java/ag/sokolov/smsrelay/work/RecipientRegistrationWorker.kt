@@ -1,11 +1,11 @@
 package ag.sokolov.smsrelay.work
 
 import ag.sokolov.smsrelay.R
+import ag.sokolov.smsrelay.core.data.repository.TelegramConfigRepository
 import ag.sokolov.smsrelay.data.constants.Constants.RECIPIENT_VERIFICATION_NOTIFICATION_CHANNEL_ID
 import ag.sokolov.smsrelay.data.constants.Constants.RECIPIENT_VERIFICATION_NOTIFICATION_TITLE
 import ag.sokolov.smsrelay.data.constants.Constants.RECIPIENT_VERIFICATION_TIMEOUT
 import ag.sokolov.smsrelay.data.telegram_bot_api.TelegramBotApi
-import ag.sokolov.smsrelay.data.telegram_config.TelegramConfigRepository
 import ag.sokolov.smsrelay.domain.model.TelegramPrivateChatMessage
 import android.app.Notification
 import android.content.Context
