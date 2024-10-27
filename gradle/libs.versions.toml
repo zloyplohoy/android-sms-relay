@@ -1,6 +1,6 @@
 [versions]
 agp = "8.7.1"
-kotlin = "2.0.20"
+kotlin = "2.0.21"
 coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -9,7 +9,7 @@ lifecycleRuntimeKtx = "2.8.6"
 activityCompose = "1.9.3"
 composeBom = "2024.10.00"
 # Dagger Hilt
-ksp = "2.0.20-1.0.25"
+ksp = "2.0.21-1.0.26"
 daggerHilt = "2.52"
 androidxHilt = "1.2.0"
 # DataStore
